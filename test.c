@@ -47,10 +47,10 @@ void podchet_ships(bool number_ships_player[10][15], bool number_ships_comp[10][
 void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x);
 
 bool check_ship_borders(int act_y, ship ship, bool field[10][15]);
-bool check_ship_borders_top_horizontal(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_bottom_horizontal(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_left_horizontal(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_right_horizontal(int size_of_ship, ship ship, bool field[10][15]);
+bool check_ship_borders_top_bottom_horizontal(int size_of_ship, ship ship, bool field[10][15]);
+bool check_ship_borders_left_right_horizontal(int size_of_ship, ship ship, bool field[10][15]);
+bool check_ship_borders_left_right_vertical(int size_of_ship, ship ship, bool field[10][15]);
+bool check_ship_borders_top_bottom_vertical(int size_of_ship, ship ship, bool field[10][15]);
 
 void refresh_ship_player_array(ship* ship, bool field[10][15]);
 
@@ -580,12 +580,20 @@ void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15])
 bool check_ship_borders(int act_y, ship ship, bool field[10][15]){
     int size_of_ship = convert_size(act_y)-1;
     switch (ship.type){
-        case FALSE: ;
-                if (check_ship_borders_top_horizontal(size_of_ship, ship, field) == FALSE ||
-                    check_ship_borders_bottom_horizontal(size_of_ship, ship, field) == FALSE ||
-                    check_ship_borders_left_horizontal(size_of_ship, ship, field) == FALSE ||
-                    check_ship_borders_right_horizontal == FALSE)
+        case FALSE: {
+                if (check_ship_borders_top_bottom_horizontal(size_of_ship, ship, field) == FALSE ||
+                    check_ship_borders_left_right_horizontal(size_of_ship, ship, field) == FALSE)
                     return FALSE;
+                else 
+                    return TRUE;
+        }
+        case TRUE: {
+                if (check_ship_borders_top_bottom_vertical(size_of_ship, ship, field) == FALSE ||
+                    check_ship_borders_left_right_vertical(size_of_ship, ship, field) == FALSE)
+                    return FALSE;
+                else 
+                    return TRUE;
+        }
             /*for (int i = 0; i < convert_size(act_y)-1; i++){
 
                     return FALSE;
@@ -601,35 +609,7 @@ bool check_ship_borders(int act_y, ship ship, bool field[10][15]){
     }     
 }
 
-bool check_ship_borders_top_horizontal(int size_of_ship, ship ship, bool field[10][15]){
-    if (ship.y == 0)
-        return TRUE;
-    for (int i = 0; i < size_of_ship; i++)
-        if (field[ship.y-1][ship.x+i] == TRUE)
-            return FALSE;
-        return TRUE;
-}
 
-bool check_ship_borders_bottom_horizontal(int size_of_ship, ship ship, bool field[10][15]){
-    if (ship.y == 9)
-        return TRUE;
-    for (int i = 0; i < size_of_ship; i++)
-        if (field[ship.y+1][ship.x+i] == TRUE)
-            return FALSE;
-        return TRUE;
-}
-
-bool check_ship_borders_left_horizontal(int size_of_ship, ship ship, bool field[10][15]){
-    if (ship.x == 0)
-        return TRUE;
-    if (field[ship.y][ship.x-1] == FALSE && 
-        (ship.y == 0 && field[ship.y+1][ship.x-1] == FALSE ||
-        ship.y == 9 && field[ship.y+1][ship.x-1] == FALSE ||
-        field[ship.y-1][ship.x-1] == FALSE && field[ship.y+1][ship.x-1] == FALSE))
-        return TRUE;
-    else 
-        return FALSE;
-    }
 
 
 
