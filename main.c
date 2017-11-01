@@ -79,24 +79,12 @@ int main()
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
     win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
     
-    wbkgdset(win_ship, COLOR_PAIR(1));
-	wclear(win_ship);
-	wrefresh(win_ship);
-
+    DrawShipWindow(win_ship, width_win_ship, height_win_ship);
+    
     wbkgdset(win_arrange, COLOR_PAIR(2));
     wclear(win_arrange);
 	wrefresh(win_arrange);
-    refresh();
-
-    wattron(win_ship,COLOR_PAIR(2));
-    str_top(win_ship, width_win_ship);
-
-    wattron(win_ship,COLOR_PAIR(3));
-    for (int i = 2; i < height_win_ship-1; i+=2){
-        str_line(win_ship, width_win_ship, i);
-        str_numb(win_ship, width_win_ship, i+1);
-    }
-    str_bottom(win_ship, width_win_ship, height_win_ship);
+    
 
     wattron(win_ship,COLOR_PAIR(10));
     ch = 219;
@@ -133,176 +121,178 @@ int main()
 
     wrefresh(win_arrange);
 
-        while((key = getch()) != KEY_F(2)){
-            switch(key){	
-            case KEY_LEFT:
-                switch (active_window){
-                    case 1:
-                        check_left(&active_x, active_y);
-                        draw_leftkey(win_arrange, active_y, active_x);
-                        break;
-                    case 2: {
-                        index = convert_ship_index(active_y, active_x);
-                        if (check_border_left(ships_player[index]) == TRUE /*&& check_ship_left(active_y, ships_player[index], ship_player_field) == TRUE*/){
-                            deleting_ship(active_y, ships_player[index], ship_player_field);
-                            ships_player[index].x-=1;
-                            standing_ship(active_y, ships_player[index], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field);
-                        }
-                        break;            
-                    }
-                }
-				break;
-            case KEY_RIGHT:
-                switch (active_window){
-                    case 1:
-                        check_right(&active_x, active_y);
-                        draw_rightkey(win_arrange, active_y, active_x);
-                        break;
-                    case 2: {
-                        index = convert_ship_index(active_y, active_x);
-                        if (check_border_right(active_y, ships_player[index]) == TRUE && check_ship_right(active_y, ships_player[index], ship_player_field) == TRUE){
-                            deleting_ship(active_y, ships_player[index], ship_player_field);
-                            ships_player[index].x+=1;
-                            standing_ship(active_y, ships_player[index], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field);
-                        }
-                        break;            
-                    }
-                }
-				break;
-			case KEY_UP:
-                switch (active_window){
-                    case 1:
-                        break;
-                    case 2: {
-                        index = convert_ship_index(active_y, active_x);
-                        if (check_border_top(ships_player[index]) == TRUE && check_ship_top(active_y, ships_player[index], ship_player_field) == TRUE){
-                            deleting_ship(active_y, ships_player[index], ship_player_field);
-                            ships_player[index].y-=1;
-                            standing_ship(active_y, ships_player[index], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field);
-                        }
-                        break;            
-                    }
-                }
-				break;
-			case KEY_DOWN:
-                switch (active_window){
-                    case 1:
-                        break;
-                    case 2: {
-                        index = convert_ship_index(active_y, active_x);
-                        if (check_border_bot(active_y, ships_player[index]) == TRUE && check_ship_bot(active_y, ships_player[index], ship_player_field) == TRUE){
-                            deleting_ship(active_y, ships_player[index], ship_player_field);
-                            ships_player[index].y+=1;
-                            standing_ship(active_y, ships_player[index], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field);
-                        }
-                        break;            
-                    }
-                }
-				break;
-            case 9:{
-                if (active_window == 2){
-                    index = convert_ship_index(active_y, active_x);
-                    if (ships_player[index].type == FALSE && 
-                        ships_player[index].y + convert_size(active_y) - 1 > 10 ||
-                        ships_player[index].type == TRUE &&
-                        ships_player[index].x + convert_size(active_y) -1 > 15)
-                        break;
-                    else {
-                    deleting_ship(active_y, ships_player[index], ship_player_field);
-                    if (ships_player[index].type == FALSE)
-                        ships_player[index].type = TRUE;
-                    else ships_player[index].type = FALSE;
-                    standing_ship(active_y, ships_player[index], ship_player_field);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    break;
-                    }
-                }
-                else {
-                    wattron(win_arrange, COLOR_PAIR(2));
-                    switch (active_y){
-                        case 5:
-                            for (int i = 0, x = 12; i < 2; i++, x+=5)
-                            mvwprintw(win_arrange,5,x," %c%c%c%c",ch, ch, ch, ch);
-                            wattron(win_arrange, COLOR_PAIR(100));
-                            mvwprintw(win_arrange,active_y+2,13, "%c%c%c", ch);
-                            wrefresh(win_arrange);
-                            break;
-                    case 7:
-                        for (int i = 0, x = 12; i < 3; i++, x+=4)
-                        mvwprintw(win_arrange,7,x," %c%c%c",ch, ch, ch);
-                        wattron(win_arrange, COLOR_PAIR(100));
-                        mvwprintw(win_arrange,active_y+2,13, "%c%c", ch);
-                        wrefresh(win_arrange);
-                        break;
-                    case 9:
-                        for (int i = 0, x = 12; i < 4; i++, x+=3)
-                        mvwprintw(win_arrange,9,x," %c%c",ch,ch);
-                        wattron(win_arrange, COLOR_PAIR(100));
-                        mvwprintw(win_arrange,active_y+2,13, "%c", ch);
-                        wrefresh(win_arrange);
-                        break;
-                    case 11:
-                        for (int i = 0, x = 12; i < 6; i++, x+=2)
-                        mvwprintw(win_arrange,11,x," %c",ch);
-                        wattron(win_arrange, COLOR_PAIR(100));
-                        mvwprintw(win_arrange,active_y-6,13, "%c%c%c%c", ch);
-                        wrefresh(win_arrange);
-                        break;
-                    }
-                if (active_y+2 > 11)
-                    active_y = 5;
-                else active_y+=2;
-                active_x = 13;
-                }
-            }
-                break;
-            case '\n':
-                switch (active_window){
-                    case 1:
-                        active_window = 2;
-                        index = convert_ship_index(active_y, active_x);
-                        if (ships_player[index].stand == FALSE){
-                            begin_coord(active_y, &ships_player[index], ship_player_field);
-                            standing_ship(active_y, ships_player[index], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field);
-                        }
-                        break;
-                    case 2:
-                        index = convert_ship_index(active_y, active_x);
-                        if (check_ship_borders(active_y, ships_player[index], ship_player_field) == FALSE)
-                            break;
-                        else {
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                        refresh_number_arrange(win_arrange, ships_player, &number_stand_ships);
-                        active_window = 1;
+    enum actWind {SHIP = 1, ARRANGE = 2};
 
-                        refresh_ship_player_array(ships_player, ship_player_field);
+    while((key = getch()) != KEY_F(2)){
+        switch(key){	
+        case KEY_LEFT:
+            switch (active_window){
+                case SHIP:
+                    check_left(&active_x, active_y);
+                    draw_leftkey(win_arrange, active_y, active_x);
+                    break;
+                case ARRANGE: {
+                    index = convert_ship_index(active_y, active_x);
+                    if (check_border_left(ships_player[index]) == TRUE /*&& check_ship_left(active_y, ships_player[index], ship_player_field) == TRUE*/){
+                        deleting_ship(active_y, ships_player[index], ship_player_field);
+                        ships_player[index].x-=1;
+                        standing_ship(active_y, ships_player[index], ship_player_field);
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         tmp_otladchik(ship_player_field);
-                        /*
-                        // !!! КОСТЫЛЬ !!!
-                        for (int i = 0; i < 15; i++){
-                            if (ships_player[i].stand == TRUE)
-                               standing_ship(convert_index_to_active_y(i), ships_player[i], ship_player_field);
-                            refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                            tmp_otladchik(ship_player_field); 
-                        }
-                        // !!! КОСТЫЛЬ !!!
-                        */
-                        break;
-                        }
+                    }
+                    break;            
+                }
             }
-		}
-	}
+            break;
+        case KEY_RIGHT:
+            switch (active_window){
+                case SHIP:
+                    check_right(&active_x, active_y);
+                    draw_rightkey(win_arrange, active_y, active_x);
+                    break;
+                case ARRANGE: {
+                    index = convert_ship_index(active_y, active_x);
+                    if (check_border_right(active_y, ships_player[index]) == TRUE && check_ship_right(active_y, ships_player[index], ship_player_field) == TRUE){
+                        deleting_ship(active_y, ships_player[index], ship_player_field);
+                        ships_player[index].x+=1;
+                        standing_ship(active_y, ships_player[index], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                        tmp_otladchik(ship_player_field);
+                    }
+                    break;            
+                }
+            }
+            break;
+        case KEY_UP:
+            switch (active_window){
+                case SHIP:
+                    break;
+                case ARRANGE: {
+                    index = convert_ship_index(active_y, active_x);
+                    if (check_border_top(ships_player[index]) == TRUE && check_ship_top(active_y, ships_player[index], ship_player_field) == TRUE){
+                        deleting_ship(active_y, ships_player[index], ship_player_field);
+                        ships_player[index].y-=1;
+                        standing_ship(active_y, ships_player[index], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                        tmp_otladchik(ship_player_field);
+                    }
+                    break;            
+                }
+            }
+            break;
+        case KEY_DOWN:
+            switch (active_window){
+                case SHIP:
+                    break;
+                case ARRANGE: {
+                    index = convert_ship_index(active_y, active_x);
+                    if (check_border_bot(active_y, ships_player[index]) == TRUE && check_ship_bot(active_y, ships_player[index], ship_player_field) == TRUE){
+                        deleting_ship(active_y, ships_player[index], ship_player_field);
+                        ships_player[index].y+=1;
+                        standing_ship(active_y, ships_player[index], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                        tmp_otladchik(ship_player_field);
+                    }
+                    break;            
+                }
+            }
+            break;
+        case 9:{
+            if (active_window == 2){
+                index = convert_ship_index(active_y, active_x);
+                if (ships_player[index].type == FALSE && 
+                    ships_player[index].y + convert_size(active_y) - 1 > 10 ||
+                    ships_player[index].type == TRUE &&
+                    ships_player[index].x + convert_size(active_y) -1 > 15)
+                    break;
+                else {
+                deleting_ship(active_y, ships_player[index], ship_player_field);
+                if (ships_player[index].type == FALSE)
+                    ships_player[index].type = TRUE;
+                else ships_player[index].type = FALSE;
+                standing_ship(active_y, ships_player[index], ship_player_field);
+                refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                break;
+                }
+            }
+            else {
+                wattron(win_arrange, COLOR_PAIR(2));
+                switch (active_y){
+                    case 5:
+                        for (int i = 0, x = 12; i < 2; i++, x+=5)
+                        mvwprintw(win_arrange,5,x," %c%c%c%c",ch, ch, ch, ch);
+                        wattron(win_arrange, COLOR_PAIR(100));
+                        mvwprintw(win_arrange,active_y+2,13, "%c%c%c", ch);
+                        wrefresh(win_arrange);
+                        break;
+                case 7:
+                    for (int i = 0, x = 12; i < 3; i++, x+=4)
+                    mvwprintw(win_arrange,7,x," %c%c%c",ch, ch, ch);
+                    wattron(win_arrange, COLOR_PAIR(100));
+                    mvwprintw(win_arrange,active_y+2,13, "%c%c", ch);
+                    wrefresh(win_arrange);
+                    break;
+                case 9:
+                    for (int i = 0, x = 12; i < 4; i++, x+=3)
+                    mvwprintw(win_arrange,9,x," %c%c",ch,ch);
+                    wattron(win_arrange, COLOR_PAIR(100));
+                    mvwprintw(win_arrange,active_y+2,13, "%c", ch);
+                    wrefresh(win_arrange);
+                    break;
+                case 11:
+                    for (int i = 0, x = 12; i < 6; i++, x+=2)
+                    mvwprintw(win_arrange,11,x," %c",ch);
+                    wattron(win_arrange, COLOR_PAIR(100));
+                    mvwprintw(win_arrange,active_y-6,13, "%c%c%c%c", ch);
+                    wrefresh(win_arrange);
+                    break;
+                }
+            if (active_y+2 > 11)
+                active_y = 5;
+            else active_y+=2;
+            active_x = 13;
+            }
+        }
+            break;
+        case '\n':
+            switch (active_window){
+                case 1:
+                    active_window = 2;
+                    index = convert_ship_index(active_y, active_x);
+                    if (ships_player[index].stand == FALSE){
+                        begin_coord(active_y, &ships_player[index], ship_player_field);
+                        standing_ship(active_y, ships_player[index], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                        tmp_otladchik(ship_player_field);
+                    }
+                    break;
+                case 2:
+                    index = convert_ship_index(active_y, active_x);
+                    if (check_ship_borders(active_y, ships_player[index], ship_player_field) == FALSE)
+                        break;
+                    else {
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                    refresh_number_arrange(win_arrange, ships_player, &number_stand_ships);
+                    active_window = 1;
+
+                    refresh_ship_player_array(ships_player, ship_player_field);
+                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                    tmp_otladchik(ship_player_field);
+                    /*
+                    // !!! КОСТЫЛЬ !!!
+                    for (int i = 0; i < 15; i++){
+                        if (ships_player[i].stand == TRUE)
+                            standing_ship(convert_index_to_active_y(i), ships_player[i], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
+                        tmp_otladchik(ship_player_field); 
+                    }
+                    // !!! КОСТЫЛЬ !!!
+                    */
+                    break;
+                    }
+        }
+    }
+}
     wbkgdset(win_arrange, COLOR_PAIR(66));
     wclear(win_arrange);
 	wrefresh(win_arrange);

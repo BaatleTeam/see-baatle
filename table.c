@@ -1,5 +1,16 @@
 #include "table.h"
 
+void DrawShipWindow(WINDOW *WIN, int width, int height){
+    wattron(WIN,COLOR_PAIR(2));
+    str_top(WIN, width);
+    wattron(WIN,COLOR_PAIR(3));
+    for (int i = 2; i < height-1; i+=2){
+        str_line(WIN, width, i);
+        str_numb(WIN, width, i+1);
+    }
+    str_bottom(WIN, width, height);
+    wrefresh(WIN);
+}
 
 void str_numb(WINDOW *WIN, int width, int x){
     int lin = 179;

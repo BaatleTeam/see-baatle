@@ -6,7 +6,7 @@ void win_arrange_graphics(WINDOW *WIN){
     char ch = 219;
     wattron(WIN, COLOR_PAIR(2));
     mvwprintw(WIN,1, 1, "Use TAB and arrows to move.");
-    mvwprintw(WIN,2, 1, "Use Enter to choose the ship.");
+    mvwprintw(WIN,2, 1, "Use ENTER to choose the ship.");
     mvwprintw(WIN,3, 1, "Use TAB to change the orientation.");
     mvwprintw(WIN,5,3, "2 ships: ");
     mvwprintw(WIN,7,3, "3 ships: ");
