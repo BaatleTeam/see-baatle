@@ -1,60 +1,5 @@
-#include <curses.h>
-#include <stdlib.h>
-#include <time.h>
+#include "header.h"
 #include "table.h"
-#include "arrange.h"
-#include "ships.h"
-#include "shoot.h"
- 
-void tmp_otladchik(bool field[10][15]);
-void str_line(WINDOW*,int, int);
-void str_numb(WINDOW*,int, int);
-void str_top(WINDOW*, int);
-void str_bottom(WINDOW*, int, int);
-void check_left(int*, int);
-void check_right(int *x, int y);
-void draw_leftkey(WINDOW*, int, int);
-void draw_rightkey(WINDOW *WIN, int y, int x);
-int convert_size(int); // Преобразовывает текущий y в размер корабля
-int convert_ship_index(int, int);
-int convert_index_to_active_y(int index);
-void win_arrange_graphics(WINDOW*);
-int begin_coord(int curr_y, ship* ship, bool field[10][15]);
-bool dop_begin(int x, int y, int size, bool field[10][15]);
-void standing_ship(int act_y, ship ship, bool field[10][15]);
-void deleting_ship(int act_y, ship ship, bool field[10][15]);
-void refresh_ship_player_gpaphics(WINDOW *WIN, bool field[10][15]);
-bool check_border_left(ship ship);
-bool check_border_right(int, ship ship);
-bool check_border_top(ship ship);
-bool check_border_bot(int,ship ship);
-bool check_ship_left(int cur_y, ship ship, bool field[10][15]);
-bool check_ship_right(int cur_y, ship ship, bool field[10][15]);
-bool check_ship_top(int act_y, ship ship, bool field[10][15]);
-bool check_ship_bot(int act_y, ship ship, bool field[10][15]);
-void refresh_number_arrange(WINDOW *WIN, ship* ship, int*);
-
-bool check_border_left_shoot(int y, int x, int field[10][15]);
-bool check_border_right_shoot(int y, int x, int field[10][15]);
-bool check_border_bot_shoot(int y, int x, int field[10][15]);
-bool check_border_top_shoot(int y, int x, int field[10][15]);
-void change_x_leftkey(int* x);
-void change_x_rightkey(int* x);
-void change_y_topkey(int* y);
-void change_y_botkey(int* y);
-void choosing_comp_strategy(bool ship_comp_field[10][15]);
-void podchet_ships(bool number_ships_player[10][15], bool number_ships_comp[10][15]);
-void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x);
-
-bool check_ship_borders(int act_y, ship ship, bool field[10][15]);
-bool check_ship_borders_top_bottom_horizontal(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_left_right_horizontal(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_left_right_vertical(int size_of_ship, ship ship, bool field[10][15]);
-bool check_ship_borders_top_bottom_vertical(int size_of_ship, ship ship, bool field[10][15]);
-
-void refresh_ship_player_array(ship* ship, bool field[10][15]);
-
-
 
 int main()
 {	
@@ -63,30 +8,32 @@ int main()
     WINDOW *win_arrange;
     WINDOW *win_shoot;
 
-    bool ship_player_field[10][15];
+    bool ship_player_field[10][15]; 
     bool ship_comp_field[10][15];
     int shoot_player_field[10][15];
     int shoot_comp_field[10][15];
     
 
-    ship ships_player[15];
+    // Далее параметры создаваемых окон.
 	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
     int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
     int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
-    int active_window = 1;
-    int number_stand_ships = 0;
-	int ch;
+    
+    int active_window = 1; // Номер активного окна. Неплохо бы реализовать через enum.
+    int number_stand_ships = 0; 
+	int ch; // ??
     int key;
-    int kr = 197;
-
-    for (int i = 0; i< 15; i++){
+    int kr = 197; // ??
+    
+    ship ships_player[15]; // Инициализация кораблей для игрока.
+    for (int i = 0; i < 15; i++){
         ships_player[i].x = 0;
         ships_player[i].y = 0;
         ships_player[i].type = FALSE;
         ships_player[i].stand = FALSE;
     }
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++) //Инициализация всех игровых полей начальными условиями.
        for (int j = 0; j < 15; j++){
            ship_player_field[i][j] = FALSE;
            ship_comp_field[i][j] = FALSE;
@@ -96,7 +43,7 @@ int main()
 
 	initscr();
 	cbreak();
-    noecho();
+    noecho(); // Не отображает символы.
     curs_set(FALSE);
 	keypad(stdscr, TRUE);
     start_color();
@@ -109,17 +56,20 @@ int main()
     init_pair (50, COLOR_RED, COLOR_BLACK);
     init_pair (200, COLOR_RED, COLOR_GREEN);
 
+    // Основным окном считается окно расстановки кораблей ship,
+    // поэтому размеры окна arrange соответсвуют окну ship. 
 	height_win_ship = 23;
 	width_win_ship = 33; 
 	start_y_ship = 5;
 	start_x_ship = 5;
 
-    height_win_arrange = 23;
+    height_win_arrange = height_win_ship;
     width_win_arrange = 40;
-    start_y_arrange = 5;
+    start_y_arrange = start_y_ship;
     start_x_arrange = 40;
     refresh();
 
+    // Размеры окна под стрельбу должны соотвествовать окну ship.
     width_win_shoot = width_win_ship;
     height_win_shoot = height_win_ship;
     start_x_shoot = start_x_arrange;
