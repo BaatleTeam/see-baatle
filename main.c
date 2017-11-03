@@ -79,19 +79,12 @@ int main()
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
     win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
     
-    DrawShipWindow(win_ship, width_win_ship, height_win_ship);
-    
-    wbkgdset(win_arrange, COLOR_PAIR(2));
-    wclear(win_arrange);
-	wrefresh(win_arrange);
-    
-
-    wattron(win_ship,COLOR_PAIR(10));
-    ch = 219;
-    win_arrange_graphics(win_arrange);
-    refresh_number_arrange(win_arrange, ships_player, &number_stand_ships);
+    DrawTableWindow(win_ship, width_win_ship, height_win_ship);
+    DrawDefaltArrangeWindow(win_arrange);
+    DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
     wrefresh(win_ship);
-
+    
+    ch = 219;
     bool enter = FALSE;
     int active_x;// координаты, которым перемащаются в win_arrange для выбора корабля
     int active_y;
@@ -111,9 +104,7 @@ int main()
     //ship_player_field[5][2] = TRUE;
     //ship_player_field[1][4] = TRUE;
     //ship_player_field[8][4] = TRUE;
-    
-    //begin_coord(active_y, &ships_player[index], ship_player_field);
-    //standing_ship(active_y, ships_player[index], ship_player_field);
+
     refresh_ship_player_gpaphics(win_ship, ship_player_field);
 	refresh();
 
@@ -121,21 +112,21 @@ int main()
 
     wrefresh(win_arrange);
 
-    enum actWind {SHIP = 1, ARRANGE = 2};
+    enum actWind {ARRANGE = 1, SHIP = 2};
 
     while((key = getch()) != KEY_F(2)){
         switch(key){	
         case KEY_LEFT:
             switch (active_window){
-                case SHIP:
+                case ARRANGE:
                     check_left(&active_x, active_y);
                     draw_leftkey(win_arrange, active_y, active_x);
                     break;
-                case ARRANGE: {
+                case SHIP: {
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_left(ships_player[index]) == TRUE /*&& check_ship_left(active_y, ships_player[index], ship_player_field) == TRUE*/){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
-                        ships_player[index].x-=1;
+                        ships_player[index].x -= 1;
                         standing_ship(active_y, ships_player[index], ship_player_field);
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         tmp_otladchik(ship_player_field);
@@ -146,11 +137,11 @@ int main()
             break;
         case KEY_RIGHT:
             switch (active_window){
-                case SHIP:
+                case ARRANGE:
                     check_right(&active_x, active_y);
                     draw_rightkey(win_arrange, active_y, active_x);
                     break;
-                case ARRANGE: {
+                case SHIP: {
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_right(active_y, ships_player[index]) == TRUE && check_ship_right(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -165,9 +156,9 @@ int main()
             break;
         case KEY_UP:
             switch (active_window){
-                case SHIP:
+                case ARRANGE:
                     break;
-                case ARRANGE: {
+                case SHIP: {
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_top(ships_player[index]) == TRUE && check_ship_top(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -182,9 +173,9 @@ int main()
             break;
         case KEY_DOWN:
             switch (active_window){
-                case SHIP:
+                case ARRANGE:
                     break;
-                case ARRANGE: {
+                case SHIP: {
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_bot(active_y, ships_player[index]) == TRUE && check_ship_bot(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -198,7 +189,7 @@ int main()
             }
             break;
         case 9:{
-            if (active_window == 2){
+            if (active_window == SHIP){
                 index = convert_ship_index(active_y, active_x);
                 if (ships_player[index].type == FALSE && 
                     ships_player[index].y + convert_size(active_y) - 1 > 10 ||
@@ -256,7 +247,7 @@ int main()
             break;
         case '\n':
             switch (active_window){
-                case 1:
+                case ARRANGE:
                     active_window = 2;
                     index = convert_ship_index(active_y, active_x);
                     if (ships_player[index].stand == FALSE){
@@ -266,13 +257,13 @@ int main()
                         tmp_otladchik(ship_player_field);
                     }
                     break;
-                case 2:
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (check_ship_borders(active_y, ships_player[index], ship_player_field) == FALSE)
                         break;
                     else {
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    refresh_number_arrange(win_arrange, ships_player, &number_stand_ships);
+                    DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
                     active_window = 1;
 
                     refresh_ship_player_array(ships_player, ship_player_field);

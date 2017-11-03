@@ -1,6 +1,6 @@
 #include "table.h"
 
-void DrawShipWindow(WINDOW *WIN, int width, int height){
+void DrawTableWindow(WINDOW *WIN, int width, int height){
     wattron(WIN,COLOR_PAIR(2));
     str_top(WIN, width);
     wattron(WIN,COLOR_PAIR(3));

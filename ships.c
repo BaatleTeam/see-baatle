@@ -87,7 +87,6 @@ bool check_border_bot(int act_y, ship ship){
             else 
                 return TRUE;
     }
-
 }
 
 bool check_ship_left(int act_y, ship ship, bool field[10][15]){
@@ -324,40 +323,4 @@ bool check_ship_borders_top_bottom_vertical(int size_of_ship, ship ship, bool fi
         if (field[ship.y-1][i] == TRUE || field[ship.y+size_of_ship][i] == TRUE)
             return FALSE;
     return TRUE;
-}
-
-void refresh_number_arrange(WINDOW *WIN, ship* ship, int *number_stand_ships){
-    int number_4 = 0;
-    int number_3 = 0;
-    int number_2 = 0;
-    int number_1 = 0;
-
-    for (int i = 0; i < 2; i++)
-        if (ship[i].stand == TRUE)
-            number_4++;
-    for (int i = 2; i < 5; i++)
-        if (ship[i].stand == TRUE)
-            number_3++;
-    for (int i = 5; i < 9; i++)
-        if (ship[i].stand == TRUE)
-            number_2++;
-    for (int i = 9; i < 15; i++)
-        if (ship[i].stand == TRUE)
-            number_1++;
-   
-    mvwprintw(WIN, 5 , 25, "%d / 2", number_4);
-    mvwprintw(WIN, 7 , 25, "%d / 3", number_3);
-    mvwprintw(WIN, 9 , 25, "%d / 4", number_2);
-    mvwprintw(WIN, 11 , 25, "%d / 6", number_1);
-    *number_stand_ships = number_1 + number_2 + number_3 + number_4;
-    //*number_stand_ships = 15;
-    wattron(WIN, COLOR_PAIR(2));
-    mvwprintw(WIN, 13 , 6, "You have %d ships standing", *number_stand_ships);
-    if (*number_stand_ships == 15){
-        wattron(WIN, COLOR_PAIR(100));
-        mvwprintw(WIN, 15 , 4, "You have arranged all your ships");
-        mvwprintw(WIN, 17 , 7, "YOU CAN START THE BATTLE");
-        mvwprintw(WIN, 19 , 9, "Press F2 to continue!");
-    }
-    wrefresh(WIN);
 }
