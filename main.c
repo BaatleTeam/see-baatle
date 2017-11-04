@@ -55,7 +55,7 @@ int main()
     init_pair (66, COLOR_BLACK, COLOR_BLACK);
     init_pair (50, COLOR_RED, COLOR_BLACK);
     init_pair (200, COLOR_RED, COLOR_GREEN);
-
+    init_pair (55, COLOR_GREEN, COLOR_YELLOW);
     // Основным окном считается окно расстановки кораблей ship,
     // поэтому размеры окна arrange соответсвуют окну ship. 
 	height_win_ship = 23;
@@ -115,12 +115,16 @@ int main()
     enum actWind {ARRANGE = 1, SHIP = 2};
 
     while((key = getch()) != KEY_F(2)){
-        switch(key){	
+        for (int  i = 0; i < width_win_arrange; i++)
+            mvwprintw(win_arrange, 15, i, " ");
+        wrefresh(win_arrange);
+        switch(key){
         case KEY_LEFT:
             switch (active_window){
                 case ARRANGE:
                     check_left(&active_x, active_y);
-                    draw_leftkey(win_arrange, active_y, active_x);
+                    DrawStandingShips(win_arrange, ships_player);
+                    DrawActiveShip(win_arrange, active_y, active_x);
                     break;
                 case SHIP: {
                     index = convert_ship_index(active_y, active_x);
@@ -139,7 +143,8 @@ int main()
             switch (active_window){
                 case ARRANGE:
                     check_right(&active_x, active_y);
-                    draw_rightkey(win_arrange, active_y, active_x);
+                    DrawStandingShips(win_arrange, ships_player);
+                    DrawActiveShip(win_arrange, active_y, active_x);
                     break;
                 case SHIP: {
                     index = convert_ship_index(active_y, active_x);
@@ -188,67 +193,43 @@ int main()
                 }
             }
             break;
-        case 9:{
-            if (active_window == SHIP){
-                index = convert_ship_index(active_y, active_x);
-                if (ships_player[index].type == FALSE && 
-                    ships_player[index].y + convert_size(active_y) - 1 > 10 ||
-                    ships_player[index].type == TRUE &&
-                    ships_player[index].x + convert_size(active_y) -1 > 15)
-                    break;
-                else {
-                deleting_ship(active_y, ships_player[index], ship_player_field);
-                if (ships_player[index].type == FALSE)
-                    ships_player[index].type = TRUE;
-                else ships_player[index].type = FALSE;
-                standing_ship(active_y, ships_player[index], ship_player_field);
-                refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                break;
-                }
-            }
-            else {
-                wattron(win_arrange, COLOR_PAIR(2));
-                switch (active_y){
-                    case 5:
-                        for (int i = 0, x = 12; i < 2; i++, x+=5)
-                        mvwprintw(win_arrange,5,x," %c%c%c%c",ch, ch, ch, ch);
-                        wattron(win_arrange, COLOR_PAIR(100));
-                        mvwprintw(win_arrange,active_y+2,13, "%c%c%c", ch);
-                        wrefresh(win_arrange);
+        case 9: {
+            switch(active_window){
+                case SHIP: {
+                    index = convert_ship_index(active_y, active_x);
+                    if (ships_player[index].type == FALSE && 
+                        ships_player[index].y + convert_size(active_y) - 1 > 10 ||
+                        ships_player[index].type == TRUE &&
+                        ships_player[index].x + convert_size(active_y) -1 > 15)
                         break;
-                case 7:
-                    for (int i = 0, x = 12; i < 3; i++, x+=4)
-                    mvwprintw(win_arrange,7,x," %c%c%c",ch, ch, ch);
-                    wattron(win_arrange, COLOR_PAIR(100));
-                    mvwprintw(win_arrange,active_y+2,13, "%c%c", ch);
-                    wrefresh(win_arrange);
+                    else {
+                    deleting_ship(active_y, ships_player[index], ship_player_field);
+                    if (ships_player[index].type == FALSE)
+                        ships_player[index].type = TRUE;
+                    else 
+                        ships_player[index].type = FALSE;
+                    standing_ship(active_y, ships_player[index], ship_player_field);
+                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
                     break;
-                case 9:
-                    for (int i = 0, x = 12; i < 4; i++, x+=3)
-                    mvwprintw(win_arrange,9,x," %c%c",ch,ch);
-                    wattron(win_arrange, COLOR_PAIR(100));
-                    mvwprintw(win_arrange,active_y+2,13, "%c", ch);
-                    wrefresh(win_arrange);
-                    break;
-                case 11:
-                    for (int i = 0, x = 12; i < 6; i++, x+=2)
-                    mvwprintw(win_arrange,11,x," %c",ch);
-                    wattron(win_arrange, COLOR_PAIR(100));
-                    mvwprintw(win_arrange,active_y-6,13, "%c%c%c%c", ch);
-                    wrefresh(win_arrange);
-                    break;
+                    }
                 }
-            if (active_y+2 > 11)
+                break;
+            case ARRANGE: {
+                wattron(win_arrange, COLOR_PAIR(2));
+                if (active_y+2 > 11)
                 active_y = 5;
-            else active_y+=2;
-            active_x = 13;
+                else active_y+=2;
+                active_x = 13;
+                DrawStandingShips(win_arrange, ships_player);
+                DrawActiveShip(win_arrange, active_y, active_x);
             }
         }
-            break;
+    }
+    break;
         case '\n':
             switch (active_window){
                 case ARRANGE:
-                    active_window = 2;
+                    active_window = SHIP;
                     index = convert_ship_index(active_y, active_x);
                     if (ships_player[index].stand == FALSE){
                         begin_coord(active_y, &ships_player[index], ship_player_field);
@@ -259,12 +240,14 @@ int main()
                     break;
                 case SHIP:
                     index = convert_ship_index(active_y, active_x);
-                    if (check_ship_borders(active_y, ships_player[index], ship_player_field) == FALSE)
+                    if (check_ship_borders(active_y, ships_player[index], ship_player_field) == FALSE){
+                        DrawErrorMessage(win_arrange);
                         break;
+                    }
                     else {
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                     DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
-                    active_window = 1;
+                    active_window = ARRANGE;
 
                     refresh_ship_player_array(ships_player, ship_player_field);
                     refresh_ship_player_gpaphics(win_ship, ship_player_field);

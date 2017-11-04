@@ -10,3 +10,6 @@ void draw_leftkey(WINDOW*, int, int);
 void draw_rightkey(WINDOW *WIN, int y, int x);
 
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
+void DrawErrorMessage(WINDOW*);
+void DrawStandingShips(WINDOW* WIN, ship* ship);
+void DrawActiveShip(WINDOW* WIN, int y, int x);
