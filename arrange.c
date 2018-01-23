@@ -178,7 +178,7 @@ void DrawActiveShip(WINDOW* WIN, int y, int x){
     char ch = 219;
     int size = convert_size(y) - 1;
     wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, y, x,"%d",size);
+    // mvwprintw(WIN, y, x,"%d",size);
     for (int i = 0; i < size; i++, x++)
         mvwprintw(WIN, y, x,"%c",ch);
     wrefresh(WIN);

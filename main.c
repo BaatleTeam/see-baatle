@@ -1,8 +1,7 @@
 #include "header.h"
 #include "table.h"
 
-int main()
-{	
+int main(){	
     srand(time(NULL));
     WINDOW *win_ship;
     WINDOW *win_arrange;
@@ -126,7 +125,7 @@ int main()
                     DrawStandingShips(win_arrange, ships_player);
                     DrawActiveShip(win_arrange, active_y, active_x);
                     break;
-                case SHIP: {
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_left(ships_player[index]) == TRUE /*&& check_ship_left(active_y, ships_player[index], ship_player_field) == TRUE*/){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -135,8 +134,7 @@ int main()
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         tmp_otladchik(ship_player_field);
                     }
-                    break;            
-                }
+                    break;
             }
             break;
         case KEY_RIGHT:
@@ -146,24 +144,30 @@ int main()
                     DrawStandingShips(win_arrange, ships_player);
                     DrawActiveShip(win_arrange, active_y, active_x);
                     break;
-                case SHIP: {
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_right(active_y, ships_player[index]) == TRUE && check_ship_right(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
                         ships_player[index].x+=1;
                         standing_ship(active_y, ships_player[index], ship_player_field);
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                        tmp_otladchik(ship_player_field);
-                    }
-                    break;            
+                        tmp_otladchik(ship_player_field);          
                 }
+                break;
             }
             break;
         case KEY_UP:
             switch (active_window){
                 case ARRANGE:
+                    wattron(win_arrange, COLOR_PAIR(2));
+                    if (active_y-2 < 5)
+                        active_y = 11;
+                    else active_y-=2;
+                    active_x = 13;
+                    DrawStandingShips(win_arrange, ships_player);
+                    DrawActiveShip(win_arrange, active_y, active_x);
                     break;
-                case SHIP: {
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_top(ships_player[index]) == TRUE && check_ship_top(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -171,7 +175,6 @@ int main()
                         standing_ship(active_y, ships_player[index], ship_player_field);
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         tmp_otladchik(ship_player_field);
-                    }
                     break;            
                 }
             }
@@ -179,8 +182,15 @@ int main()
         case KEY_DOWN:
             switch (active_window){
                 case ARRANGE:
+                    wattron(win_arrange, COLOR_PAIR(2));
+                    if (active_y+2 > 11)
+                    active_y = 5;
+                    else active_y+=2;
+                    active_x = 13;
+                    DrawStandingShips(win_arrange, ships_player);
+                    DrawActiveShip(win_arrange, active_y, active_x);
                     break;
-                case SHIP: {
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (check_border_bot(active_y, ships_player[index]) == TRUE && check_ship_bot(active_y, ships_player[index], ship_player_field) == TRUE){
                         deleting_ship(active_y, ships_player[index], ship_player_field);
@@ -188,14 +198,13 @@ int main()
                         standing_ship(active_y, ships_player[index], ship_player_field);
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         tmp_otladchik(ship_player_field);
-                    }
-                    break;            
                 }
+                break;
             }
             break;
         case 9: {
             switch(active_window){
-                case SHIP: {
+                case SHIP:
                     index = convert_ship_index(active_y, active_x);
                     if (ships_player[index].type == FALSE && 
                         ships_player[index].y + convert_size(active_y) - 1 > 10 ||
@@ -203,26 +212,17 @@ int main()
                         ships_player[index].x + convert_size(active_y) -1 > 15)
                         break;
                     else {
-                    deleting_ship(active_y, ships_player[index], ship_player_field);
-                    if (ships_player[index].type == FALSE)
-                        ships_player[index].type = TRUE;
-                    else 
-                        ships_player[index].type = FALSE;
-                    standing_ship(active_y, ships_player[index], ship_player_field);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    break;
+                        deleting_ship(active_y, ships_player[index], ship_player_field);
+                        if (ships_player[index].type == FALSE)
+                            ships_player[index].type = TRUE;
+                        else 
+                            ships_player[index].type = FALSE;
+                        standing_ship(active_y, ships_player[index], ship_player_field);
+                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
                     }
-                }
+                    break;
+                case ARRANGE:
                 break;
-            case ARRANGE: {
-                wattron(win_arrange, COLOR_PAIR(2));
-                if (active_y+2 > 11)
-                active_y = 5;
-                else active_y+=2;
-                active_x = 13;
-                DrawStandingShips(win_arrange, ships_player);
-                DrawActiveShip(win_arrange, active_y, active_x);
-            }
         }
     }
     break;
