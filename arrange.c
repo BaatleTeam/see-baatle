@@ -4,7 +4,7 @@
 void DrawDefaltArrangeWindow(WINDOW *WIN){
     wbkgdset(WIN, COLOR_PAIR(2));
     wclear(WIN);
-	wrefresh(WIN);
+    box(WIN, 0, 0);
     int x;
     char ch = 219;
     wattron(WIN, COLOR_PAIR(2));
@@ -136,7 +136,9 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_shi
 
 void DrawErrorMessage(WINDOW* WIN){
     wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, 15 , 0, "-> Ships can not stand near which other!");
+    mvwprintw(WIN, 15 , 1, "Ships can not stand near which other!");
+    wattron(WIN, COLOR_PAIR(2));
+    box(WIN, 0, 0);
     wrefresh(WIN);
 }
 

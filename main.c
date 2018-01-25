@@ -3,6 +3,43 @@
 
 int main(){	
     srand(time(NULL));
+    // Отступы между окнами и краями главного окна.
+    int LeftIndent, RightIndent, BetweenIndent, TopIndent, BottomIndent;
+    LeftIndent = 4;
+    BetweenIndent = 3;
+    RightIndent = 4;
+    TopIndent = 3;
+    BottomIndent = 4;
+
+    // Далее параметры создаваемых окон.
+	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
+    int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
+    int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
+
+    // Основным окном считается окно расстановки кораблей ship,
+    // Поэтому размеры окна arrange соответсвуют окну ship. 
+    // Новые зависимости от размера отступов.
+    height_win_ship = 23;
+	width_win_ship = 33; 
+	start_y_ship = TopIndent;
+	start_x_ship = LeftIndent;
+
+    height_win_arrange = height_win_ship;
+    width_win_arrange = 38;
+    start_y_arrange = TopIndent;
+    start_x_arrange = LeftIndent + width_win_ship + BetweenIndent;
+
+    // Размеры окна под стрельбу должны соотвествовать окну ship.
+    width_win_shoot = width_win_ship;
+    height_win_shoot = height_win_ship;
+    start_x_shoot = start_x_arrange;
+    start_y_shoot = start_y_arrange;
+
+    int widthOfMainWindow = start_x_arrange + width_win_arrange + RightIndent;
+    int heightOfMainWindow = TopIndent + height_win_ship + BottomIndent;
+
+    system ("mode con cols=82 lines=30");
+
     WINDOW *win_ship;
     WINDOW *win_arrange;
     WINDOW *win_shoot;
@@ -11,13 +48,7 @@ int main(){
     bool ship_comp_field[10][15];
     int shoot_player_field[10][15];
     int shoot_comp_field[10][15];
-    
 
-    // Далее параметры создаваемых окон.
-	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
-    int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
-    int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
-    
     int active_window = 1; // Номер активного окна. Неплохо бы реализовать через enum.
     int number_stand_ships = 0; 
 	int ch; // ??
@@ -55,33 +86,33 @@ int main(){
     init_pair (50, COLOR_RED, COLOR_BLACK);
     init_pair (200, COLOR_RED, COLOR_GREEN);
     init_pair (55, COLOR_GREEN, COLOR_YELLOW);
-    // Основным окном считается окно расстановки кораблей ship,
-    // поэтому размеры окна arrange соответсвуют окну ship. 
-	height_win_ship = 23;
-	width_win_ship = 33; 
-	start_y_ship = 5;
-	start_x_ship = 5;
 
-    height_win_arrange = height_win_ship;
-    width_win_arrange = 40;
-    start_y_arrange = start_y_ship;
-    start_x_arrange = 40;
     refresh();
-
-    // Размеры окна под стрельбу должны соотвествовать окну ship.
-    width_win_shoot = width_win_ship;
-    height_win_shoot = height_win_ship;
-    start_x_shoot = start_x_arrange;
-    start_y_shoot = start_y_arrange;
 
 	win_ship = newwin(height_win_ship, width_win_ship, start_y_ship, start_x_ship);
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
     win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
-    
+
+    // ------------------------->
+
+    ch = 219;
+    attron(COLOR_PAIR(2));
+    for (int i = 0; i < widthOfMainWindow; i++){
+    	mvprintw(0, i, "%c", ch);
+    	mvprintw(heightOfMainWindow-1, i, "%c", ch);
+    }
+   	for (int i = 0; i < heightOfMainWindow; i++){
+    	mvprintw(i, 0, "%c", ch);
+    	// mvprintw(i, widthOfMainWindow, "%c", ch);
+   	}
+
+    // ------------------------->
+
     DrawTableWindow(win_ship, width_win_ship, height_win_ship);
     DrawDefaltArrangeWindow(win_arrange);
     DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
     wrefresh(win_ship);
+
     
     ch = 219;
     bool enter = FALSE;
@@ -92,7 +123,6 @@ int main(){
     int n  = 79;
 
     int index = convert_ship_index(active_y, active_x);
-    printw("Press F1 to exit");
     move(1,0);
 
     //ships_player[index].x = 4;
