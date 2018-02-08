@@ -1,29 +1,28 @@
 #include "ships.h"
 
-void standing_ship(int act_y, ship ship, bool field[10][15]){
+void standing_ship(int act_y, ship* ship, bool field[10][15]){
     int size_of_ship = convert_size(act_y);
-    switch (ship.type){
+    switch (ship->type){
         case FALSE:
             for (int i = 0; i < size_of_ship-1; i++)
-                field[ship.y][i+ship.x] = TRUE;
+                field[ship->y][i+ship->x] = TRUE;
             break;
         case TRUE:
             for (int i = 0; i < size_of_ship-1; i++)
-                field[i+ship.y][ship.x] = TRUE;
+                field[i+ship->y][ship->x] = TRUE;
             break;
     }
 }
 
-void deleting_ship(int act_y, ship ship, bool field[10][15]){
-    int size_of_ship = convert_size(act_y);
-    switch (ship.type){
+void deleteShipFromField(ship* ship, bool field[10][15]){
+    switch (ship->type){
         case FALSE:
-            for (int i = 0; i < size_of_ship-1; i++)
-                field[ship.y][i+ship.x] = FALSE;
+            for (int i = 0; i < ship->size; i++)
+                field[ship->y][i+ship->x] = FALSE;
             break;
         case TRUE:
-            for (int i = 0; i < size_of_ship-1; i++)
-                field[i+ship.y][ship.x] = FALSE;
+            for (int i = 0; i < ship->size; i++)
+                field[i+ship->y][ship->x] = FALSE;
             break;
     }
 }
@@ -44,45 +43,44 @@ void refresh_ship_player_gpaphics(WINDOW *WIN, bool field[10][15]){
     wrefresh(WIN);
 }
 
-bool check_border_left(ship ship){
-    if (ship.x == 0)
+bool checkBorderLeft(ship* ship){
+    if (ship->x == 0)
         return FALSE;
     else 
         return TRUE;
 }
 
-bool check_border_right(int act_y, ship ship){
-    switch (ship.type){
+bool checkBorderRight(ship* ship){
+    switch (ship->type){
         case FALSE:
-            if (ship.x + convert_size(act_y) == 16)
+            if (ship->x + ship->size == 15)
                 return FALSE;
             else 
                 return TRUE;
         case TRUE:
-            if (ship.x == 14)
+            if (ship->x == 14)
                 return FALSE;
             else 
                 return TRUE;
     }
-
 }
 
-bool check_border_top(ship ship){
-    if (ship.y == 0)
+bool checkBorderTop(ship* ship){
+    if (ship->y == 0)
         return FALSE;
     else 
         return TRUE;
 }
 
-bool check_border_bot(int act_y, ship ship){
-    switch (ship.type){
+bool checkBorderBot(ship* ship){
+    switch (ship->type){
         case TRUE:
-            if (ship.y + convert_size(act_y) == 11)
+            if (ship->y + ship->size == 10)
                 return FALSE;
             else 
                 return TRUE;
         case FALSE:
-            if (ship.y == 9)
+            if (ship->y == 9)
                 return FALSE;
             else 
                 return TRUE;
@@ -212,115 +210,130 @@ int convert_ship_index(int y, int x){
     }
 }
 
-bool check_ship_borders_top_bottom_horizontal(int size_of_ship, ship ship, bool field[10][15]){
-    switch (ship.y){
+bool check_ship_borders_top_bottom_horizontal(ship* ship, bool field[10][15]){
+    switch (ship->y){
         case 0: { 
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+1][ship.x+i] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+1][ship->x+i] == TRUE)
                     return FALSE;
             return TRUE;
         }
         case 9: {
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y-1][ship.x+i] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y-1][ship->x+i] == TRUE)
                     return FALSE;
             return TRUE;
         }
         default:{
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y-1][ship.x+i] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y-1][ship->x+i] == TRUE)
                     return FALSE;
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+1][ship.x+i] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+1][ship->x+i] == TRUE)
                     return FALSE;
             return TRUE;
         }
     }
 }
 
-bool check_ship_borders_left_right_horizontal(int size_of_ship, ship ship, bool field[10][15]){
-    if (ship.x + size_of_ship == 15){
-        if (ship.y == 0)
-            if (field[0][ship.x-1] == TRUE || field[1][ship.x-1] == TRUE)
+bool check_ship_borders_left_right_horizontal(ship* ship, bool field[10][15]){
+    if (ship->x + ship->size == 15){
+        if (ship->y == 0)
+            if (field[0][ship->x-1] == TRUE || field[1][ship->x-1] == TRUE)
                 return FALSE;
-        if (ship.y == 9)
-            if (field[9][ship.x-1] == TRUE || field[8][ship.x-1] == TRUE)
+        if (ship->y == 9)
+            if (field[9][ship->x-1] == TRUE || field[8][ship->x-1] == TRUE)
                 return FALSE;
-        if (ship.y != 0 && ship.y != 9)
-            for(int i = ship.y-1; i <= ship.y+1; i++)
-                if (field[i][ship.x-1] == TRUE)
+        if (ship->y != 0 && ship->y != 9)
+            for(int i = ship->y-1; i <= ship->y+1; i++)
+                if (field[i][ship->x-1] == TRUE)
                     return FALSE;
     } else 
-    if (ship.x == 0){
-        if (ship.y == 0)
-            if (field[0][size_of_ship] == TRUE || field[1][size_of_ship] == TRUE)
+    if (ship->x == 0){
+        if (ship->y == 0)
+            if (field[0][ship->size] == TRUE || field[1][ship->size] == TRUE)
                 return FALSE;
-        if (ship.y == 9)
-            if (field[9][size_of_ship] == TRUE || field[8][size_of_ship] == TRUE)
+        if (ship->y == 9)
+            if (field[9][ship->size] == TRUE || field[8][ship->size] == TRUE)
                 return FALSE;
-        if (ship.y != 0 && ship.y != 9)
-            for(int i = ship.y-1; i <= ship.y+1; i++)
-                if (field[i][ship.x+size_of_ship] == TRUE)
+        if (ship->y != 0 && ship->y != 9)
+            for(int i = ship->y-1; i <= ship->y+1; i++)
+                if (field[i][ship->x+ship->size] == TRUE)
                     return FALSE;
     } else
-    for (int i = ship.y-1; i <= ship.y+1; i++)
-        if (field[i][ship.x+size_of_ship] == TRUE || field[i][ship.x-1] == TRUE)
+    for (int i = ship->y-1; i <= ship->y+1; i++)
+        if (field[i][ship->x+ship->size] == TRUE || field[i][ship->x-1] == TRUE)
             return FALSE;
     return TRUE;
 }
 
-bool check_ship_borders_left_right_vertical(int size_of_ship, ship ship, bool field[10][15]){
-    switch (ship.x){
+bool check_ship_borders_left_right_vertical(ship* ship, bool field[10][15]){
+    switch (ship->x){
         case 0: { 
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+i][ship.x+1] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+i][ship->x+1] == TRUE)
                     return FALSE;
             return TRUE;
         }
         case 14: {
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+i][ship.x-1] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+i][ship->x-1] == TRUE)
                     return FALSE;
             return TRUE;
         }
         default:{
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+i][ship.x+1] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+i][ship->x+1] == TRUE)
                     return FALSE;
-            for (int i = 0; i < size_of_ship; i++)
-                if (field[ship.y+i][ship.x-1] == TRUE)
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+i][ship->x-1] == TRUE)
                     return FALSE;
             return TRUE;
         }
     }
 }
-bool check_ship_borders_top_bottom_vertical(int size_of_ship, ship ship, bool field[10][15]){
-    if (ship.y + size_of_ship == 10){
-        if (ship.x == 0)
-            if (field[ship.y-1][ship.x] == TRUE || field[ship.y-1][ship.x+1] == TRUE)
+bool check_ship_borders_top_bottom_vertical(ship* ship, bool field[10][15]){
+    if (ship->y + ship->size == 10){
+        if (ship->x == 0)
+            if (field[ship->y-1][ship->x] == TRUE || field[ship->y-1][ship->x+1] == TRUE)
                 return FALSE;
-        if (ship.x == 14)
-            if (field[ship.y-1][ship.x] == TRUE || field[ship.y-1][ship.x-1] == TRUE)
+        if (ship->x == 14)
+            if (field[ship->y-1][ship->x] == TRUE || field[ship->y-1][ship->x-1] == TRUE)
                 return FALSE;
-        if (ship.x != 0 && ship.x != 14)
-            for (int i = ship.x-1; i <= ship.x+1; i++)
-                if (field[ship.y-1][i] == TRUE)
+        if (ship->x != 0 && ship->x != 14)
+            for (int i = ship->x-1; i <= ship->x+1; i++)
+                if (field[ship->y-1][i] == TRUE)
                     return FALSE;
     } else 
-    if (ship.y == 0){
-        if (ship.x == 0)
-            if (field[size_of_ship][ship.x] == TRUE || field[size_of_ship][ship.x+1] == TRUE)
+    if (ship->y == 0){
+        if (ship->x == 0)
+            if (field[ship->size][ship->x] == TRUE || field[ship->size][ship->x+1] == TRUE)
                 return FALSE;
-        if (ship.x == 14)
-            if (field[size_of_ship][ship.x] == TRUE || field[size_of_ship][ship.x-1] == TRUE)
+        if (ship->x == 14)
+            if (field[ship->size][ship->x] == TRUE || field[ship->size][ship->x-1] == TRUE)
                 return FALSE;
-        if (ship.x != 0 && ship.x != 14)
-            for (int i = ship.x-1; i <= ship.x+1; i++)
-                if (field[size_of_ship][i] == TRUE)
+        if (ship->x != 0 && ship->x != 14)
+            for (int i = ship->x-1; i <= ship->x+1; i++)
+                if (field[ship->size][i] == TRUE)
                     return FALSE;
     } else 
-    for (int i = ship.x-1; i <= ship.x+1; i++)
-        if (field[ship.y-1][i] == TRUE || field[ship.y+size_of_ship][i] == TRUE)
+    for (int i = ship->x-1; i <= ship->x+1; i++)
+        if (field[ship->y-1][i] == TRUE || field[ship->y+ship->size][i] == TRUE)
             return FALSE;
     return TRUE;
+}
+
+bool checkItself(ship* ship, bool field[10][15]){
+    switch(ship->type){
+        case FALSE:
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y][ship->x+i] == TRUE)
+                    return FALSE;
+            break;
+        case TRUE:
+            for (int i = 0; i < ship->size; i++)
+                if (field[ship->y+i][ship->x] == TRUE)
+                    return FALSE;
+            break;
+    }
 }
