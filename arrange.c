@@ -41,19 +41,28 @@ int convert_size(int y){
     } 
 }
 
-void check_left(int *x, int y){
+void changeActiveShip(int *x, int *y, const int key){
+    switch (key){
+        case KEY_LEFT:  changeActiveShip_LeftKey(x,y); break;
+        case KEY_RIGHT: changeActiveShip_RightKey(x,y); break;
+        case KEY_UP:    changeActiveShip_UpKey(x,y); break;
+        case KEY_DOWN:  changeActiveShip_DownKey(x,y); break;
+    }
+}
+
+void changeActiveShip_LeftKey(int *x, int *y){
     int size;
-    size = convert_size(y);       
+    size = convert_size(*y);       
     if (*x-size < 13)
         *x = 13;
     else 
         *x -= size;
 }
 
-void check_right(int *x, int y){
-    int size;
+void changeActiveShip_RightKey(int *x, int *y){
+    int size = convert_size(*y);
     int max;
-    switch (y){
+    switch (*y){
         case 5:
             max = 18;
             break;
@@ -66,13 +75,29 @@ void check_right(int *x, int y){
         case 11:
             max = 23;
             break;
-    } 
-    size = convert_size(y);
+    }
     if (*x+size > max)
         *x = max;
     else
         *x+=size;
 }
+
+void changeActiveShip_UpKey(int *x, int *y){
+    if (*y-2 < 5)
+        *y = 11;
+    else 
+        *y-=2;
+    *x = 13;
+}
+
+void changeActiveShip_DownKey(int *x, int *y){
+    if (*y+2 > 11)
+        *y = 5;
+    else 
+        *y+=2;
+    *x = 13;
+}
+
 
 void draw_leftkey(WINDOW *WIN, int y, int x){
     int rect = 219;
