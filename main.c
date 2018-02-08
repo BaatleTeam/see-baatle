@@ -133,134 +133,71 @@ int main(){
             mvwprintw(win_arrange, 15, i, " ");
         wrefresh(win_arrange);
         switch(key){
-        case KEY_LEFT:
-            switch (active_window){
-                case ARRANGE:
-                	changeActiveShip(&active_x, &active_y, key);
-                    DrawStandingShips(win_arrange, ships_player);
-                    DrawActiveShip(win_arrange, active_y, active_x);
-                    break;
-                case SHIP:
-                    changeShipCoordinates(TmpShip, key);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    tmp_otladchik(ship_player_field);
-                    tmp_otladchik_tmp_ship(TmpShip);
-                    break;
-            }
-            break;
-        case KEY_RIGHT:
-            switch (active_window){
-                case ARRANGE:
-                	changeActiveShip(&active_x, &active_y, key);
-                    DrawStandingShips(win_arrange, ships_player);
-                    DrawActiveShip(win_arrange, active_y, active_x);
-                    break;
-                case SHIP:
-                    changeShipCoordinates(TmpShip, key);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    tmp_otladchik(ship_player_field);
-                    tmp_otladchik_tmp_ship(TmpShip);
-                break;
-            }
-            break;
-        case KEY_UP:
-            switch (active_window){
-                case ARRANGE:
-                	changeActiveShip(&active_x, &active_y, key);
-                    DrawStandingShips(win_arrange, ships_player);
-                    DrawActiveShip(win_arrange, active_y, active_x);
-                    break;
-                case SHIP:
-                    changeShipCoordinates(TmpShip, key);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    tmp_otladchik(ship_player_field);
-                    tmp_otladchik_tmp_ship(TmpShip);
-                break;            
-            }
-            break;
-        case KEY_DOWN:
-            switch (active_window){
-                case ARRANGE:
-                	changeActiveShip(&active_x, &active_y, key);
-                    DrawStandingShips(win_arrange, ships_player);
-                    DrawActiveShip(win_arrange, active_y, active_x);
-                    break;
-                case SHIP:
-                    changeShipCoordinates(TmpShip, key);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    tmp_otladchik(ship_player_field);
-                    tmp_otladchik_tmp_ship(TmpShip);	
-                break;
-            }
-            break;
-        case 9: {
-            switch(active_window){
-                case SHIP:
-                    changeTypeOfShip(TmpShip, ship_player_field);
-                    refresh_ship_player_gpaphics(win_ship, ship_player_field);	
-                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    break;
-                case ARRANGE:
-                	break;
-        }
-    }
-    break;
-        case '\n':
-            switch (active_window){
-                case ARRANGE:
-                    active_window = SHIP;
-                    index = convert_ship_index(active_y, active_x);
-                    if (ships_player[index].stand == FALSE){
-                    	clearTmpShip(TmpShip);
-                        InitPrimaryCoordinates(active_y, TmpShip, ship_player_field);
+        	case KEY_LEFT:
+        	case KEY_RIGHT:
+        	case KEY_UP:
+        	case KEY_DOWN:
+	            switch (active_window){
+	                case ARRANGE:
+	                	changeActiveShip(&active_x, &active_y, key);
+	                    DrawStandingShips(win_arrange, ships_player);
+	                    DrawActiveShip(win_arrange, active_y, active_x);
+	                    break;
+	                case SHIP:
+	                    changeShipCoordinates(TmpShip, key);
+	                    refresh_ship_player_gpaphics(win_ship, ship_player_field);
+	                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
+	                    tmp_otladchik(ship_player_field);
+	                    tmp_otladchik_tmp_ship(TmpShip);
+	                break;            
+	            }
+	            break;
+	        case 9: {
+	            switch(active_window){
+	                case SHIP:
+	                    changeTypeOfShip(TmpShip, ship_player_field);
+	                    refresh_ship_player_gpaphics(win_ship, ship_player_field);	
+	                    DrawTmpShip(win_ship, TmpShip, ship_player_field);
+	                    break;
+	                case ARRANGE:
+	                	break;
+	        	}
+	    	}	
+    		break;
+	        case '\n': 
+	            switch (active_window){
+	                case ARRANGE:
+	                    active_window = SHIP;
+	                    index = convert_ship_index(active_y, active_x);
+                    	clearTmpShip(TmpShip);	
+	                    if (ships_player[index].stand == FALSE)
+	                        InitPrimaryCoordinates(active_y, TmpShip, ship_player_field);
+	                    else {
+	                    	deleteShipFromField(&ships_player[index], ship_player_field);
+	                    	makeShipTmp(&ships_player[index], TmpShip);
+	                    }
                         refresh_ship_player_gpaphics(win_ship, ship_player_field);
                         DrawTmpShip(win_ship, TmpShip, ship_player_field);
                         tmp_otladchik(ship_player_field);
-                    } 
-                    else {
-                    	clearTmpShip(TmpShip);
-                    	deleteShipFromField(&ships_player[index], ship_player_field);
-                    	makeShipTmp(&ships_player[index], TmpShip);
-                    	refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    	DrawTmpShip(win_ship, TmpShip, ship_player_field);
-                    	tmp_otladchik(ship_player_field);
-                    }
-                    break;
-                case SHIP:
-                    index = convert_ship_index(active_y, active_x);
-                    if (checkShipBorders(TmpShip, ship_player_field) == FALSE){
-                        DrawErrorMessage(win_arrange);
-                        break;
-                    }
-                    else {
-                    	addShip(&ships_player[index], TmpShip);
-                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    	DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
-                    	DrawStandingShips(win_arrange, ships_player);
-                    	active_window = ARRANGE;
+	                    break;
+	                case SHIP:
+	                    index = convert_ship_index(active_y, active_x);
+	                    if (checkShipBorders(TmpShip, ship_player_field) == FALSE)
+	                        DrawErrorMessage(win_arrange);
+	                    else {
+	                    	active_window = ARRANGE;
+	                    	addShip(&ships_player[index], TmpShip);
+	                    	DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
+	                    	DrawStandingShips(win_arrange, ships_player);
 
-                    	refresh_ship_player_array(ships_player, ship_player_field);
-                    	refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                    	tmp_otladchik(ship_player_field);
-                    /*
-                    // !!! КОСТЫЛЬ !!!
-                    for (int i = 0; i < 15; i++){
-                        if (ships_player[i].stand == TRUE)
-                            standing_ship(convert_in&dex_to_active_y(i), ships_player[i], ship_player_field);
-                        refresh_ship_player_gpaphics(win_ship, ship_player_field);
-                        tmp_otladchik(ship_player_field); 
-                    }
-                    // !!! КОСТЫЛЬ !!!
-                    */
-                    break;
-                    }
-        }
-    }
-}
+	                    	refresh_ship_player_array(ships_player, ship_player_field);
+	                    	refresh_ship_player_gpaphics(win_ship, ship_player_field);
+	                    	tmp_otladchik(ship_player_field);
+	                    }
+	                    break;
+        		}
+    	}
+	}
     wbkgdset(win_arrange, COLOR_PAIR(66));
     wclear(win_arrange);
 	wrefresh(win_arrange);

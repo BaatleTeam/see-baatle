@@ -11,9 +11,6 @@ void changeActiveShip_RightKey(int *x, int *y);
 void changeActiveShip_UpKey(int*, int*);
 void changeActiveShip_DownKey(int *x, int *y);
 
-void draw_leftkey(WINDOW*, int, int);
-void draw_rightkey(WINDOW *WIN, int y, int x);
-
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
 void DrawErrorMessage(WINDOW*);
 void DrawStandingShips(WINDOW* WIN, ship* ship);

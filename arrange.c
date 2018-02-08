@@ -98,31 +98,6 @@ void changeActiveShip_DownKey(int *x, int *y){
     *x = 13;
 }
 
-
-void draw_leftkey(WINDOW *WIN, int y, int x){
-    int rect = 219;
-    int step = convert_size(y);
-    for(int i = 0; i < step-1; i++, x++){
-        wattron(WIN, COLOR_PAIR(100));
-        mvwprintw(WIN,y,x, "%c", rect);
-        wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,y,x+step, "%c", rect);
-    }
-    wrefresh(WIN);
-}
-
-void draw_rightkey(WINDOW *WIN, int y, int x){
-    int rect = 219;
-    int step = convert_size(y);
-    for(int i = 0; i < step-1; i++, x++){
-        wattron(WIN, COLOR_PAIR(100));
-        mvwprintw(WIN,y,x, "%c", rect);
-        wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,y,x-step, "%c", rect);
-    }
-    wrefresh(WIN);
-}
-
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_ships){
     int number_4 = 0;
     int number_3 = 0;
