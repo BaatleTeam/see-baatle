@@ -335,18 +335,32 @@ void changeShipCoordinates(ship* TmpShip, struct Board Board, const int key){
         case KEY_LEFT:
             if (checkBorderLeft(TmpShip, Board))
                 TmpShip->x -= 1;
+            else 
+                if (TmpShip->type == FALSE) 
+                    TmpShip->x = Board.Width - TmpShip->size;
+                else 
+                    TmpShip->x = Board.Width-1;
             break;
         case KEY_RIGHT:
             if (checkBorderRight(TmpShip, Board))
                 TmpShip->x += 1;
+            else
+                TmpShip->x = 0;
             break;
         case KEY_UP:
             if (checkBorderTop(TmpShip, Board))
                 TmpShip->y -= 1;
+            else
+                if (TmpShip->type == TRUE)
+                    TmpShip->y = Board.Height - TmpShip->size;
+                else
+                    TmpShip->y = Board.Height-1;
             break;
         case KEY_DOWN:
             if (checkBorderBot(TmpShip, Board))
                 TmpShip->y += 1;
+            else
+                TmpShip->y = 0;;
             break;
     }
 }

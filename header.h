@@ -7,7 +7,7 @@
 
 #include "table.h"
 #include "ships.h"
-void tmp_otladchik(bool field[10][15]);
+
 void tmp_otladchik_tmp_ship(ship* TmpShip);
 void standing_ship(int act_y, ship* ship, struct Board Board);
 

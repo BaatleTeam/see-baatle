@@ -17,17 +17,15 @@ int main(){
 	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
     int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
     int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
-
-    // Основным окном считается окно расстановки кораблей ship,
-    // Поэтому размеры окна arrange соответсвуют окну ship. 
+ 
     // Новые зависимости от размера отступов.
     height_win_ship = 23;
 	width_win_ship = 33; 
 	start_y_ship = TopIndent;
 	start_x_ship = LeftIndent;
 
-    height_win_arrange = height_win_ship;
-    width_win_arrange = 38;
+    height_win_arrange = 21; // min
+    width_win_arrange = 38; // min
     start_y_arrange = TopIndent;
     start_x_arrange = LeftIndent + width_win_ship + BetweenIndent;
 
@@ -159,7 +157,6 @@ int main(){
 	                    changeShipCoordinates(TmpShip, Board, key);
 	                    refresh_ship_player_gpaphics(win_ship, Board);
 	                    DrawTmpShip(win_ship, TmpShip, Board);
-	                    // tmp_otladchik(ship_player_field);
 	                    showDebugFieid(Board);
 	                    tmp_otladchik_tmp_ship(TmpShip);
 	                break;            
@@ -191,7 +188,6 @@ int main(){
 	                    }
                         refresh_ship_player_gpaphics(win_ship, Board);
                         DrawTmpShip(win_ship, TmpShip, Board);
-                        // tmp_otladchik(ship_player_field);
 	                    break;
 	                case SHIP:
 	                    index = convert_ship_index(active_y, active_x);
@@ -205,7 +201,6 @@ int main(){
 
 	                    	refresh_ship_player_array(ships_player, Board);
 	                    	refresh_ship_player_gpaphics(win_ship, Board);
-	                    	// tmp_otladchik(ship_player_field);
 	                    }
 	                    break;
         		}
@@ -468,18 +463,6 @@ void showDebugFieid(struct Board Board){
     for (int i = 0; i < Board.Width; i++){
         for (int j = 0; j < Board.Height; j++)
             printw("%d ", Board.field[i][j]);
-        printw("\n");
-    }
-    refresh();
-}
-
-
-
-void tmp_otladchik(bool field[10][15]){
-    move(29,0);
-    for (int i = 0; i < 10; i++){
-        for (int j = 0; j < 15; j++)
-            printw("%d ", field[i][j]);
         printw("\n");
     }
     refresh();
