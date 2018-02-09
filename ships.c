@@ -15,8 +15,8 @@ void deleteShipFromField(ship* ship, struct Board Board){
 
 void refresh_ship_player_gpaphics(WINDOW *WIN, struct Board Board){
     int rect = 254;
-    for (int i = 0; i < Board.Width; i++)
-        for (int j = 0; j < Board.Height; j++){
+    for (int i = 0; i < Board.Height; i++)
+        for (int j = 0; j < Board.Width; j++){
             if (Board.field[i][j] == TRUE){
                 wattron(WIN, COLOR_PAIR(10));
                 mvwprintw(WIN,i*2+3,j*2+3, "%c", rect);
@@ -287,7 +287,7 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, struct Board Board){
     int j = TmpShip->x;
     switch(TmpShip->type){
         case TRUE:
-            for(; i < TmpShip->size + TmpShip->y; i++){
+            for (; i < TmpShip->size + TmpShip->y; i++){
                 mvwprintw(WIN,i*2+3,j*2+3, "%c", rect);
             }
             break;
@@ -436,7 +436,7 @@ void changeTypeOfShip(ship* ship, struct Board Board){
             ship->type = TRUE;
             break;
         case TRUE:
-            if (ship->x + ship->size > Board.Height)
+            if (ship->x + ship->size > Board.Width)
                 ship->x = Board.Width - ship->size;
             ship->type = FALSE;
             break;

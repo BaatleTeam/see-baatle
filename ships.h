@@ -2,8 +2,8 @@
 #include <curses.h>
 
 struct Board {
-	int Width;
 	int Height;
+	int Width;
 	bool** field;
 };
 
