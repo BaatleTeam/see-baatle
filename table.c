@@ -1,9 +1,8 @@
 #include "table.h"
 
 void DrawTableWindow(WINDOW *WIN, int width, int height){
-    wattron(WIN,COLOR_PAIR(2));
-    str_top(WIN, width);
     wattron(WIN,COLOR_PAIR(3));
+    str_top(WIN, width);
     for (int i = 2; i < height-1; i+=2){
         str_line(WIN, width, i);
         str_numb(WIN, width, i+1);

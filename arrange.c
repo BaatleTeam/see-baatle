@@ -123,7 +123,6 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_shi
     mvwprintw(WIN, 9 , 25, "%d / 4", number_2);
     mvwprintw(WIN, 11 , 25, "%d / 6", number_1);
     *number_stand_ships = number_1 + number_2 + number_3 + number_4;
-    //*number_stand_ships = 15;
     mvwprintw(WIN, 13 , 6, "You have %d ships standing", *number_stand_ships);
     if (*number_stand_ships == 15){
         wattron(WIN, COLOR_PAIR(100));
