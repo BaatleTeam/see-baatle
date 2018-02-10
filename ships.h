@@ -16,7 +16,16 @@ typedef struct ship_player
     bool stand;
 } ship;
 
-extern int convert_size(int);
+struct ShipsInfo {
+	int Number_4_Size;
+	int Number_3_Size;
+	int Number_2_Size;
+	int Number_1_Size;
+	ship* Ships;
+};
+
+
+extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);
 void refresh_ship_player_gpaphics(WINDOW *WIN, struct Board Board);
 

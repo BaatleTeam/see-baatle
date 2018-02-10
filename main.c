@@ -1,8 +1,6 @@
 #include "header.h"
 #include "table.h"
 
-void showDebugFieid(struct Board Board);
-
 int main(){	
     srand(time(NULL));
     // Отступы между окнами и краями главного окна.
@@ -42,8 +40,8 @@ int main(){
     WINDOW *win_arrange;
     WINDOW *win_shoot;
 
-    bool ship_player_field[10][15]; // Массив-доска с кораблями игрока.	
-    bool ship_comp_field[10][15];
+    bool ship_player_field[10][15]; // Массив-доска с кораблями игрока, нужно убрать. Взамен Board.
+    bool ship_comp_field[10][15]; // -||- 
     int shoot_player_field[10][15];
     int shoot_comp_field[10][15];
 
@@ -52,6 +50,15 @@ int main(){
 	int ch; // ??
     int key;
     int kr = 197; // ??
+
+    struct ShipsInfo ShipsPlayer = {3, 4, 5, 8, NULL};
+    ShipsPlayer.Ships = malloc((3+4+5+6) * sizeof(ship));
+    for (int i = 0; i < 3+4+5+6; i++){
+    	ShipsPlayer.Ships[i].x = 0;
+    	ShipsPlayer.Ships[i].y = 0;
+    	ShipsPlayer.Ships[i].type = FALSE;
+    	ShipsPlayer.Ships[i].stand = FALSE;
+    }
     
     ship ships_player[15]; // Инициализация кораблей для игрока.
     for (int i = 0; i < 15; i++){
@@ -87,7 +94,7 @@ int main(){
 
 	savetty();
     // resize_term(heightOfMainWindow, widthOfMainWindow);
-    resize_term(40,90); // Beta
+    resize_term(45,90); // Beta
     clear();
     refresh();
 
@@ -111,28 +118,30 @@ int main(){
     // ------------------------->
 
     // DrawTableWindow(win_ship, width_win_ship, height_win_ship);
-    struct Board Board = {10, 10, NULL};
-    Board.field = malloc(Board.Width * sizeof(bool*));
-    for (int i = 0; i < Board.Width; i++)
-    	Board.field[i] = calloc(Board.Height, sizeof(bool));
+    struct Board Board = { 10, 15, NULL };
+    Board.field = malloc(Board.Height * sizeof(bool*));
+    for (int i = 0; i < Board.Height; i++)
+    	Board.field[i] = calloc(Board.Width, sizeof(bool));
     showDebugFieid(Board);
     refresh();
 
     DrawTableWindow(win_ship, 3+Board.Width*2, 3+Board.Height*2);
-    DrawDefaltArrangeWindow(win_arrange);
-    DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
+    DrawDefaltArrangeWindow(win_arrange, ShipsPlayer);
+    // DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
 
     // Координаты перемещения курсора в win_arrange для выбора корабля.
-    int active_x = 13;
-    int active_y = 5;
+    int active_x = 0;
+    int currLine = 5;
+    int currShip = 0;
     ch = 219;
     int n  = 79; // ??
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
 
-    int index = convert_ship_index(active_y, active_x);
-    DrawActiveShip(win_arrange, active_y, active_x);
+    // int index = convert_ship_index(currLine, active_x);
+    int index;
+    DrawActiveShip(win_arrange, currLine, currShip);
     wrefresh(win_arrange);
 
     enum actWind {ARRANGE = 1, SHIP = 2};
@@ -149,9 +158,9 @@ int main(){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
-	                	changeActiveShip(&active_x, &active_y, key);
-	                    DrawStandingShips(win_arrange, ships_player);
-	                    DrawActiveShip(win_arrange, active_y, active_x);
+						changeActiveShip(ShipsPlayer, &currShip, &currLine, key);
+						DrawStandingShips(win_arrange, ShipsPlayer);
+						DrawActiveShip(win_arrange, currLine, currShip);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, Board, key);
@@ -168,6 +177,7 @@ int main(){
 	                    changeTypeOfShip(TmpShip, Board);
 	                    refresh_ship_player_gpaphics(win_ship, Board);	
 	                    DrawTmpShip(win_ship, TmpShip, Board);
+	                    tmp_otladchik_tmp_ship(TmpShip);
 	                    break;
 	                case ARRANGE:
 	                	break;
@@ -178,29 +188,30 @@ int main(){
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
-	                    index = convert_ship_index(active_y, active_x);
+	                    index = getIndex(currLine, currShip, ShipsPlayer);
                     	clearTmpShip(TmpShip);
-	                    if (ships_player[index].stand == FALSE)
-	                        InitPrimaryCoordinates(active_y, TmpShip, Board);
+	                    if (ShipsPlayer.Ships[index].stand == FALSE)
+	                        InitPrimaryCoordinates(currLine, TmpShip, Board);
 	                    else {
-	                    	deleteShipFromField(&ships_player[index], Board);
-	                    	makeShipTmp(&ships_player[index], TmpShip);
+	                    	deleteShipFromField(&ShipsPlayer.Ships[index], Board);
+	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
 	                    }
                         refresh_ship_player_gpaphics(win_ship, Board);
                         DrawTmpShip(win_ship, TmpShip, Board);
 	                    break;
 	                case SHIP:
-	                    index = convert_ship_index(active_y, active_x);
+	                    index = getIndex(currLine, currShip, ShipsPlayer);
 	                    if (checkShipBorders(TmpShip, Board) == FALSE)
 	                        DrawErrorMessage(win_arrange);
 	                    else {
 	                    	active_window = ARRANGE;
-	                    	addShip(&ships_player[index], TmpShip);
-	                    	DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
-	                    	DrawStandingShips(win_arrange, ships_player);
+	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
+	                    	DrawNewNumberOfStandingShips(win_arrange, ShipsPlayer.Ships, &number_stand_ships);
+	                    	DrawStandingShips(win_arrange, ShipsPlayer);
 
-	                    	refresh_ship_player_array(ships_player, Board);
+	                    	refresh_ship_player_array(ShipsPlayer, Board);
 	                    	refresh_ship_player_gpaphics(win_ship, Board);
+	                    	// tmp_otladchik_tmp_ship(TmpShip);
 	                    }
 	                    break;
         		}
@@ -460,8 +471,8 @@ void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x)
 
 void showDebugFieid(struct Board Board){
 	move(29,0);
-    for (int i = 0; i < Board.Width; i++){
-        for (int j = 0; j < Board.Height; j++)
+    for (int i = 0; i < Board.Height; i++){
+        for (int j = 0; j < Board.Width; j++)
             printw("%d ", Board.field[i][j]);
         printw("\n");
     }
@@ -473,25 +484,24 @@ void tmp_otladchik_tmp_ship(ship* TmpShip){
 	printw("X: %d, Y: %d, type: %d, stand: %d, size: %d", TmpShip->x, TmpShip->y, TmpShip->type, TmpShip->stand, TmpShip->size);
 }
 
-void refresh_ship_player_array(ship* ship, struct Board Board){
+void refresh_ship_player_array(struct ShipsInfo Ships, struct Board Board){
     // !!! КОСТЫЛЬ !!!
-    for (int i = 0; i < 15; i++){
-        if (ship[i].stand == TRUE)
-            standing_ship(convert_index_to_active_y(i), &ship[i], Board);
-        showDebugFieid(Board);
+    for (int i = 0; i < Ships.Number_4_Size+Ships.Number_3_Size+Ships.Number_2_Size+Ships.Number_1_Size; i++){
+        if (Ships.Ships[i].stand == TRUE)
+            standing_ship(&Ships.Ships[i], Board);
     }
+        showDebugFieid(Board);
     // !!! КОСТЫЛЬ !!!
 }
 
-void standing_ship(int act_y, ship* ship, struct Board Board){
-    int size_of_ship = convert_size(act_y);
+void standing_ship(ship* ship, struct Board Board){
     switch (ship->type){
         case FALSE:
-            for (int i = 0; i < size_of_ship-1; i++)
+            for (int i = 0; i < ship->size; i++)
                 Board.field[ship->y][i+ship->x] = TRUE;
             break;
         case TRUE:
-            for (int i = 0; i < size_of_ship-1; i++)
+            for (int i = 0; i < ship->size; i++)
                 Board.field[i+ship->y][ship->x] = TRUE;
             break;
     }
