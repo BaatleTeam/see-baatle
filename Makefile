@@ -1,5 +1,5 @@
 SRC=Source/
-LIB=-lncurses -g
+LIB=-lpdcurses -g
 BLD=Build
 all: $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o
 	gcc $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o -o $(BLD)/sea_battle.exe $(LIB)
