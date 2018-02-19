@@ -1,3 +1,6 @@
+# ignore all files in the Build/ directory
+Build/
+
 # Object files
 *.o
 *.ko
