@@ -15,13 +15,14 @@ int main(){
 	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
     int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
     int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
- 
+
     // Новые зависимости от размера отступов.
-    height_win_ship = 23;
-	width_win_ship = 33; 
 	start_y_ship = TopIndent;
 	start_x_ship = LeftIndent;
 
+ 	// Размеры создаваемых окон.
+    height_win_ship = 23;
+	width_win_ship = 33; 
     height_win_arrange = 21; // min
     width_win_arrange = 38; // min
     start_y_arrange = TopIndent;
@@ -40,41 +41,48 @@ int main(){
     WINDOW *win_arrange;
     WINDOW *win_shoot;
 
-    bool ship_player_field[10][15]; // Массив-доска с кораблями игрока, нужно убрать. Взамен Board.
-    bool ship_comp_field[10][15]; // -||- 
-    int shoot_player_field[10][15];
-    int shoot_comp_field[10][15];
-
     int active_window = 1; // Номер активного окна.
     int number_stand_ships = 0; 
 	int ch; // ??
     int key;
     int kr = 197; // ??
 
-    struct ShipsInfo ShipsPlayer = {3, 4, 5, 8, NULL};
-    ShipsPlayer.Ships = malloc((3+4+5+6) * sizeof(ship));
-    for (int i = 0; i < 3+4+5+6; i++){
+    // Количество кораблей, в дальнеёшем будет регулироваться.
+    int N_4 = 2;
+    int N_3 = 3;
+    int N_2 = 4;
+    int N_1 = 5;
+
+    // Создание и инициализация данных о кораблях игрока и компьютера.
+    struct ShipsInfo ShipsPlayer   = { N_4, N_3, N_2, N_1, NULL };
+    struct ShipsInfo ShipsComputer = { N_4, N_3, N_2, N_1, NULL };
+    ShipsPlayer.Ships   = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
+    ShipsComputer.Ships = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
+    for (int i = 0; i < N_1+N_2+N_3+N_4; i++){
     	ShipsPlayer.Ships[i].x = 0;
     	ShipsPlayer.Ships[i].y = 0;
     	ShipsPlayer.Ships[i].type = FALSE;
     	ShipsPlayer.Ships[i].stand = FALSE;
-    }
-    
-    ship ships_player[15]; // Инициализация кораблей для игрока.
-    for (int i = 0; i < 15; i++){
-        ships_player[i].x = 0;
-        ships_player[i].y = 0;
-        ships_player[i].type = FALSE;
-        ships_player[i].stand = FALSE;
+    	ShipsComputer.Ships[i].x = 0;
+    	ShipsComputer.Ships[i].y = 0;
+    	ShipsComputer.Ships[i].type = FALSE;
+    	ShipsComputer.Ships[i].stand = FALSE;
     }
 
-    for (int i = 0; i < 10; i++) // Инициализация всех игровых полей начальными условиями.
-       for (int j = 0; j < 15; j++){
-           ship_player_field[i][j] = FALSE;
-           ship_comp_field[i][j] = FALSE;
-           shoot_player_field[i][j] = -1;
-           shoot_comp_field[i][j] = -1;
-       }
+    //Размеры игорового поля, в дальнейшем в будут регулироваться.
+    int board_width = 15;
+    int board_height = 10;
+
+ 	// Создание и инициализация данных игровых досок игрока и компьютера.
+    struct Board BoardPlayer   = { board_height, board_width, NULL };
+    struct Board BoardComputer = { board_height, board_width, NULL };
+    BoardPlayer.field   = malloc(BoardPlayer.Height * sizeof(bool*));
+    BoardComputer.field = malloc(BoardComputer.Height * sizeof(bool*));
+    for (int i = 0; i < BoardPlayer.Height; i++){
+    	BoardPlayer.field[i]   = calloc(BoardPlayer.Width, sizeof(bool));
+    	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
+    }
+    showDebugFieid(BoardPlayer);
 
 	initscr();
 	cbreak();
@@ -82,15 +90,15 @@ int main(){
     curs_set(FALSE);
 	keypad(stdscr, TRUE);
     start_color();
-    init_pair(1, COLOR_RED, COLOR_BLUE);
-    init_pair (2, COLOR_BLUE, COLOR_YELLOW);
-    init_pair (3, COLOR_BLUE, COLOR_GREEN);
-    init_pair (10, COLOR_RED, COLOR_WHITE);
-    init_pair (100, COLOR_RED, COLOR_YELLOW);
-    init_pair (66, COLOR_BLACK, COLOR_BLACK);
-    init_pair (50, COLOR_RED, COLOR_BLACK);
-    init_pair (200, COLOR_RED, COLOR_GREEN);
-    init_pair (55, COLOR_GREEN, COLOR_YELLOW);
+    init_pair (2, COLOR_BLUE+8, COLOR_YELLOW+8); // Для окна aarange.
+    init_pair (55, COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
+    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship.
+    init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
+    init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
+    init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
+    init_pair(1, COLOR_RED + 8, COLOR_BLUE+8); // ??
+    init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
+    init_pair (200, COLOR_RED+8, COLOR_GREEN+8); // ??
 
 	savetty();
     // resize_term(heightOfMainWindow, widthOfMainWindow);
@@ -118,16 +126,10 @@ int main(){
     // ------------------------->
 
     // DrawTableWindow(win_ship, width_win_ship, height_win_ship);
-    struct Board Board = { 10, 15, NULL };
-    Board.field = malloc(Board.Height * sizeof(bool*));
-    for (int i = 0; i < Board.Height; i++)
-    	Board.field[i] = calloc(Board.Width, sizeof(bool));
-    showDebugFieid(Board);
     refresh();
 
-    DrawTableWindow(win_ship, 3+Board.Width*2, 3+Board.Height*2);
+    DrawTableWindow(win_ship, 3+BoardPlayer.Width*2, 3+BoardPlayer.Height*2);
     DrawDefaltArrangeWindow(win_arrange, ShipsPlayer);
-    // DrawNewNumberOfStandingShips(win_arrange, ships_player, &number_stand_ships);
 
     // Координаты перемещения курсора в win_arrange для выбора корабля.
     int active_x = 0;
@@ -148,6 +150,7 @@ int main(){
 
 
     while((key = getch()) != KEY_F(2)){
+    	wattron(win_arrange, COLOR_PAIR(2));
         for (int  i = 1; i < width_win_arrange-1; i++)
             mvwprintw(win_arrange, 15, i, " ");
         wrefresh(win_arrange);
@@ -163,10 +166,10 @@ int main(){
 						DrawActiveShip(win_arrange, currLine, currShip);
 	                    break;
 	                case SHIP:
-	                    changeShipCoordinates(TmpShip, Board, key);
-	                    refresh_ship_player_gpaphics(win_ship, Board);
-	                    DrawTmpShip(win_ship, TmpShip, Board);
-	                    showDebugFieid(Board);
+	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
+	                    refresh_ship_player_gpaphics(win_ship, BoardPlayer);
+	                    DrawTmpShip(win_ship, TmpShip, BoardPlayer);
+	                    showDebugFieid(BoardPlayer);
 	                    tmp_otladchik_tmp_ship(TmpShip);
 	                break;            
 	            }
@@ -174,9 +177,9 @@ int main(){
 	        case 9: {
 	            switch(active_window){
 	                case SHIP:
-	                    changeTypeOfShip(TmpShip, Board);
-	                    refresh_ship_player_gpaphics(win_ship, Board);	
-	                    DrawTmpShip(win_ship, TmpShip, Board);
+	                    changeTypeOfShip(TmpShip, BoardPlayer);
+	                    refresh_ship_player_gpaphics(win_ship, BoardPlayer);	
+	                    DrawTmpShip(win_ship, TmpShip, BoardPlayer);
 	                    tmp_otladchik_tmp_ship(TmpShip);
 	                    break;
 	                case ARRANGE:
@@ -191,17 +194,17 @@ int main(){
 	                    index = getIndex(currLine, currShip, ShipsPlayer);
                     	clearTmpShip(TmpShip);
 	                    if (ShipsPlayer.Ships[index].stand == FALSE)
-	                        InitPrimaryCoordinates(currLine, TmpShip, Board);
+	                        InitPrimaryCoordinates(currLine, TmpShip, BoardPlayer);
 	                    else {
-	                    	deleteShipFromField(&ShipsPlayer.Ships[index], Board);
+	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
 	                    }
-                        refresh_ship_player_gpaphics(win_ship, Board);
-                        DrawTmpShip(win_ship, TmpShip, Board);
+                        refresh_ship_player_gpaphics(win_ship, BoardPlayer);
+                        DrawTmpShip(win_ship, TmpShip, BoardPlayer);
 	                    break;
 	                case SHIP:
 	                    index = getIndex(currLine, currShip, ShipsPlayer);
-	                    if (checkShipBorders(TmpShip, Board) == FALSE)
+	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
 	                        DrawErrorMessage(win_arrange);
 	                    else {
 	                    	active_window = ARRANGE;
@@ -209,8 +212,8 @@ int main(){
 	                    	DrawNewNumberOfStandingShips(win_arrange, ShipsPlayer.Ships, &number_stand_ships);
 	                    	DrawStandingShips(win_arrange, ShipsPlayer);
 
-	                    	refresh_ship_player_array(ShipsPlayer, Board);
-	                    	refresh_ship_player_gpaphics(win_ship, Board);
+	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
+	                    	refresh_ship_player_gpaphics(win_ship, BoardPlayer);
 	                    	// tmp_otladchik_tmp_ship(TmpShip);
 	                    }
 	                    break;
@@ -234,8 +237,8 @@ int main(){
     str_bottom(win_shoot, width_win_shoot, height_win_shoot);
     wrefresh(win_shoot);
 
-    choosing_comp_strategy(ship_comp_field);
-    podchet_ships(ship_player_field, ship_comp_field);
+    // choosing_comp_strategy(ship_comp_field);
+    // podchet_ships(ship_player_field, ship_comp_field);
     
     mvprintw(7, 76, "X - hit");
     mvprintw(9, 76, "O - miss");
@@ -268,141 +271,141 @@ int main(){
     refresh();
     wattron(win_ship, COLOR_PAIR(200));
 
-    refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-    while((key = getch()) != KEY_F(1)){
-        switch(key){	
-            case KEY_LEFT:
-                if (check_border_left_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){ 
-                    change_x_leftkey(&x_shoot);
-                    refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                }/*
-                else {
-                    int var_x = x_shoot - 1;
-                    for (var_x; var_x > 0; var_x++){
-                        if (check_border_left_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
-                            x_shoot = var_x;
-                            change_x_leftkey(&x_shoot);
-                            refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                            continue;
-                        } 
-                    break;
-                    }
-                }*/
-                break;
-            case KEY_RIGHT:
-                if (check_border_right_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-                    change_x_rightkey(&x_shoot);
-                    refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                }/*
-                else {
-                    int var_x = x_shoot + 1;
-                    for (var_x; var_x < 15; var_x--){
-                        if (check_border_right_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
-                            x_shoot = var_x;
-                            change_x_rightkey(&x_shoot);
-                            refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                            break;
-                        } 
-                    break;
-                    }
-                }*/
-                break;
-            case KEY_UP:
-                if (check_border_top_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-                    change_y_topkey(&y_shoot);
-                    refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                }/*
-                else {
-                    int var_y = y_shoot - 1;
-                    for (var_y; var_y > 0; var_y--){
-                        if (check_border_top_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
-                            y_shoot = var_y;
-                            change_y_topkey(&y_shoot);
-                            refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                            break;
-                        } 
-                    break;
-                    }
-                }*/
-                break;
-            case KEY_DOWN:
-                if (check_border_bot_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-                    change_y_botkey(&y_shoot);
-                    refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                }/*
-                else {
-                    int var_y = y_shoot + 1;
-                    for (var_y; var_y < 10; var_y++){
-                        if (check_border_bot_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
-                            y_shoot = var_y;
-                            change_y_botkey(&y_shoot);
-                            refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                            break;
-                        } 
-                    break;
-                    }
-                }*/
-                break;
-            case '\n':
-                if (ship_comp_field[y_shoot][x_shoot] == TRUE){
-                    ship_comp_field[y_shoot][x_shoot] = FALSE;
-                    shoot_player_field[y_shoot][x_shoot] = 1;
-                    if (
-                        ship_comp_field[y_shoot-1][x_shoot-1] == FALSE &&
-                        ship_comp_field[y_shoot-1][x_shoot] == FALSE &&
-                        ship_comp_field[y_shoot-1][x_shoot+1] == FALSE &&
-                        ship_comp_field[y_shoot][x_shoot-1] == FALSE &&
-                        ship_comp_field[y_shoot][x_shoot+1] == FALSE &&
-                        ship_comp_field[y_shoot+1][x_shoot-1] == FALSE &&
-                        ship_comp_field[y_shoot+1][x_shoot] == FALSE &&
-                        ship_comp_field[y_shoot+1][x_shoot+1] == FALSE
-                        ){
-                            shoot_player_field[y_shoot-1][x_shoot] = 0;
-                            shoot_player_field[y_shoot+1][x_shoot] = 0;
-                            shoot_player_field[y_shoot][x_shoot+1] = 0;
-                            shoot_player_field[y_shoot][x_shoot-1] = 0;
-                            shoot_player_field[y_shoot-1][x_shoot+1] = 0;
-                            shoot_player_field[y_shoot+1][x_shoot+1] = 0;
-                            shoot_player_field[y_shoot-1][x_shoot-1] = 0;
-                            shoot_player_field[y_shoot+1][x_shoot-1] = 0;
-                        }
-                }
-                else 
-                    shoot_player_field[y_shoot][x_shoot] = 0;
-                //x_shoot = ;
-                //y_shoot = ;
-                refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
-                podchet_ships(ship_player_field, ship_comp_field);
-                do {
-                    ran_y = rand() % 10;
-                    ran_x = rand() % 15;
-                }
-                while (shoot_comp_field[ran_y][ran_x] != -1);
-                if (ship_player_field[ran_y][ran_x] == TRUE){
-                    ship_player_field[ran_y][ran_x] = FALSE;
-                    shoot_comp_field[ran_y][ran_x] = 1;
-                    mvwprintw(win_ship, ran_y*2+3, ran_x*2+3, "%c", k);
-                }
-                else{
-                    shoot_comp_field[ran_y][ran_x] = 0;
-                    mvwprintw(win_ship, ran_y*2+3, ran_x*2+3, "%c", n);
-                }
-                wrefresh(win_ship);
-                podchet_ships(ship_player_field, ship_comp_field);
-                refresh_ship_player_gpaphics(win_ship, Board);
+    // refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    // while((key = getch()) != KEY_F(1)){
+    //     switch(key){	
+    //         case KEY_LEFT:
+    //             if (check_border_left_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){ 
+    //                 change_x_leftkey(&x_shoot);
+    //                 refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //             }/*
+    //             else {
+    //                 int var_x = x_shoot - 1;
+    //                 for (var_x; var_x > 0; var_x++){
+    //                     if (check_border_left_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
+    //                         x_shoot = var_x;
+    //                         change_x_leftkey(&x_shoot);
+    //                         refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //                         continue;
+    //                     } 
+    //                 break;
+    //                 }
+    //             }*/
+    //             break;
+    //         case KEY_RIGHT:
+    //             if (check_border_right_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
+    //                 change_x_rightkey(&x_shoot);
+    //                 refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //             }/*
+    //             else {
+    //                 int var_x = x_shoot + 1;
+    //                 for (var_x; var_x < 15; var_x--){
+    //                     if (check_border_right_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
+    //                         x_shoot = var_x;
+    //                         change_x_rightkey(&x_shoot);
+    //                         refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //                         break;
+    //                     } 
+    //                 break;
+    //                 }
+    //             }*/
+    //             break;
+    //         case KEY_UP:
+    //             if (check_border_top_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
+    //                 change_y_topkey(&y_shoot);
+    //                 refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //             }/*
+    //             else {
+    //                 int var_y = y_shoot - 1;
+    //                 for (var_y; var_y > 0; var_y--){
+    //                     if (check_border_top_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
+    //                         y_shoot = var_y;
+    //                         change_y_topkey(&y_shoot);
+    //                         refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //                         break;
+    //                     } 
+    //                 break;
+    //                 }
+    //             }*/
+    //             break;
+    //         case KEY_DOWN:
+    //             if (check_border_bot_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
+    //                 change_y_botkey(&y_shoot);
+    //                 refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //             }
+    //             else {
+    //                 int var_y = y_shoot + 1;
+    //                 for (var_y; var_y < 10; var_y++){
+    //                     if (check_border_bot_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
+    //                         y_shoot = var_y;
+    //                         change_y_botkey(&y_shoot);
+    //                         refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //                         break;
+    //                     } 
+    //                 break;
+    //                 }
+    //             }
+    //             break;
+    //         case '\n':
+    //             if (ship_comp_field[y_shoot][x_shoot] == TRUE){
+    //                 ship_comp_field[y_shoot][x_shoot] = FALSE;
+    //                 shoot_player_field[y_shoot][x_shoot] = 1;
+    //                 if (
+    //                     ship_comp_field[y_shoot-1][x_shoot-1] == FALSE &&
+    //                     ship_comp_field[y_shoot-1][x_shoot] == FALSE &&
+    //                     ship_comp_field[y_shoot-1][x_shoot+1] == FALSE &&
+    //                     ship_comp_field[y_shoot][x_shoot-1] == FALSE &&
+    //                     ship_comp_field[y_shoot][x_shoot+1] == FALSE &&
+    //                     ship_comp_field[y_shoot+1][x_shoot-1] == FALSE &&
+    //                     ship_comp_field[y_shoot+1][x_shoot] == FALSE &&
+    //                     ship_comp_field[y_shoot+1][x_shoot+1] == FALSE
+    //                     ){
+    //                         shoot_player_field[y_shoot-1][x_shoot] = 0;
+    //                         shoot_player_field[y_shoot+1][x_shoot] = 0;
+    //                         shoot_player_field[y_shoot][x_shoot+1] = 0;
+    //                         shoot_player_field[y_shoot][x_shoot-1] = 0;
+    //                         shoot_player_field[y_shoot-1][x_shoot+1] = 0;
+    //                         shoot_player_field[y_shoot+1][x_shoot+1] = 0;
+    //                         shoot_player_field[y_shoot-1][x_shoot-1] = 0;
+    //                         shoot_player_field[y_shoot+1][x_shoot-1] = 0;
+    //                     }
+    //             }
+    //             else 
+    //                 shoot_player_field[y_shoot][x_shoot] = 0;
+    //             //x_shoot = ;
+    //             //y_shoot = ;
+    //             refresh_shoot_player_gpaphics(win_shoot, shoot_player_field, y_shoot, x_shoot);
+    //             podchet_ships(ship_player_field, ship_comp_field);
+    //             do {
+    //                 ran_y = rand() % 10;
+    //                 ran_x = rand() % 15;
+    //             }
+    //             while (shoot_comp_field[ran_y][ran_x] != -1);
+    //             if (ship_player_field[ran_y][ran_x] == TRUE){
+    //                 ship_player_field[ran_y][ran_x] = FALSE;
+    //                 shoot_comp_field[ran_y][ran_x] = 1;
+    //                 mvwprintw(win_ship, ran_y*2+3, ran_x*2+3, "%c", k);
+    //             }
+    //             else{
+    //                 shoot_comp_field[ran_y][ran_x] = 0;
+    //                 mvwprintw(win_ship, ran_y*2+3, ran_x*2+3, "%c", n);
+    //             }
+    //             wrefresh(win_ship);
+    //             podchet_ships(ship_player_field, ship_comp_field);
+    //             refresh_ship_player_gpaphics(win_ship, Board);
     
-    /*
-    move(29,0);
-    for (int i = 0; i < 10; i++){
-        for (int j = 0; j < 15; j++)
-            printw("%d ", shoot_comp_field[i][j]);
-        printw("\n");
-    }
-    */
-    refresh();
-                break;
-        }
-    }
+    // /*
+    // move(29,0);
+    // for (int i = 0; i < 10; i++){
+    //     for (int j = 0; j < 15; j++)
+    //         printw("%d ", shoot_comp_field[i][j]);
+    //     printw("\n");
+    // }
+    // */
+    // refresh();
+    //             break;
+    //     }
+    // }
     resetty();
 	endwin();
 	return 0;
