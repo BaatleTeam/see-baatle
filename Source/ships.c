@@ -29,76 +29,27 @@ void refresh_ship_player_gpaphics(WINDOW *WIN, struct Board Board){
     wrefresh(WIN);
 }
 
-int convert_index_to_active_y(int index){
-    if (index == 0 || index == 1)
-        return 5;
-    if (index == 2 || index == 3 || index == 4 )
-        return 7;
-    if (index == 5 || index == 6 || index == 7 || index == 8)
-        return 9;
-    if (index == 9 || index == 10 || index == 11 || index == 12 || index == 13 || index == 14 )
-        return 11;
-}
-
-int convert_ship_index(int y, int x){
-    switch (y)
-    {
-    case 5:
-        if (x == 13)
-            return 0;
-        else 
-            return 1;
-        break;
-    case 7:
-        if (x == 13)
-            return 2;
-        if (x == 17)
-            return 3;
-        if (x == 21)
-            return 4;
-        break;
-    case 9:
-        if (x == 13)
-            return 5;
-        if (x == 16)
-            return 6;
-        if (x == 19)
-            return 7;
-        if (x == 22)
-            return 8;
-    case 11:
-        if (x == 13)
-            return 9;
-        if (x == 15)
-            return 10;
-        if (x == 17)
-            return 11;
-        if (x == 19)
-            return 12;
-        if (x == 21)
-            return 13;
-        if (x == 23)
-            return 14;
-    default:
-        break;
-    }
-}
-
 // -------------------------------------------------------------------------------
 
-bool checkShipBorders(ship* ship, struct Board Board){
+bool checkShipBorders(const ship* const ship, const struct Board Board){
+    move(30,32);
+    printw("checkShipBorders in: x = %d, y = %d ", ship->x, ship->y);
     switch (ship->type){
         case FALSE: {
                 if (checkShipBorders_top_bottom_horizontal(ship, Board) == FALSE ||
                     checkShipBorders_left_right_horizontal(ship, Board) == FALSE ||
                     checkItself(ship, Board) == FALSE){
-                    move(0,0);
-                    printw("H:Top-Bottom: %d, Rigth-Left: %d, Itself: %d", checkShipBorders_top_bottom_horizontal(ship, Board), checkShipBorders_left_right_horizontal(ship, Board), checkItself(ship, Board));
+                    // move(31,32);
+                    // printw("checkShipBorders after (h, if): x = %d, y = %d ", ship->x, ship->y); 
+                    // move(0,0);
+                    // printw("H:Top-Bottom: %d, Rigth-Left: %d, Itself: %d", checkShipBorders_top_bottom_horizontal(ship, Board), checkShipBorders_left_right_horizontal(ship, Board), checkItself(ship, Board));
                     return FALSE;
                 }
-                else { 
-                    move(0,0);
-                    printw("                                          ");
+                else {
+                    // move(31,32);
+                    // printw("checkShipBorders after (h, else): x = %d, y = %d ", ship->x, ship->y); 
+                    // move(0,0);
+                    // printw("                                          ");
                     return TRUE;
                 }
         }
@@ -106,20 +57,24 @@ bool checkShipBorders(ship* ship, struct Board Board){
                 if (checkShipBorders_top_bottom_vertical(ship, Board) == FALSE ||
                     checkShipBorders_left_right_vertical(ship, Board) == FALSE ||
                     checkItself(ship, Board) == FALSE){
-                    move(0,0);
-                    printw("V:Top-Bottom: %d, Rigth-Left: %d, Itself: %d", checkShipBorders_top_bottom_vertical(ship, Board), checkShipBorders_left_right_vertical(ship, Board), checkItself(ship, Board));
+                    // move(31,32);
+                    // printw("checkShipBorders after (v, if): x = %d, y = %d ", ship->x, ship->y); 
+                    // move(0,0);
+                    // printw("V:Top-Bottom: %d, Rigth-Left: %d, Itself: %d", checkShipBorders_top_bottom_vertical(ship, Board), checkShipBorders_left_right_vertical(ship, Board), checkItself(ship, Board));
                     return FALSE;
                     }  
                 else { 
-                    move(0,0);
-                    printw("                                          ");
+                    // move(31,32);
+                    // printw("checkShipBorders after (v, else): x = %d, y = %d ", ship->x, ship->y);
+                    // move(0,0);
+                    // printw("                                          ");
                     return TRUE;
                 }
         }
-    }     
+    }    
 }
 
-bool checkShipBorders_top_bottom_horizontal(ship* ship, struct Board Board){
+bool checkShipBorders_top_bottom_horizontal(const ship* const ship, const struct Board Board){
     if (ship->y == 0){ 
         for (int i = 0; i < ship->size; i++)
             if (Board.field[ship->y+1][ship->x+i] == TRUE)
@@ -142,7 +97,7 @@ bool checkShipBorders_top_bottom_horizontal(ship* ship, struct Board Board){
     }
 }
 
-bool checkShipBorders_left_right_horizontal(ship* ship, struct Board Board){
+bool checkShipBorders_left_right_horizontal(const ship* const ship, const struct Board Board){
     if (ship->x + ship->size == Board.Width-1){
         if (ship->y == 0)
             if (Board.field[0][ship->x-1] == TRUE || Board.field[1][ship->x-1] == TRUE)
@@ -190,14 +145,14 @@ bool checkShipBorders_left_right_horizontal(ship* ship, struct Board Board){
         return TRUE;
 }
 
-bool checkShipBorders_left_right_vertical(ship* ship, struct Board Board){
+bool checkShipBorders_left_right_vertical(const ship* const ship, const struct Board Board){
     if (ship->x == 0){ 
         for (int i = 0; i < ship->size; i++)
             if (Board.field[ship->y+i][ship->x+1] == TRUE)
                 return FALSE;
         return TRUE;
     } else
-    if (ship->x = Board.Width-1) {
+    if (ship->x == Board.Width-1) {
         for (int i = 0; i < ship->size; i++)
             if (Board.field[ship->y+i][ship->x-1] == TRUE)
                 return FALSE;
@@ -212,7 +167,7 @@ bool checkShipBorders_left_right_vertical(ship* ship, struct Board Board){
         return TRUE;
         }
 }
-bool checkShipBorders_top_bottom_vertical(ship* ship, struct Board Board){
+bool checkShipBorders_top_bottom_vertical(const ship* const ship, const struct Board Board){
     if (ship->y + ship->size == Board.Height){
         if (ship->x == 0)
             if (Board.field[ship->y-1][ship->x] == TRUE || Board.field[ship->y-1][ship->x+1] == TRUE)
@@ -243,7 +198,7 @@ bool checkShipBorders_top_bottom_vertical(ship* ship, struct Board Board){
     return TRUE;
 }
 
-bool checkItself(ship* ship, struct Board Board){
+bool checkItself(const ship* const ship, const struct Board Board){
     switch(ship->type){
         case FALSE:
             for (int i = 0; i < ship->size; i++)
@@ -427,11 +382,15 @@ void changeTypeOfShip(ship* ship, struct Board Board){
             if (ship->y + ship->size > Board.Height)
                 ship->y = Board.Height - ship->size;
             ship->type = TRUE;
+            move(1,0);
+            printw("Change in vertical, new x: %d, new y: %d\n", ship->x, ship->y);
             break;
         case TRUE:
             if (ship->x + ship->size > Board.Width)
                 ship->x = Board.Width - ship->size;
             ship->type = FALSE;
+            move(1,0);
+            printw("Change in horizontal, new x: %d, new y: %d\n", ship->x, ship->y);
             break;
     }
 }

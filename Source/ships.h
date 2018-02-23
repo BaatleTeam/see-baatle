@@ -29,15 +29,12 @@ extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);
 void refresh_ship_player_gpaphics(WINDOW *WIN, struct Board Board);
 
-int convert_ship_index(int, int);
-int convert_index_to_active_y(int index);
-
-bool checkShipBorders(ship* ship, struct Board Board);
-bool checkShipBorders_top_bottom_horizontal(ship* ship, struct Board Board);
-bool checkShipBorders_left_right_horizontal(ship* ship, struct Board Board);
-bool checkShipBorders_left_right_vertical(ship* ship, struct Board Board);
-bool checkShipBorders_top_bottom_vertical(ship* ship, struct Board Board);
-bool checkItself(ship* ship, struct Board Board);
+bool checkShipBorders(const ship* const ship, const struct Board Board);
+bool checkShipBorders_top_bottom_horizontal(const ship* const ship, const struct Board Board);
+bool checkShipBorders_left_right_horizontal(const ship* const ship, const struct Board Board);
+bool checkShipBorders_left_right_vertical(const ship* const ship, const struct Board Board);
+bool checkShipBorders_top_bottom_vertical(const ship* const ship, const struct Board Board);
+bool checkItself(const ship* const ship, const struct Board Board);
 
 // Установка начальных коориданат при первой постановке
 int InitPrimaryCoordinates(int curr_y, ship* ship, struct Board); 
