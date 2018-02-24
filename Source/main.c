@@ -1,6 +1,18 @@
 #include "header.h"
 #include "table.h"
 
+void drawSeeBattle(WINDOW* win_hello, int smbl);
+void drawSeeBattle_S(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawSeeBattle_E(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawSeeBattle_B(WINDOW*, int smbl, int  word_width, int begin_y, int begin_x, int color);
+void drawSeeBattle_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawSeeBattle_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawSeeBattle_L(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+
+void DrawHelloWindow(WINDOW* win_hello, int h, int w);
+void testAnimation(WINDOW* win_hello);
+
+
 int main(){	
     srand(time(NULL));
     // Отступы между окнами и краями главного окна.
@@ -96,34 +108,90 @@ int main(){
     init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
     init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
     init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
-    init_pair(1, COLOR_RED + 8, COLOR_BLUE+8); // ??
+    init_pair(1, COLOR_RED + 8, COLOR_BLUE); // ??
     init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
-    init_pair (200, COLOR_RED+8, COLOR_GREEN+8); // ??
+    init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
 
 	savetty();
     // resize_term(heightOfMainWindow, widthOfMainWindow);
-    resize_term(45,90); // Beta
+    resize_term(40,90); // Beta
     clear();
     refresh();
+
+    WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
+    wbkgdset(win_menu, COLOR_PAIR(200));
+    wclear(win_menu);
+    // wattron(win_menu, COLOR_PAIR(2));
+    for (int i = 0; i < LINES; i++)
+    	mvwprintw(win_menu, i, 0, "%d", i);
+    for (int i = 0; i < COLS; i++){
+    	mvwprintw(win_menu, 0, i, "%d", i / 10);
+    	mvwprintw(win_menu, 1, i, "%d", i % 10);
+    }
+    wrefresh(win_menu);
+
+    WINDOW* win_hello = newwin(9, 61, 2, 14);
+    DrawHelloWindow(win_hello, 9, 61);
+
+    WINDOW *win_case1, *win_case2, *win_case3, *win_case4;
+    win_case1 = newwin(11, 35, 14, 7);
+	win_case2 = newwin(11, 35, 14, 47);
+	win_case3 = newwin(11, 35, 27, 7);
+	win_case4 = newwin(11, 35, 27, 47);
+
+    wbkgdset(win_case1, COLOR_PAIR(2));
+    wclear(win_case1);
+    box(win_case1, 0, 0);
+    wrefresh(win_case1);
+    napms(300);
+
+    wbkgdset(win_case2, COLOR_PAIR(2));
+    wclear(win_case2);
+    box(win_case2, 0, 0);
+    wrefresh(win_case2);
+  	napms(300);
+
+  	wbkgdset(win_case3, COLOR_PAIR(2));
+    wclear(win_case3);
+    box(win_case3, 0, 0);
+    wrefresh(win_case3);
+    napms(300);
+
+    wbkgdset(win_case4, COLOR_PAIR(2));
+    wclear(win_case4);
+    box(win_case4, 0, 0);
+    wrefresh(win_case4);
+  	napms(300);  
+
+
+
+
+    while((key = getch()) != '\n') ;
+    wbkgdset(win_hello, COLOR_PAIR(200));
+    wclear(win_hello);
+    wrefresh(win_hello);
+    delwin(win_hello);
+
+
 
 	win_ship = newwin(height_win_ship, width_win_ship, start_y_ship, start_x_ship);
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
     win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
 
-    // ------------------------->
+    // // ------------------------->
 
-    ch = 219;
-    attron(COLOR_PAIR(2));
-    for (int i = 0; i < widthOfMainWindow; i++){
-    	mvprintw(0, i, "%c", ch);
-    	mvprintw(heightOfMainWindow-1, i, "%c", ch);
-    }
-   	for (int i = 0; i < heightOfMainWindow; i++){
-    	mvprintw(i, 0, "%c", ch);
-    	// mvprintw(i, widthOfMainWindow, "%c", ch);
-   	}
+    // ch = 219;
+    // attron(COLOR_PAIR(2));
+    // for (int i = 0; i < widthOfMainWindow; i++){
+    // 	mvprintw(0, i, "%c", ch);
+    // 	mvprintw(heightOfMainWindow-1, i, "%c", ch);
+    // }
+   	// for (int i = 0; i < heightOfMainWindow; i++){
+    // 	mvprintw(i, 0, "%c", ch);
+    // 	// mvprintw(i, widthOfMainWindow, "%c", ch);
+   	// }
 
-    // ------------------------->
+    // // ------------------------->
 
     // DrawTableWindow(win_ship, width_win_ship, height_win_ship);
     refresh();
@@ -508,4 +576,148 @@ void standing_ship(ship* ship, struct Board Board){
                 Board.field[i+ship->y][ship->x] = TRUE;
             break;
     }
+}
+
+void DrawHelloWindow(WINDOW* WIN, int height, int width){
+    wbkgdset(WIN, COLOR_PAIR(100));
+    wclear(WIN);
+    mvwprintw(WIN, 0, 0,"%c", 201);
+    mvwprintw(WIN, 0, width-1,"%c", 187);
+    mvwprintw(WIN, height-1, 0,"%c", 200);
+    mvwprintw(WIN, height-1, width-1 ,"%c", 188);
+    for (int i = 1; i < width-1; i++){
+    	mvwprintw(WIN, 0, i, "%c", 205);
+    	mvwprintw(WIN, height-1, i, "%c", 205);
+    }
+    for (int i = 1; i < height-1; i++){
+    	mvwprintw(WIN, i, 0, "%c", 186);
+    	mvwprintw(WIN, i, width-1, "%c", 186);
+    }
+    testAnimation(WIN);
+    wrefresh(WIN);
+}
+
+void testAnimation(WINDOW* win_hello){
+	napms(500);
+	for (int i = 0; i < 3; i++){
+		drawSeeBattle(win_hello, 176+(i%3));
+		wrefresh(win_hello);
+		napms(700);
+	}
+}
+
+void drawSeeBattle(WINDOW* win_hello, int smbl){
+	int indent = 1;
+	int word_width = 5;
+	int begin_x = 2;
+	int begin_y = 2;
+	wrefresh(win_hello);
+	drawSeeBattle_S(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+
+	begin_x += (word_width+5);
+
+	drawSeeBattle_B(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_A(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_T(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_T(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_L(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawSeeBattle_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+}
+
+void drawSeeBattle_S(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++){
+	    mvwprintw(WIN, begin_y+0, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+2, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+4, begin_x+i, "%c", smbl);
+	}
+    mvwprintw(WIN, begin_y+1, begin_x, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width-1, "%c", smbl);
+}
+
+void drawSeeBattle_E(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++){
+	    mvwprintw(WIN, begin_y+0, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+2, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+4, begin_x+i, "%c", smbl);
+	}
+    mvwprintw(WIN, begin_y+1, begin_x, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x, "%c", smbl);
+}
+
+void drawSeeBattle_B(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++){
+	    mvwprintw(WIN, begin_y+0, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+2, begin_x+i, "%c", smbl);
+	    mvwprintw(WIN, begin_y+4, begin_x+i, "%c", smbl);
+	}
+    mvwprintw(WIN, begin_y+1, begin_x, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x, "%c", smbl);
+    mvwprintw(WIN, begin_y+1, begin_x+word_width-1, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width-1, "%c", smbl);
+}
+
+void drawSeeBattle_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+    mvwprintw(WIN, begin_y+0, begin_x+word_width/2, "%c", smbl);
+    mvwprintw(WIN, begin_y+1, begin_x+word_width/2+1, "%c", smbl);
+    mvwprintw(WIN, begin_y+1, begin_x+word_width/2-1, "%c", smbl);
+
+    mvwprintw(WIN, begin_y+2, begin_x+word_width/2-2, "%c", smbl);
+    mvwprintw(WIN, begin_y+2, begin_x+word_width/2+2, "%c", smbl);
+
+    mvwprintw(WIN, begin_y+3, begin_x+word_width/2-2, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width/2-1, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width/2, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width/2+1, "%c", smbl);
+    mvwprintw(WIN, begin_y+3, begin_x+word_width/2+2, "%c", smbl);
+
+	mvwprintw(WIN, begin_y+4, begin_x+word_width/2-2, "%c", smbl);
+    mvwprintw(WIN, begin_y+4, begin_x+word_width/2+2, "%c", smbl);
+
+
+
+	 //        mvwprintw(WIN, begin_y+0, begin_x+word_width/2, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+1, begin_x+word_width/2+1, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+1, begin_x+word_width/2-1, "%c", smbl);
+
+	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2-2, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2-1, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2+1, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2+2, "%c", smbl);
+
+	 //    mvwprintw(WIN, begin_y+3, begin_x+word_width/2-2, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+3, begin_x+word_width/2+2, "%c", smbl);
+
+		// mvwprintw(WIN, begin_y+4, begin_x+word_width/2-2, "%c", smbl);
+	 //    mvwprintw(WIN, begin_y+4, begin_x+word_width/2+2, "%c", smbl);
+}
+
+void drawSeeBattle_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++)
+	    mvwprintw(WIN, begin_y+0, begin_x+i, "%c", smbl);
+	for (int i = 0; i < 5; i++)
+	    mvwprintw(WIN, begin_y+i, begin_x+word_width/2, "%c", smbl);
+
+}
+
+void drawSeeBattle_L(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < 5; i++)
+	    mvwprintw(WIN, begin_y+i, begin_x+0, "%c", smbl);
+	for (int i = 1; i < word_width; i++)
+	    mvwprintw(WIN, begin_y+4, begin_x+i, "%c", smbl);
 }
