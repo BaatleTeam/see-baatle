@@ -24,6 +24,22 @@ struct ShipsInfo {
 	ship* Ships;
 };
 
+typedef struct WindowParametres {
+	int Begin_x;
+	int Begin_y;
+	int Width;
+	int Height;
+	WINDOW* ptrWin;
+} WindowParametres;
+
+
+typedef struct GameDataCase {
+	int NumberOfShips[4];
+	int BoardWidth[3];
+	int BoardHeight[3];
+} GameDataCase;
+
+
 
 extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);

@@ -1,8 +1,9 @@
-SRC=Source/
+SRC=Source
 LIB=-lpdcurses -g
 BLD=Build
-all: $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o
-	gcc $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o -o $(BLD)/sea_battle.exe $(LIB)
+
+all: $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o $(BLD)/menu.o
+	gcc $(BLD)/main.o $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o $(BLD)/menu.o -o $(BLD)/sea_battle.exe $(LIB)
 $(BLD)/main.o: $(SRC)/main.c $(SRC)/header.h $(BLD)/ships.o $(BLD)/arrange.o $(BLD)/shoot.o $(BLD)/table.o
 	gcc -c $(SRC)/main.c -o $(BLD)/main.o $(LIB) 
 $(BLD)/ships.o: $(SRC)/ships.c $(SRC)/ships.h
@@ -13,4 +14,6 @@ $(BLD)/shoot.o: $(SRC)/shoot.c $(SRC)/shoot.h
 	gcc -c $(SRC)/shoot.c -o $(BLD)/shoot.o $(LIB)
 $(BLD)/table.o: $(SRC)/table.c $(SRC)/table.h
 	gcc -c $(SRC)/table.c -o $(BLD)/table.o $(LIB)
+$(BLD)/menu.o: $(SRC)/menu.c $(SRC)/menu.h
+	gcc -c $(SRC)/menu.c -o $(BLD)/menu.o $(LIB)
 	
