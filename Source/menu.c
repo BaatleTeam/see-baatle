@@ -3,8 +3,8 @@
 void initCaseWindowData(WindowParametres* array){
 	array[0].Begin_x = array[2].Begin_x = 7;
 	array[1].Begin_x = array[3].Begin_x = 47;
-	array[0].Begin_y = array[1].Begin_y = 14;
-	array[2].Begin_y = array[3].Begin_y = 27;
+	array[0].Begin_y = array[1].Begin_y = 13;
+	array[2].Begin_y = array[3].Begin_y = 26;
 
 	for (int i = 0; i < 4; i++){
 		array[i].Width = 35;

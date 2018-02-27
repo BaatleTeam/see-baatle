@@ -4,6 +4,28 @@
 
 int main(){	
     srand(time(NULL));
+    initscr();
+	cbreak();
+    noecho(); // Не отображает символы.
+    curs_set(FALSE);
+	keypad(stdscr, TRUE);
+    start_color();
+    init_pair (2, COLOR_BLUE+8, COLOR_YELLOW+8); // Для окна aarange.
+    init_pair (55, COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
+    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship.
+    init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
+    init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
+    init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
+    init_pair(1, COLOR_RED + 8, COLOR_BLUE); // ??
+    init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
+    init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
+
+	savetty();
+    // resize_term(heightOfMainWindow, widthOfMainWindow);
+    resize_term(38,89); // Beta
+    clear();
+    refresh();
+
     // Отступы между окнами и краями главного окна.
     int LeftIndent, RightIndent, BetweenIndent, TopIndent, BottomIndent;
     LeftIndent = 4;
@@ -83,83 +105,66 @@ int main(){
     	BoardPlayer.field[i]   = calloc(BoardPlayer.Width, sizeof(bool));
     	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
     }
-    showDebugFieid(BoardPlayer);
-
-	initscr();
-	cbreak();
-    noecho(); // Не отображает символы.
-    curs_set(FALSE);
-	keypad(stdscr, TRUE);
-    start_color();
-    init_pair (2, COLOR_BLUE+8, COLOR_YELLOW+8); // Для окна aarange.
-    init_pair (55, COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
-    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship.
-    init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
-    init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
-    init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
-    init_pair(1, COLOR_RED + 8, COLOR_BLUE); // ??
-    init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
-    init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
-
-	savetty();
-    // resize_term(heightOfMainWindow, widthOfMainWindow);
-    resize_term(40,90); // Beta
-    clear();
-    refresh();
-
-    WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
-    wbkgdset(win_menu, COLOR_PAIR(200));
-    wclear(win_menu);
-    // wattron(win_menu, COLOR_PAIR(2));
-    for (int i = 0; i < LINES; i++)
-    	mvwprintw(win_menu, i, 0, "%d", i);
-    for (int i = 0; i < COLS; i++){
-    	mvwprintw(win_menu, 0, i, "%d", i / 10);
-    	mvwprintw(win_menu, 1, i, "%d", i % 10);
-    }
-    wrefresh(win_menu);
 
     GameDataCase* GDCases;
     GDCases = malloc(4 * sizeof(GameDataCase));
     initGameDataCases(GDCases);
 
-    WINDOW* win_hello = newwin(9, 61, 2, 14);
+    // Окно заднего фона.
+    WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
+    wbkgdset(win_menu, COLOR_PAIR(200));
+    wclear(win_menu);
+    // wattron(win_menu, COLOR_PAIR(2));
+    // for (int i = 0; i < LINES; i++)
+    // 	mvwprintw(win_menu, i, 0, "%d", i);
+    // for (int i = 0; i < COLS; i++){
+    // 	mvwprintw(win_menu, 0, i, "%d", i / 10);
+    // 	mvwprintw(win_menu, 1, i, "%d", i % 10);
+    // }
+    wrefresh(win_menu);
+
+    WINDOW* win_hello = newwin(9, 61, 1, 14);
     DrawHelloWindow(win_hello, 9, 61);
 
-	WindowParametres *WParametres;
-	WParametres = malloc(4 * sizeof(WindowParametres));
-	initCaseWindowData(WParametres);
+	WindowParametres *WCaseParametres;
+	WCaseParametres = malloc(4 * sizeof(WindowParametres));
+	initCaseWindowData(WCaseParametres);
 	for (int i = 0; i < 4; i++)
-		DrawCaseWindow(&WParametres[i], GDCases, i, 2);
+		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
+
+	napms(100);
+	mvwprintw(win_menu, 11, 39, "CHOOSE ONE:");
+	wrefresh(win_menu);
+	napms(100);
+	mvwprintw(win_menu, 12, 21, "SMALL");
+	wrefresh(win_menu);
+	napms(100);
+	mvwprintw(win_menu, 12, 60, "STANDART");
+	wrefresh(win_menu);
+	napms(100);
+	mvwprintw(win_menu, 25, 22, "HUGE");
+	wrefresh(win_menu);
+	napms(100);
+	mvwprintw(win_menu, 25, 62, "DUEL");
+	wrefresh(win_menu);	
 
 
 
     while((key = getch()) != '\n') ;
     wbkgdset(win_hello, COLOR_PAIR(200));
-    wclear(win_hello);
-    wrefresh(win_hello);
+    wclear(win_menu);
+    wrefresh(win_menu);
+	for (int i = 0; i < 4; i++)
+		delwin(WCaseParametres[i].ptrWin);
     delwin(win_hello);
+    free(GDCases);
+    free(WCaseParametres);
 
 
 
 	win_ship = newwin(height_win_ship, width_win_ship, start_y_ship, start_x_ship);
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
     win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
-
-    // // ------------------------->
-
-    // ch = 219;
-    // attron(COLOR_PAIR(2));
-    // for (int i = 0; i < widthOfMainWindow; i++){
-    // 	mvprintw(0, i, "%c", ch);
-    // 	mvprintw(heightOfMainWindow-1, i, "%c", ch);
-    // }
-   	// for (int i = 0; i < heightOfMainWindow; i++){
-    // 	mvprintw(i, 0, "%c", ch);
-    // 	// mvprintw(i, widthOfMainWindow, "%c", ch);
-   	// }
-
-    // // ------------------------->
 
     // DrawTableWindow(win_ship, width_win_ship, height_win_ship);
     refresh();
