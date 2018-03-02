@@ -39,7 +39,7 @@ typedef struct GameDataCase {
 	int BoardHeight[3];
 } GameDataCase;
 
-
+enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
 
 extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);

@@ -12,7 +12,8 @@ int main(){
     start_color();
     init_pair (2, COLOR_BLUE+8, COLOR_YELLOW+8); // Для окна aarange.
     init_pair (55, COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
-    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship.
+    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship, выбора окна case.
+    init_pair (33, COLOR_RED+8, COLOR_GREEN+8); // Для окна ship, выбора размера доски.
     init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
     init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
     init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
@@ -131,26 +132,58 @@ int main(){
 	initCaseWindowData(WCaseParametres);
 	for (int i = 0; i < 4; i++)
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
+	DrawLegendDelay(win_menu);
 
-	napms(100);
-	mvwprintw(win_menu, 11, 39, "CHOOSE ONE:");
-	wrefresh(win_menu);
-	napms(100);
-	mvwprintw(win_menu, 12, 21, "SMALL");
-	wrefresh(win_menu);
-	napms(100);
-	mvwprintw(win_menu, 12, 60, "STANDART");
-	wrefresh(win_menu);
-	napms(100);
-	mvwprintw(win_menu, 25, 22, "HUGE");
-	wrefresh(win_menu);
-	napms(100);
-	mvwprintw(win_menu, 25, 62, "DUEL");
-	wrefresh(win_menu);	
-
-
-
-    while((key = getch()) != '\n') ;
+	// enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
+	enum chooseMode { choosingShips, choosingSize } chooseMode;
+	active_case = CASE_1;
+	chooseMode = choosingShips;
+	int active_size = 0;
+	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+    while((key = getch()) != '\n' || chooseMode != choosingSize) {
+    	switch(key){
+    		case KEY_LEFT:
+    		case KEY_RIGHT:
+    		case KEY_UP:
+    		case KEY_DOWN:
+    			switch (chooseMode){
+    				case choosingShips:
+		    			if (CheckChangingOfCaseWindow(active_case, key))
+			    			DrawNonActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 2);
+			    			changeActiveCase(&active_case, key);
+			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+		    			break;
+		    		case choosingSize:
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
+		    			changeActiveSize(&active_size, key);
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 33);
+		    			break;
+		    	}
+		    	break;
+		    case '\n':
+			    switch (chooseMode){
+			    	case choosingShips:
+			    		chooseMode = choosingSize;
+			    		printPhraseChoose(WCaseParametres[active_case].ptrWin, 33);
+			    		napms(100);
+			    		DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 33);
+			    		break;
+			    	case choosingSize:
+						chooseMode = choosingShips;
+			    		break;
+			    }
+		    	break;
+		    case 27:
+		    	if (chooseMode == choosingSize){
+		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
+	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
+	    			active_size = 0;
+	    			// DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, *GDCases, active_size, 33);
+		    		chooseMode = choosingShips;
+		    	}
+		    	break;
+    	}
+    }
     wbkgdset(win_hello, COLOR_PAIR(200));
     wclear(win_menu);
     wrefresh(win_menu);

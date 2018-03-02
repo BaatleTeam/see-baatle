@@ -64,6 +64,7 @@ void initGameDataCases(GameDataCase *array){
 }
 
 void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int color){
+	wattron(wp->ptrWin, COLOR_PAIR(color));
 	wbkgdset(wp->ptrWin, COLOR_PAIR(color));
     wclear(wp->ptrWin);
     box(wp->ptrWin, 0, 0);
@@ -92,20 +93,57 @@ void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int col
     mvwprintw(wp->ptrWin, 3, 2, "Size");
     mvwprintw(wp->ptrWin, 3, 9, "Number");
 
-    mvwprintw(wp->ptrWin, 4, 23, "%dx%d", gdc[number].BoardWidth[0], gdc[number].BoardHeight[0]);
-    mvwprintw(wp->ptrWin, 6, 23, "%dx%d", gdc[number].BoardWidth[1], gdc[number].BoardHeight[1]);
-    mvwprintw(wp->ptrWin, 8, 23, "%dx%d", gdc[number].BoardWidth[2], gdc[number].BoardHeight[2]);
-    DrawGameDataCasesShips(wp->ptrWin, gdc[number].NumberOfShips);
+    for (int index = 0; index < 3; index++)
+    	DrawGameDataCasesSize(wp->ptrWin, gdc[number], index, color);
+    DrawGameDataCasesShips(wp->ptrWin, gdc[number]);
     wrefresh(wp->ptrWin);
     napms(100);
 }
 
-void DrawGameDataCasesShips(WINDOW* WIN, int* shipsNumber){
+void DrawGameDataCasesSize(WINDOW* WIN, GameDataCase gdc, int index, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	mvwprintw(WIN, 4+index*2, 23, "%dx%d", gdc.BoardWidth[index], gdc.BoardHeight[index]);
+    // mvwprintw(WIN, 4, 23, "%dx%d", gdc.BoardWidth[0], gdc.BoardHeight[0]);
+    // mvwprintw(WIN, 6, 23, "%dx%d", gdc.BoardWidth[1], gdc.BoardHeight[1]);
+    // mvwprintw(WIN, 8, 23, "%dx%d", gdc.BoardWidth[2], gdc.BoardHeight[2]);
+    wrefresh(WIN);
+}
+
+void DrawGameDataCasesShips(WINDOW* WIN, GameDataCase gdc){
 	int y;
 	int index;
 	for (y = 5, index = 0; index < 4; index++, y++){
 		mvwprintw(WIN, y, 3, "%d", index+1);
-		mvwprintw(WIN, y, 11, "%d", shipsNumber[index]);
+		mvwprintw(WIN, y, 11, "%d", gdc.NumberOfShips[index]);
+	}
+}
+
+void printPhraseChoose(WINDOW* WIN, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	mvwprintw(WIN, 3, 20, "Choose one:");
+	wrefresh(WIN);
+}
+
+void deletePhraseChoose(WINDOW* WIN, int color){
+	wattron(WIN, COLOR_PAIR(color));
+	mvwprintw(WIN, 3, 20, "           ");
+	wrefresh(WIN);
+}
+
+void changeActiveSize(int *active_size, int key){
+	switch (key){
+		case KEY_UP:
+			if (*active_size == 0)
+				*active_size = 2;
+			else 
+				(*active_size)--;
+			break;
+		case KEY_DOWN:
+			if (*active_size == 2)
+				*active_size = 0;
+			else
+				(*active_size)++;	
+			break;
 	}
 }
 
@@ -136,6 +174,90 @@ void testAnimation(WINDOW* win_hello){
 		napms(100);
 	}
 }
+
+void DrawLegendDelay(WINDOW* win_menu){
+	int delay = 100;
+	napms(delay);
+	mvwprintw(win_menu, 11, 39, "CHOOSE ONE:");
+	wrefresh(win_menu);
+	napms(delay);
+	mvwprintw(win_menu, 12, 21, "SMALL");
+	wrefresh(win_menu);
+	napms(delay);
+	mvwprintw(win_menu, 12, 60, "STANDART");
+	wrefresh(win_menu);
+	napms(delay);
+	mvwprintw(win_menu, 25, 22, "HUGE");
+	wrefresh(win_menu);
+	napms(delay);
+	mvwprintw(win_menu, 25, 62, "DUEL");
+	wrefresh(win_menu);	
+}
+
+bool CheckChangingOfCaseWindow(enum actCase activeCase, int key){
+	if (activeCase == CASE_1 && (key == KEY_RIGHT || key == KEY_DOWN)) return TRUE;
+	if (activeCase == CASE_2 && (key == KEY_LEFT || key == KEY_DOWN)) return TRUE;
+	if (activeCase == CASE_3 && (key == KEY_RIGHT || key == KEY_UP)) return TRUE;
+	if (activeCase == CASE_4 && (key == KEY_LEFT || key == KEY_UP)) return TRUE;
+	return FALSE;
+}
+
+void DrawNonActiveCaseWindow(WindowParametres* WIN, GameDataCase* gdc, int number, int color){	
+	DrawCaseWindow(WIN, gdc, number, color);
+}
+
+void changeActiveCase(enum actCase *activeCase, int key){
+	switch (*activeCase){
+		case CASE_1:	
+			switch(key){
+				case KEY_RIGHT:
+					*activeCase = CASE_2;
+					break;
+				case KEY_DOWN:
+					*activeCase = CASE_3;
+					break;					
+			}
+			break;
+		case CASE_2:	
+			switch(key){
+				case KEY_LEFT:
+					*activeCase = CASE_1;
+					break;
+				case KEY_DOWN:
+					*activeCase = CASE_4;
+					break;					
+			}
+			break;
+		case CASE_3:	
+			switch(key){
+				case KEY_RIGHT:
+					*activeCase = CASE_4;
+					break;
+				case KEY_UP:
+					*activeCase = CASE_1;
+					break;					
+			}
+			break;	
+		case CASE_4:	
+			switch(key){
+				case KEY_LEFT:
+					*activeCase = CASE_3;
+					break;
+				case KEY_UP:
+					*activeCase = CASE_2;
+					break;					
+			}
+			break;		
+	}
+}
+
+void DrawActiveCaseWindow(WindowParametres* WIN, GameDataCase* gdc, int number, int color){
+	DrawCaseWindow(WIN, gdc, number, color);
+}
+
+
+
+
 
 void drawSeeBattle(WINDOW* win_hello, int smbl){
 	int indent = 1;
