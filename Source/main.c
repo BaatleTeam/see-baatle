@@ -35,77 +35,11 @@ int main(){
     TopIndent = 3;
     BottomIndent = 4;
 
-    // Далее параметры создаваемых окон.
-	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
-    int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
-    int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
-
-    // Новые зависимости от размера отступов.
-	start_y_ship = TopIndent;
-	start_x_ship = LeftIndent;
-
- 	// Размеры создаваемых окон.
-    height_win_ship = 23;
-	width_win_ship = 33; 
-    height_win_arrange = 21; // min
-    width_win_arrange = 38; // min
-    start_y_arrange = TopIndent;
-    start_x_arrange = LeftIndent + width_win_ship + BetweenIndent;
-
-    // Размеры окна под стрельбу должны соотвествовать окну ship.
-    width_win_shoot = width_win_ship;
-    height_win_shoot = height_win_ship;
-    start_x_shoot = start_x_arrange;
-    start_y_shoot = start_y_arrange;
-
-    int widthOfMainWindow = start_x_arrange + width_win_arrange + RightIndent;
-    int heightOfMainWindow = TopIndent + height_win_ship + BottomIndent;
-
-    WINDOW *win_ship;
-    WINDOW *win_arrange;
-    WINDOW *win_shoot;
-
     int active_window = 1; // Номер активного окна.
     int number_stand_ships = 0; 
 	int ch; // ??
     int key;
     int kr = 197; // ??
-
-    // Количество кораблей, в дальнеёшем будет регулироваться.
-    int N_4 = 2;
-    int N_3 = 3;
-    int N_2 = 4;
-    int N_1 = 5;
-
-    // Создание и инициализация данных о кораблях игрока и компьютера.
-    struct ShipsInfo ShipsPlayer   = { N_4, N_3, N_2, N_1, NULL };
-    struct ShipsInfo ShipsComputer = { N_4, N_3, N_2, N_1, NULL };
-    ShipsPlayer.Ships   = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
-    ShipsComputer.Ships = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
-    for (int i = 0; i < N_1+N_2+N_3+N_4; i++){
-    	ShipsPlayer.Ships[i].x = 0;
-    	ShipsPlayer.Ships[i].y = 0;
-    	ShipsPlayer.Ships[i].type = FALSE;
-    	ShipsPlayer.Ships[i].stand = FALSE;
-    	ShipsComputer.Ships[i].x = 0;
-    	ShipsComputer.Ships[i].y = 0;
-    	ShipsComputer.Ships[i].type = FALSE;
-    	ShipsComputer.Ships[i].stand = FALSE;
-    }
-
-    //Размеры игорового поля, в дальнейшем в будут регулироваться.
-    int board_width = 15;
-    int board_height = 10;
-
- 	// Создание и инициализация данных игровых досок игрока и компьютера.
-    struct Board BoardPlayer   = { board_height, board_width, NULL };
-    struct Board BoardComputer = { board_height, board_width, NULL };
-    BoardPlayer.field   = malloc(BoardPlayer.Height * sizeof(bool*));
-    BoardComputer.field = malloc(BoardComputer.Height * sizeof(bool*));
-    for (int i = 0; i < BoardPlayer.Height; i++){
-    	BoardPlayer.field[i]   = calloc(BoardPlayer.Width, sizeof(bool));
-    	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
-    }
 
     GameDataCase* GDCases;
     GDCases = malloc(4 * sizeof(GameDataCase));
@@ -178,31 +112,104 @@ int main(){
 		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
 	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
 	    			active_size = 0;
-	    			// DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, *GDCases, active_size, 33);
 		    		chooseMode = choosingShips;
 		    	}
 		    	break;
     	}
     }
+
+    // Количество кораблей на основе выбора игрока.
+    int N_4 = GDCases[active_case].NumberOfShips[0];
+    int N_3 = GDCases[active_case].NumberOfShips[1];
+    int N_2 = GDCases[active_case].NumberOfShips[2];
+    int N_1 = GDCases[active_case].NumberOfShips[3];
+
+    // Создание и инициализация данных о кораблях игрока и компьютера.
+    struct ShipsInfo ShipsPlayer   = { N_4, N_3, N_2, N_1, NULL };
+    struct ShipsInfo ShipsComputer = { N_4, N_3, N_2, N_1, NULL };
+    ShipsPlayer.Ships   = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
+    ShipsComputer.Ships = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
+    for (int i = 0; i < N_1+N_2+N_3+N_4; i++){
+    	ShipsPlayer.Ships[i].x = 0;
+    	ShipsPlayer.Ships[i].y = 0;
+    	ShipsPlayer.Ships[i].type = FALSE;
+    	ShipsPlayer.Ships[i].stand = FALSE;
+    	ShipsComputer.Ships[i].x = 0;
+    	ShipsComputer.Ships[i].y = 0;
+    	ShipsComputer.Ships[i].type = FALSE;
+    	ShipsComputer.Ships[i].stand = FALSE;
+    }
+
+    //Размеры игорового поля на основе выбора игрока.
+    int board_width = GDCases[active_case].BoardWidth[active_size];
+    int board_height = GDCases[active_case].BoardHeight[active_size];
+
+ 	// Создание и инициализация данных игровых досок игрока и компьютера.
+    struct Board BoardPlayer   = { board_height, board_width, NULL };
+    struct Board BoardComputer = { board_height, board_width, NULL };
+    BoardPlayer.field   = malloc(BoardPlayer.Height * sizeof(bool*));
+    BoardComputer.field = malloc(BoardComputer.Height * sizeof(bool*));
+    for (int i = 0; i < BoardPlayer.Height; i++){
+    	BoardPlayer.field[i]   = calloc(BoardPlayer.Width, sizeof(bool));
+    	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
+    }
+
     wbkgdset(win_hello, COLOR_PAIR(200));
     wclear(win_menu);
     wrefresh(win_menu);
 	for (int i = 0; i < 4; i++)
 		delwin(WCaseParametres[i].ptrWin);
     delwin(win_hello);
-    free(GDCases);
     free(WCaseParametres);
+    free(GDCases);
 
 
+    // Объявление параметры создаваемых окон.
+	int start_x_ship, start_y_ship, width_win_ship, height_win_ship;
+    int start_x_arrange, start_y_arrange, width_win_arrange, height_win_arrange;
+    int start_x_shoot, start_y_shoot, width_win_shoot, height_win_shoot;
 
-	win_ship = newwin(height_win_ship, width_win_ship, start_y_ship, start_x_ship);
+    // Новые зависимости от размера отступов.
+	start_y_ship = TopIndent;
+	start_x_ship = LeftIndent;
+
+ 	// Размеры создаваемых окон.
+    height_win_ship = 3+BoardPlayer.Height*2;
+	width_win_ship = 3+BoardPlayer.Width*2;
+    height_win_arrange = 21; // min
+    width_win_arrange = 38; // min
+    start_y_arrange = TopIndent;
+    start_x_arrange = LeftIndent + width_win_ship + BetweenIndent;
+
+    // Размеры окна под стрельбу должны соотвествовать окну ship.
+    width_win_shoot = width_win_ship;
+    height_win_shoot = height_win_ship;
+    start_x_shoot = start_x_arrange;
+    start_y_shoot = start_y_arrange;
+
+    int widthOfMainWindow = start_x_arrange + width_win_arrange + RightIndent;
+    int heightOfMainWindow = TopIndent + height_win_ship + BottomIndent;
+
+    WINDOW *win_ship;
+    WINDOW *win_arrange;
+    WINDOW *win_shoot;
+
+	win_ship    = newwin(height_win_ship, width_win_ship, start_y_ship, start_x_ship);
     win_arrange = newwin(height_win_arrange, width_win_arrange, start_y_arrange, start_x_arrange);
-    win_shoot = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
-
-    // DrawTableWindow(win_ship, width_win_ship, height_win_ship);
+    win_shoot   = newwin(height_win_shoot, width_win_shoot, start_y_shoot, start_x_shoot);
+ 
+ 	if (heightOfMainWindow < height_win_arrange + 4)
+ 		heightOfMainWindow = height_win_arrange + 4;
+    resize_term(heightOfMainWindow, widthOfMainWindow);
+    // Окно заднего фона.
+    delwin(win_menu);
+    win_menu = newwin(heightOfMainWindow, widthOfMainWindow, 0, 0);
+    wbkgdset(win_menu, COLOR_PAIR(200));
+    wclear(win_menu); 
+    wrefresh(win_menu);
     refresh();
 
-    DrawTableWindow(win_ship, 3+BoardPlayer.Width*2, 3+BoardPlayer.Height*2);
+    DrawTableWindow(win_ship, width_win_ship, height_win_ship);
     DrawDefaltArrangeWindow(win_arrange, ShipsPlayer);
 
     // Координаты перемещения курсора в win_arrange для выбора корабля.
@@ -215,13 +222,11 @@ int main(){
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
 
-    // int index = convert_ship_index(currLine, active_x);
     int index;
     DrawActiveShip(win_arrange, currLine, currShip);
     wrefresh(win_arrange);
 
     enum actWind {ARRANGE = 1, SHIP = 2};
-
 
     while((key = getch()) != KEY_F(2)){
     	wattron(win_arrange, COLOR_PAIR(2));

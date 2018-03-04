@@ -17,12 +17,12 @@ void initCaseWindowData(WindowParametres* array){
 }
 
 void initGameDataCases(GameDataCase *array){
-	array[0].NumberOfShips[0] = 2;
-	array[0].NumberOfShips[1] = 1;
-	array[0].NumberOfShips[2] = 1;
-	array[0].NumberOfShips[3] = 1;
+	array[0].NumberOfShips[0] = 1;
+	array[0].NumberOfShips[1] = 2;
+	array[0].NumberOfShips[2] = 3;
+	array[0].NumberOfShips[3] = 4;
 	array[0].BoardWidth [0] = 10;
-	array[0].BoardHeight[0] = 10;
+	array[0].BoardHeight[0] = 6;
 	array[0].BoardWidth [1] = 11;
 	array[0].BoardHeight[1] = 11;
 	array[0].BoardWidth [2] = 12;
