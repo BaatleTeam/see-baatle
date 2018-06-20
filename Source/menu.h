@@ -2,7 +2,7 @@
 #include <curses.h>
 #include "ships.h"
 
-// enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } ;
+#define GAME_CASES_NUMBER 4
 
 void DrawHelloWindow(WINDOW* win_hello, int h, int w);
 void drawSeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.

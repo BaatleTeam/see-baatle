@@ -40,6 +40,7 @@ typedef struct GameDataCase {
 } GameDataCase;
 
 enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
+enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 
 extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);

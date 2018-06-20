@@ -41,8 +41,9 @@ int main(){
     int key;
     int kr = 197; // ??
 
+    // Создание и инициализация возможных вариантов игры.
     GameDataCase* GDCases;
-    GDCases = malloc(4 * sizeof(GameDataCase));
+    GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
     initGameDataCases(GDCases);
 
     // Окно заднего фона.
@@ -62,9 +63,9 @@ int main(){
     DrawHelloWindow(win_hello, 9, 61);
 
 	WindowParametres *WCaseParametres;
-	WCaseParametres = malloc(4 * sizeof(WindowParametres));
+	WCaseParametres = malloc(GAME_CASES_NUMBER * sizeof(WindowParametres));
 	initCaseWindowData(WCaseParametres);
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < GAME_CASES_NUMBER; i++)
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
 	DrawLegendDelay(win_menu);
 
@@ -72,8 +73,9 @@ int main(){
 	enum chooseMode { choosingShips, choosingSize } chooseMode;
 	active_case = CASE_1;
 	chooseMode = choosingShips;
-	int active_size = 0;
 	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+	int active_size = 0; // 
+
     while((key = getch()) != '\n' || chooseMode != choosingSize) {
     	switch(key){
     		case KEY_LEFT:
@@ -107,7 +109,7 @@ int main(){
 			    		break;
 			    }
 		    	break;
-		    case 27:
+		    case 27: // ESC
 		    	if (chooseMode == choosingSize){
 		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
 	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
@@ -162,6 +164,7 @@ int main(){
     delwin(win_hello);
     free(WCaseParametres);
     free(GDCases);
+    // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
 
 
     // Объявление параметры создаваемых окон.
@@ -213,11 +216,11 @@ int main(){
     DrawDefaltArrangeWindow(win_arrange, ShipsPlayer);
 
     // Координаты перемещения курсора в win_arrange для выбора корабля.
-    int active_x = 0;
     int currLine = 5;
     int currShip = 0;
     ch = 219;
-    int n  = 79; // ??
+    // int active_x = 0; // musor
+    // int n  = 79; // musor
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
@@ -230,7 +233,7 @@ int main(){
 
     while((key = getch()) != KEY_F(2)){
     	wattron(win_arrange, COLOR_PAIR(2));
-        for (int  i = 1; i < width_win_arrange-1; i++)
+        for (int i = 1; i < width_win_arrange-1; i++)
             mvwprintw(win_arrange, 15, i, " ");
         wrefresh(win_arrange);
         switch(key){
@@ -248,24 +251,25 @@ int main(){
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
 	                    refresh_ship_player_gpaphics(win_ship, BoardPlayer);
 	                    DrawTmpShip(win_ship, TmpShip, BoardPlayer);
-	                    showDebugFieid(BoardPlayer);
-	                    tmp_otladchik_tmp_ship(TmpShip);
+
+	                    //showDebugFieid(BoardPlayer);
+	                    //tmp_otladchik_tmp_ship(TmpShip);
 	                break;            
 	            }
 	            break;
-	        case 9: {
+	        case 9:
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
 	                    refresh_ship_player_gpaphics(win_ship, BoardPlayer);	
 	                    DrawTmpShip(win_ship, TmpShip, BoardPlayer);
-	                    tmp_otladchik_tmp_ship(TmpShip);
+
+	                    //tmp_otladchik_tmp_ship(TmpShip);
 	                    break;
 	                case ARRANGE:
 	                	break;
 	        	}
-	    	}	
-    		break;
+    		    break;
 	        case '\n': 
 	            switch (active_window){
 	                case ARRANGE:
@@ -293,12 +297,16 @@ int main(){
 
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	refresh_ship_player_gpaphics(win_ship, BoardPlayer);
+                            
+                            //showDebugFieid(Board);
 	                    	// tmp_otladchik_tmp_ship(TmpShip);
 	                    }
 	                    break;
         		}
+                break;
     	}
 	}
+    
     wbkgdset(win_arrange, COLOR_PAIR(66));
     wclear(win_arrange);
 	wrefresh(win_arrange);
@@ -572,7 +580,6 @@ void refresh_ship_player_array(struct ShipsInfo Ships, struct Board Board){
         if (Ships.Ships[i].stand == TRUE)
             standing_ship(&Ships.Ships[i], Board);
     }
-        showDebugFieid(Board);
     // !!! КОСТЫЛЬ !!!
 }
 

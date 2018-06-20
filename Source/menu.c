@@ -6,7 +6,7 @@ void initCaseWindowData(WindowParametres* array){
 	array[0].Begin_y = array[1].Begin_y = 13;
 	array[2].Begin_y = array[3].Begin_y = 26;
 
-	for (int i = 0; i < 4; i++){
+	for (int i = 0; i < GAME_CASES_NUMBER; i++){
 		array[i].Width = 35;
 		array[i].Height = 10;
 		array[i].ptrWin = newwin(array[i].Height,
@@ -17,21 +17,21 @@ void initCaseWindowData(WindowParametres* array){
 }
 
 void initGameDataCases(GameDataCase *array){
-	array[0].NumberOfShips[0] = 1;
-	array[0].NumberOfShips[1] = 2;
+	array[0].NumberOfShips[0] = 3;
+	array[0].NumberOfShips[1] = 3;
 	array[0].NumberOfShips[2] = 3;
-	array[0].NumberOfShips[3] = 4;
+	array[0].NumberOfShips[3] = 0;
 	array[0].BoardWidth [0] = 10;
 	array[0].BoardHeight[0] = 6;
-	array[0].BoardWidth [1] = 11;
-	array[0].BoardHeight[1] = 11;
-	array[0].BoardWidth [2] = 12;
-	array[0].BoardHeight[2] = 12;
+	array[0].BoardWidth [1] = 13;
+	array[0].BoardHeight[1] = 9;
+	array[0].BoardWidth [2] = 8;
+	array[0].BoardHeight[2] = 10;
 
-	array[1].NumberOfShips[0] = 1;
-	array[1].NumberOfShips[1] = 2;
-	array[1].NumberOfShips[2] = 1;
-	array[1].NumberOfShips[3] = 1;
+	array[1].NumberOfShips[0] = 5;
+	array[1].NumberOfShips[1] = 4;
+	array[1].NumberOfShips[2] = 3;
+	array[1].NumberOfShips[3] = 2;
 	array[1].BoardWidth [0] = 11;
 	array[1].BoardHeight[0] = 11;
 	array[1].BoardWidth [1] = 12;
@@ -39,10 +39,10 @@ void initGameDataCases(GameDataCase *array){
 	array[1].BoardWidth [2] = 13;
 	array[1].BoardHeight[2] = 13;
 
-	array[2].NumberOfShips[0] = 1;
-	array[2].NumberOfShips[1] = 1;
-	array[2].NumberOfShips[2] = 2;
-	array[2].NumberOfShips[3] = 1;
+	array[2].NumberOfShips[0] = 2;
+	array[2].NumberOfShips[1] = 2;
+	array[2].NumberOfShips[2] = 5;
+	array[2].NumberOfShips[3] = 5;
 	array[2].BoardWidth [0] = 12;
 	array[2].BoardHeight[0] = 12;
 	array[2].BoardWidth [1] = 13;
@@ -50,10 +50,10 @@ void initGameDataCases(GameDataCase *array){
 	array[2].BoardWidth [2] = 14;
 	array[2].BoardHeight[2] = 14;
 
-	array[3].NumberOfShips[0] = 1;
-	array[3].NumberOfShips[1] = 1;
-	array[3].NumberOfShips[2] = 1;
-	array[3].NumberOfShips[3] = 2;
+	array[3].NumberOfShips[0] = 9;
+	array[3].NumberOfShips[1] = 6;
+	array[3].NumberOfShips[2] = 0;
+	array[3].NumberOfShips[3] = 0;
 	array[3].BoardWidth [0] = 13;
 	array[3].BoardHeight[0] = 13;
 	array[3].BoardWidth [1] = 14;
