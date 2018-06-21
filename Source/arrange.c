@@ -1,29 +1,47 @@
 #include "arrange.h"
 #include "curses.h"
 
-void DrawDefaltArrangeWindow(WINDOW *WIN, struct ShipsInfo Ships){
-    wbkgdset(WIN, COLOR_PAIR(2));
-    wclear(WIN);
-    box(WIN, 0, 0);
+void DrawDefaltArrangeWindow(WindowParametres *Warr, struct ShipsInfo Ships){
+    wbkgdset(Warr->ptrWin, COLOR_PAIR(2));
+    wclear(Warr->ptrWin);
+    box(Warr->ptrWin, 0, 0);
     int x;
     char ch = 219;
-    wattron(WIN, COLOR_PAIR(2));
-    mvwprintw(WIN, 1, 2, "Use ARROWS to move.");
-    mvwprintw(WIN, 2, 2, "Use ENTER to choose the ship.");
-    mvwprintw(WIN, 3, 2, "Use TAB to change the orientation.");
-    mvwprintw(WIN, 5, 2, "%d ships: ", Ships.Number_4_Size);
-    mvwprintw(WIN, 7, 2, "%d ships: ", Ships.Number_3_Size);
-    mvwprintw(WIN, 9, 2, "%d ships: ", Ships.Number_3_Size);
-    mvwprintw(WIN, 11,2, "%d ships: ", Ships.Number_1_Size);
-    for (int i = 0, x = 12; i < Ships.Number_4_Size; i++, x+=5)
-        mvwprintw(WIN,5,x," %c%c%c%c",ch,  ch, ch, ch);
-    for (int i = 0, x = 12; i < Ships.Number_3_Size; i++, x+=4)
-        mvwprintw(WIN,7,x," %c%c%c",ch, ch, ch);
-    for (int i = 0, x = 12; i < Ships.Number_2_Size; i++, x+=3)
-        mvwprintw(WIN,9,x," %c%c",ch,ch);
-    for (int i = 0, x = 12; i < Ships.Number_1_Size; i++, x+=2)
-        mvwprintw(WIN,11,x," %c",ch);    
-    wrefresh(WIN);
+    wattron(Warr->ptrWin, COLOR_PAIR(2));
+    mvwprintw(Warr->ptrWin, 1, 9, " ARRANGE YOUR SHIPS! ");
+
+    mvwprintw(Warr->ptrWin, 4, 2, " 4-size");
+    for (size_t i = 0, y = 6; i < Ships.Number_4_Size; i++, y+=2)
+        mvwprintw(Warr->ptrWin,y,2," %c%c%c%c%c",ch, ch, ch, ch, ch);
+
+    mvwprintw(Warr->ptrWin, 4, 10, " 3-size");
+    for (size_t i = 0, y = 6; i < Ships.Number_3_Size; i++, y+=2)
+        mvwprintw(Warr->ptrWin,y,11," %c%c%c%c",ch, ch, ch, ch);
+    
+    mvwprintw(Warr->ptrWin, 4, 19, " 2-size");
+    for (size_t i = 0, y = 6; i < Ships.Number_2_Size; i++, y+=2)
+        mvwprintw(Warr->ptrWin,y,20," %c%c%c%",ch, ch, ch);
+
+    mvwprintw(Warr->ptrWin, 4, 28, " 1-size");
+    for (size_t i = 0, y = 6; i < Ships.Number_1_Size; i++, y+=2)
+        mvwprintw(Warr->ptrWin,y,29," %c%c",ch, ch);  
+    //mvwprintw(Warr->ptrWin, 1, 2, "Use ARROWS to move.");
+    // mvwprintw(Warr->ptrWin, 2, 2, "Use ENTER to choose the ship.");
+    // mvwprintw(Warr->ptrWin, 3, 2, "Use TAB to change the orientation.");
+    // mvwprintw(Warr->ptrWin, 3, 2, "");
+    // mvwprintw(Warr->ptrWin, 5, 2, "%d ships: ", Ships.Number_4_Size);
+    // mvwprintw(Warr->ptrWin, 7, 2, "%d ships: ", Ships.Number_3_Size);
+    // mvwprintw(Warr->ptrWin, 9, 2, "%d ships: ", Ships.Number_3_Size);
+    // mvwprintw(Warr->ptrWin, 11,2, "%d ships: ", Ships.Number_1_Size);
+    // for (int i = 0, x = 12; i < Ships.Number_4_Size; i++, x+=5)
+    //     mvwprintw(Warr->ptrWin,5,x," %c%c%c%c",ch,  ch, ch, ch);
+    // for (int i = 0, x = 12; i < Ships.Number_3_Size; i++, x+=4)
+    //     mvwprintw(Warr->ptrWin,7,x," %c%c%c",ch, ch, ch);
+    // for (int i = 0, x = 12; i < Ships.Number_2_Size; i++, x+=3)
+    //     mvwprintw(Warr->ptrWin,9,x," %c%c",ch,ch);
+    // for (int i = 0, x = 12; i < Ships.Number_1_Size; i++, x+=2)
+    //     mvwprintw(Warr->ptrWin,11,x," %c",ch);    
+    wrefresh(Warr->ptrWin);
 }
 
 int getSize(int y){
@@ -35,16 +53,26 @@ int getSize(int y){
     } 
 }
 
-void changeActiveShip(struct ShipsInfo Ships, int *currNumberOfShip, int *line, const int key){
+void changeActiveShip(struct ShipsInfo const Ships, int *currNumberOfShip, int *line, const int key){
     switch (key){
-        case KEY_LEFT:  changeActiveShip_LeftKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line); break;
-        case KEY_RIGHT: changeActiveShip_RightKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line); break;
-        case KEY_UP:    changeActiveShip_UpKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line); break;
-        case KEY_DOWN:  changeActiveShip_DownKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line); break;
+        case KEY_LEFT:
+            changeActiveShip_LeftKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            break;
+        case KEY_RIGHT:
+            changeActiveShip_RightKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            break;
+        case KEY_UP:
+            changeActiveShip_UpKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            break;
+        case KEY_DOWN:
+            changeActiveShip_DownKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            break;
+        default: 
+            break;
     }
 }
 
-int getMaxNumberOfShipsFromSize(struct ShipsInfo Ships, int size){
+int getMaxNumberOfShipsFromSize(struct ShipsInfo const Ships, int size){
     switch (size){
         case 4: return Ships.Number_4_Size;
         case 3: return Ships.Number_3_Size;

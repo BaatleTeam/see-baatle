@@ -2,9 +2,9 @@
 #include <curses.h>
 #include "ships.h"
 
-void DrawDefaltArrangeWindow(WINDOW*,struct ShipsInfo);
+void DrawDefaltArrangeWindow(WindowParametres*,struct ShipsInfo);
 
-void changeActiveShip(struct ShipsInfo Ship,int*, int*, const int);
+void changeActiveShip(struct ShipsInfo const Ship, int*, int*, const int);
 void changeActiveShip_LeftKey(int maxNumber, int *x, int *y);
 void changeActiveShip_DownKey(int maxNumber, int *x, int *y);
 void changeActiveShip_RightKey(int maxNumber, int *x, int *y);
@@ -17,4 +17,4 @@ void DrawActiveShip(WINDOW* WIN, int y, int x);
 
 int getIndex(int lineY, int currNumber, struct ShipsInfo Ships);
 int getSize(int); // Преобразовывает текущий y в размер корабля
-int getMaxNumberOfShipsFromSize(struct ShipsInfo Ships, int lineY);
+int getMaxNumberOfShipsFromSize(struct ShipsInfo const Ships, int lineY);
