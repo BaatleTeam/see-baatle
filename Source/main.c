@@ -113,10 +113,10 @@ int main(){
     }
 
     // Количество кораблей на основе выбора игрока.
-    int N_4 = GDCases[active_case].NumberOfShips[0];
-    int N_3 = GDCases[active_case].NumberOfShips[1];
-    int N_2 = GDCases[active_case].NumberOfShips[2];
-    int N_1 = GDCases[active_case].NumberOfShips[3];
+    int N_1 = GDCases[active_case].NumberOfShips[0];
+    int N_2 = GDCases[active_case].NumberOfShips[1];
+    int N_3 = GDCases[active_case].NumberOfShips[2];
+    int N_4 = GDCases[active_case].NumberOfShips[3];
 
     // Создание и инициализация данных о кораблях игрока и компьютера.
     struct ShipsInfo ShipsPlayer   = { N_4, N_3, N_2, N_1, NULL };
@@ -168,7 +168,6 @@ int main(){
 
     // Окно заднего фона.
     delwin(win_menu);
-    // win_menu = newwin(heightOfMainWindow, widthOfMainWindow, 0, 0);
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
@@ -178,8 +177,6 @@ int main(){
     int currLine = 5;
     int currShip = 0;
     ch = 219;
-    // int active_x = 0; // musor
-    // int n  = 79; // musor
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip); // Начальная инициализация.
@@ -190,10 +187,6 @@ int main(){
     enum actWind {ARRANGE = 1, SHIP = 2};
 
     while((key = getch()) != KEY_F(2)){
-    	// wattron(WArrange->ptrWin, COLOR_PAIR(2));
-        // for (int i = 1; i < width_win_arrange-1; i++)
-            // mvwprintw(WArrange->ptrWin, 15, i, " ");
-        // wrefresh(WArrange->ptrWin);
         switch(key){
         	case KEY_LEFT:
         	case KEY_RIGHT:
@@ -201,9 +194,9 @@ int main(){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
-						changeActiveShip(ShipsPlayer, &currShip, &currLine, key);
-						DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
-						DrawActiveShip(WArrange->ptrWin, currLine, currShip);
+						// changeActiveShip(ShipsPlayer, &currShip, &currLine, key);
+						// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
+						// DrawActiveShip(WArrange->ptrWin, currLine, currShip);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
