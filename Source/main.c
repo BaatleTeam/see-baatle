@@ -174,15 +174,14 @@ int main(){
     DrawDefaltArrangeWindow(WArrange, ShipsPlayer);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
-    int currLine = 5;
-    int currShip = 0;
+    int currShipSize = 4;
+    int currShipNumber = 0;
+    int index;
     ch = 219;
+    //DrawActiveShip(WArrange->ptrWin, currShipNumber, currShipSize);
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip); // Начальная инициализация.
-
-    int index;
-    DrawActiveShip(WArrange->ptrWin, currLine, currShip);
 
     enum actWind {ARRANGE = 1, SHIP = 2};
 
@@ -194,9 +193,10 @@ int main(){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
-						// changeActiveShip(ShipsPlayer, &currShip, &currLine, key);
+						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
+						DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
+                        DrawShips_InArangeWindow(WArrange, ShipsPlayer);
 						// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
-						// DrawActiveShip(WArrange->ptrWin, currLine, currShip);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
@@ -225,10 +225,10 @@ int main(){
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
-	                    index = getIndex(currLine, currShip, ShipsPlayer);
+	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
                     	clearTmpShip(TmpShip);
 	                    if (ShipsPlayer.Ships[index].stand == FALSE)
-	                        InitPrimaryCoordinates(currLine, TmpShip, BoardPlayer);
+	                        InitPrimaryCoordinates(currShipNumber, TmpShip, BoardPlayer);
 	                    else {
 	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
@@ -237,14 +237,14 @@ int main(){
                         DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 	                    break;
 	                case SHIP:
-	                    index = getIndex(currLine, currShip, ShipsPlayer);
+	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
 	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
 	                        DrawErrorMessage(WArrange->ptrWin);
 	                    else {
 	                    	active_window = ARRANGE;
 	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
 	                    	DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
-	                    	DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
+	                    	// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
 
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);

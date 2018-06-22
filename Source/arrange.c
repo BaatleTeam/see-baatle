@@ -5,26 +5,10 @@ void DrawDefaltArrangeWindow(WindowParametres *Warr, struct ShipsInfo Ships){
     wbkgdset(Warr->ptrWin, COLOR_PAIR(2));
     wclear(Warr->ptrWin);
     box(Warr->ptrWin, 0, 0);
-    int x;
-    char ch = 219;
-    wattron(Warr->ptrWin, COLOR_PAIR(2));
     mvwprintw(Warr->ptrWin, 1, 9, " ARRANGE YOUR SHIPS! ");
 
-    mvwprintw(Warr->ptrWin, 4, 2, " 4-size");
-    for (size_t i = 0, y = 6; i < Ships.Number_4_Size; i++, y+=2)
-        mvwprintw(Warr->ptrWin,y,2," %c%c%c%c%c",ch, ch, ch, ch, ch);
-
-    mvwprintw(Warr->ptrWin, 4, 10, " 3-size");
-    for (size_t i = 0, y = 6; i < Ships.Number_3_Size; i++, y+=2)
-        mvwprintw(Warr->ptrWin,y,11," %c%c%c%c",ch, ch, ch, ch);
-    
-    mvwprintw(Warr->ptrWin, 4, 19, " 2-size");
-    for (size_t i = 0, y = 6; i < Ships.Number_2_Size; i++, y+=2)
-        mvwprintw(Warr->ptrWin,y,20," %c%c%c%",ch, ch, ch);
-
-    mvwprintw(Warr->ptrWin, 4, 28, " 1-size");
-    for (size_t i = 0, y = 6; i < Ships.Number_1_Size; i++, y+=2)
-        mvwprintw(Warr->ptrWin,y,29," %c%c",ch, ch);  
+    DrawShips_InArangeWindow(Warr, Ships);
+  
     //mvwprintw(Warr->ptrWin, 1, 2, "Use ARROWS to move.");
     // mvwprintw(Warr->ptrWin, 2, 2, "Use ENTER to choose the ship.");
     // mvwprintw(Warr->ptrWin, 3, 2, "Use TAB to change the orientation.");
@@ -53,26 +37,26 @@ int getSize(int y){
     } 
 }
 
-void changeActiveShip(struct ShipsInfo const Ships, int *currNumberOfShip, int *line, const int key){
+void changeActiveShip(struct ShipsInfo const Ships, int *currNumber, int *currSize, const int key){
     switch (key){
         case KEY_LEFT:
-            changeActiveShip_LeftKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            changeActiveShip_LeftKey(Ships, currNumber, currSize);
             break;
         case KEY_RIGHT:
-            changeActiveShip_RightKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            changeActiveShip_RightKey(Ships, currNumber, currSize);
             break;
         case KEY_UP:
-            changeActiveShip_UpKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            changeActiveShip_UpKey(getNumberOfShipsFromSize(Ships, *currSize), currNumber);
             break;
         case KEY_DOWN:
-            changeActiveShip_DownKey(getMaxNumberOfShipsFromSize(Ships, getSize(*line)), currNumberOfShip,line);
+            changeActiveShip_DownKey(getNumberOfShipsFromSize(Ships, *currSize), currNumber);
             break;
         default: 
             break;
     }
 }
 
-int getMaxNumberOfShipsFromSize(struct ShipsInfo const Ships, int size){
+int getNumberOfShipsFromSize(struct ShipsInfo const Ships, int size){
     switch (size){
         case 4: return Ships.Number_4_Size;
         case 3: return Ships.Number_3_Size;
@@ -81,34 +65,36 @@ int getMaxNumberOfShipsFromSize(struct ShipsInfo const Ships, int size){
     }
 }
 
-void changeActiveShip_LeftKey(int maxNumber, int *x, int *y){
-    if (*x == 0)
-        *x = maxNumber-1;
+void changeActiveShip_UpKey(int maxNumber, int* currNumber){
+    if (*currNumber == 1)
+        *currNumber = maxNumber;
     else 
-        *x -= 1;
+        *currNumber -= 1;
 }
 
-void changeActiveShip_RightKey(int maxNumber, int *x, int *y){
-    if (*x == maxNumber-1)
-        *x = 0;
+void changeActiveShip_DownKey(int maxNumber, int* currNumber){
+    if (*currNumber == maxNumber)
+        *currNumber = 1;
     else 
-        *x += 1;
+        *currNumber += 1;
 }
 
-void changeActiveShip_UpKey(int maxNumber, int *x, int *y){ 
-    if (*y == 5)
-        *y = 11;
-    else 
-        *y -= 2;
-    *x = 0;
+void changeActiveShip_RightKey(struct ShipsInfo const Ships, int* currNumber, int* currSize){
+    do {
+        (*currSize)++;
+        if (*currSize > 4) // = 5
+            *currSize = 0;
+    }
+    while (!getNumberOfShipsFromSize(Ships, *currSize));
 }
 
-void changeActiveShip_DownKey(int maxNumber, int *x, int *y){ 
-    if (*y == 11)
-        *y = 5;
-    else 
-        *y += 2;
-    *x = 0;
+void changeActiveShip_LeftKey(struct ShipsInfo const Ships, int* currNumber, int* currSize){
+    do {
+        (*currSize)--;
+        if (*currSize < 1) // = 0
+            *currSize = 4;
+    }
+    while (!getNumberOfShipsFromSize(Ships, *currSize));
 }
 
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_ships){
@@ -154,56 +140,99 @@ void DrawErrorMessage(WINDOW* WIN){
     wrefresh(WIN);
 }
 
-void DrawStandingShips(WINDOW* WIN, struct ShipsInfo Ships){
+void DrawShips_InArangeWindow(WindowParametres *Warr, struct ShipsInfo Ships){
     char ch = 219;
-    for (int i = 0, x = 12; i < Ships.Number_4_Size; i++, x+=5){
-        if (Ships.Ships[getIndex(5, i, Ships)].stand == TRUE)
-            wattron(WIN, COLOR_PAIR(55));
+    int type = 0;
+    wattron(Warr->ptrWin, COLOR_PAIR(2));
+
+    mvwprintw(Warr->ptrWin, 4, 2, " 4-size");
+    type = 4;
+    for (size_t number = 0, y = 6; number < Ships.Number_4_Size; number++, y+=2){
+        if (Ships.Ships[getIndex(Ships, type, number)].stand == TRUE)
+            wattron(Warr->ptrWin, COLOR_PAIR(55));
         else
-            wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,5,x," %c%c%c%c",ch, ch, ch, ch);
+            wattron(Warr->ptrWin, COLOR_PAIR(2));
+        mvwprintw(Warr->ptrWin,y,2," %c%c%c%c%c",ch, ch, ch, ch, ch);
     }
-    for (int i = 0, x = 12; i < Ships.Number_3_Size; i++, x+=4){
-        if (Ships.Ships[getIndex(7, i, Ships)].stand == TRUE)
-            wattron(WIN, COLOR_PAIR(55));
+
+    mvwprintw(Warr->ptrWin, 4, 10, " 3-size");
+    for (size_t number = 0, y = 6; number < Ships.Number_3_Size; number++, y+=2){
+        if (Ships.Ships[getIndex(Ships, type, number)].stand == TRUE)
+            wattron(Warr->ptrWin, COLOR_PAIR(55));
         else
-            wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,7,x," %c%c%c",ch, ch, ch);
+            wattron(Warr->ptrWin, COLOR_PAIR(2));        
+        mvwprintw(Warr->ptrWin,y,11," %c%c%c%c",ch, ch, ch, ch);
     }
-    for (int i = 0, x = 12; i < Ships.Number_2_Size; i++, x+=3){
-        if (Ships.Ships[getIndex(9, i, Ships)].stand == TRUE)
-        wattron(WIN, COLOR_PAIR(55));
-    else
-        wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,9,x," %c%c",ch,ch);
+    
+    mvwprintw(Warr->ptrWin, 4, 19, " 2-size");
+    for (size_t number = 0, y = 6; number < Ships.Number_2_Size; number++, y+=2){
+        if (Ships.Ships[getIndex(Ships, type, number)].stand == TRUE)
+            wattron(Warr->ptrWin, COLOR_PAIR(55));
+        else
+            wattron(Warr->ptrWin, COLOR_PAIR(2));        
+        mvwprintw(Warr->ptrWin,y,20," %c%c%c%",ch, ch, ch);
     }
-    for (int i = 0, x = 12; i < Ships.Number_1_Size; i++, x+=2){
-        if (Ships.Ships[getIndex(11, i, Ships)].stand == TRUE)
-        wattron(WIN, COLOR_PAIR(55));
-    else
-        wattron(WIN, COLOR_PAIR(2));
-        mvwprintw(WIN,11,x," %c",ch); 
+
+    mvwprintw(Warr->ptrWin, 4, 28, " 1-size");
+    for (size_t number = 0, y = 6; number < Ships.Number_1_Size; number++, y+=2){
+                if (Ships.Ships[getIndex(Ships, type, number)].stand == TRUE)
+            wattron(Warr->ptrWin, COLOR_PAIR(55));
+        else
+            wattron(Warr->ptrWin, COLOR_PAIR(2));
+        mvwprintw(Warr->ptrWin,y,29," %c%c",ch, ch);
     }
-    wrefresh(WIN);
-    wattron(WIN, COLOR_PAIR(2));
+
 }
 
-void DrawActiveShip(WINDOW* WIN, int y, int currShip){
+// void DrawStandingShips(WINDOW* WIN, struct ShipsInfo Ships){
+//     char ch = 219;
+//     for (int i = 0, x = 12; i < Ships.Number_4_Size; i++, x+=5){
+//         if (Ships.Ships[getIndex(5, i, Ships)].stand == TRUE)
+//             wattron(WIN, COLOR_PAIR(55));
+//         else
+//             wattron(WIN, COLOR_PAIR(2));
+//         mvwprintw(WIN,5,x," %c%c%c%c",ch, ch, ch, ch);
+//     }
+//     for (int i = 0, x = 12; i < Ships.Number_3_Size; i++, x+=4){
+//         if (Ships.Ships[getIndex(7, i, Ships)].stand == TRUE)
+//             wattron(WIN, COLOR_PAIR(55));
+//         else
+//             wattron(WIN, COLOR_PAIR(2));
+//         mvwprintw(WIN,7,x," %c%c%c",ch, ch, ch);
+//     }
+//     for (int i = 0, x = 12; i < Ships.Number_2_Size; i++, x+=3){
+//         if (Ships.Ships[getIndex(9, i, Ships)].stand == TRUE)
+//         wattron(WIN, COLOR_PAIR(55));
+//     else
+//         wattron(WIN, COLOR_PAIR(2));
+//         mvwprintw(WIN,9,x," %c%c",ch,ch);
+//     }
+//     for (int i = 0, x = 12; i < Ships.Number_1_Size; i++, x+=2){
+//         if (Ships.Ships[getIndex(11, i, Ships)].stand == TRUE)
+//         wattron(WIN, COLOR_PAIR(55));
+//     else
+//         wattron(WIN, COLOR_PAIR(2));
+//         mvwprintw(WIN,11,x," %c",ch); 
+//     }
+//     wrefresh(WIN);
+//     wattron(WIN, COLOR_PAIR(2));
+// }
+
+void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size){
     char ch = 219;
-    int size = getSize(y);
-    int x = 13 + currShip*(size+1);
-    wattron(WIN, COLOR_PAIR(100));
-    for (int i = 0; i < size; i++, x++)
-        mvwprintw(WIN, y, x,"%c",ch);
-    wrefresh(WIN);
+    int y = 4 + number*2;
+    wattron(warr->ptrWin, COLOR_PAIR(100));
+    for (int i = 0; i < size; i++, y)
+        mvwprintw(warr->ptrWin, y, i+2,"%c",ch);
+    wrefresh(warr->ptrWin);
 }
 
-int getIndex(int lineY, int currNumber, struct ShipsInfo Ships){
-    switch(lineY){
-        case 5: return  currNumber;
-        case 7: return  Ships.Number_4_Size + currNumber;
-        case 9: return  Ships.Number_4_Size + Ships.Number_3_Size + currNumber;
-        case 11: return Ships.Number_4_Size + Ships.Number_3_Size + Ships.Number_2_Size + currNumber;
+int getIndex(struct ShipsInfo Ships, int number, int shipSize){
+    switch(shipSize){
+        case 4: return  number;
+        case 3: return  Ships.Number_4_Size + number;
+        case 2: return  Ships.Number_4_Size + Ships.Number_3_Size + number;
+        case 1: return Ships.Number_4_Size + Ships.Number_3_Size + Ships.Number_2_Size + number;
         default: return -1;
     }
 }
