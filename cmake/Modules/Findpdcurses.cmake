@@ -1,3 +1,5 @@
+# Warning: this file is not used and not written properly
+
 # File for finding pdcurses Library
 # This file should define:
 # PDCURSES_FOUND - TRUE if everything is okay
