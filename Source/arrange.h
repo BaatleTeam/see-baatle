@@ -19,3 +19,6 @@ void DrawErrorMessage(WINDOW*);
 int getIndex(struct ShipsInfo Ships, int number, int size);
 int getSize(int); // Преобразовывает текущий y в размер корабля
 int getNumberOfShipsFromSize(struct ShipsInfo const Ships, int size);
+
+
+void initCurrActiveShip_Arrange(struct ShipsInfo, int *currShipNumber, int *currShipSize);

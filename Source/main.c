@@ -174,16 +174,18 @@ int main(){
     DrawDefaltArrangeWindow(WArrange, ShipsPlayer);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
-    int currShipSize = 4;
-    int currShipNumber = 0;
+    int currShipSize = 0; 
+    int currShipNumber = 0; // 1..number
+    initCurrActiveShip_Arrange(ShipsPlayer, &currShipNumber, &currShipSize); // ?
+
     int index;
     ch = 219;
-    //DrawActiveShip(WArrange->ptrWin, currShipNumber, currShipSize);
+
+    enum actWind {ARRANGE = 1, SHIP = 2};
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip); // Начальная инициализация.
-
-    enum actWind {ARRANGE = 1, SHIP = 2};
+    DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
 
     while((key = getch()) != KEY_F(2)){
         switch(key){
@@ -193,10 +195,9 @@ int main(){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
+                        DrawShips_InArangeWindow(WArrange, ShipsPlayer);
 						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
 						DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
-                        DrawShips_InArangeWindow(WArrange, ShipsPlayer);
-						// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
@@ -449,39 +450,39 @@ int main(){
 	return 0;
 }
 
-void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){
-    int number_ships_comp = 0;
-    int number_ships_player = 0;
-    for (int i = 0; i < 10; i++)
-       for (int j = 0; j < 15; j++){
-           if (ship_player_field[i][j] == TRUE)
-                number_ships_player++;
-            if (ship_comp_field[i][j] == TRUE)
-                number_ships_comp++; 
-       }
-    if (number_ships_player == 0 || number_ships_comp == 0){
-        if (number_ships_player == 0){
-            attron(COLOR_PAIR(66));
-            mvprintw(4, 12, "                 ");
-            mvprintw(4, 47, "                 ");
-            attroff(COLOR_PAIR(50));
-            mvprintw(4, 16, "You lose!");
-            mvprintw(4, 47, "Computer wins!");
-        }
-        if (number_ships_comp == 0){
-            attron(COLOR_PAIR(66));
-            mvprintw(4, 12, "                 ");
-            mvprintw(4, 47, "                 ");
-            attroff(COLOR_PAIR(50));
-            mvprintw(4, 16, "You win!");
-            mvprintw(4, 47, "Computer lose!");
-        }
-    }
-    else {
-    mvprintw(4, 12, "Number of ships: %d ", number_ships_player);
-    mvprintw(4, 47, "Number of ships: %d ", number_ships_comp);
-    }
-}
+// void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){
+//     int number_ships_comp = 0;
+//     int number_ships_player = 0;
+//     for (int i = 0; i < 10; i++)
+//        for (int j = 0; j < 15; j++){
+//            if (ship_player_field[i][j] == TRUE)
+//                 number_ships_player++;
+//             if (ship_comp_field[i][j] == TRUE)
+//                 number_ships_comp++; 
+//        }
+//     if (number_ships_player == 0 || number_ships_comp == 0){
+//         if (number_ships_player == 0){
+//             attron(COLOR_PAIR(66));
+//             mvprintw(4, 12, "                 ");
+//             mvprintw(4, 47, "                 ");
+//             attroff(COLOR_PAIR(50));
+//             mvprintw(4, 16, "You lose!");
+//             mvprintw(4, 47, "Computer wins!");
+//         }
+//         if (number_ships_comp == 0){
+//             attron(COLOR_PAIR(66));
+//             mvprintw(4, 12, "                 ");
+//             mvprintw(4, 47, "                 ");
+//             attroff(COLOR_PAIR(50));
+//             mvprintw(4, 16, "You win!");
+//             mvprintw(4, 47, "Computer lose!");
+//         }
+//     }
+//     else {
+//     mvprintw(4, 12, "Number of ships: %d ", number_ships_player);
+//     mvprintw(4, 47, "Number of ships: %d ", number_ships_comp);
+//     }
+// }
 
 void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x){
     int mimo = 79;
