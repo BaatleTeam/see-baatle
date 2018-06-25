@@ -209,7 +209,7 @@ int main(){
 	                break;            
 	            }
 	            break;
-	        case 9:
+	        case 9: // tab
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
@@ -222,14 +222,15 @@ int main(){
 	                	break;
 	        	}
     		    break;
-	        case '\n': 
+	        case '\n':
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
                     	clearTmpShip(TmpShip);
-	                    if (ShipsPlayer.Ships[index].stand == FALSE)
-	                        InitPrimaryCoordinates(currShipNumber, TmpShip, BoardPlayer);
+	                    if (ShipsPlayer.Ships[index].stand == FALSE){
+	                        InitPrimaryCoordinates(currShipSize, TmpShip, BoardPlayer);
+                        }
 	                    else {
 	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
@@ -237,18 +238,19 @@ int main(){
                         refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
                         DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 	                    break;
+
 	                case SHIP:
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
 	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
 	                        DrawErrorMessage(WArrange->ptrWin);
 	                    else {
-	                    	active_window = ARRANGE;
 	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
-	                    	DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
+	                    	// DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
 	                    	// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
 
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
+	                    	active_window = ARRANGE;
                             
                             //showDebugFieid(Board);
 	                    	// tmp_otladchik_tmp_ship(TmpShip);
