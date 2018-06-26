@@ -1,6 +1,12 @@
 # ignore all files in the Build/ directory
 Build/
 
+# CMake unnecessary files
+CMake*
+Makefile
+!cmake
+!CMakeLists.txt
+
 # Object files
 *.o
 *.ko
