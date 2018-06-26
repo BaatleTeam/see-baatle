@@ -227,11 +227,10 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, struct Board Board){
 
 // -------------------------------------------------------------------------------
 
-int InitPrimaryCoordinates(int act_y, ship* ship, struct Board Board){
+int InitPrimaryCoordinates(int ShipSize, ship* ship, struct Board Board){
     int x = 0;
     int y = 0;
-    ship->size = getSize(act_y);
-    while (checkPlace(x, y, ship->size, Board) != TRUE){
+    while (checkPlace(x, y, ShipSize, Board) != TRUE){
         if (y+1 > Board.Height-1){
             y = 0;
             x++;
@@ -240,7 +239,8 @@ int InitPrimaryCoordinates(int act_y, ship* ship, struct Board Board){
             y++;
     }
     ship->x = x;
-    ship->y = y ;
+    ship->y = y;
+    ship->size = ShipSize;
     ship->stand = TRUE;
     ship->type = FALSE;
 }

@@ -174,17 +174,18 @@ int main(){
     DrawDefaltArrangeWindow(WArrange, ShipsPlayer);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
-    int currLine = 5;
-    int currShip = 0;
+    int currShipSize = 0; 
+    int currShipNumber = 0; // 1..number
+    initCurrActiveShip_Arrange(ShipsPlayer, &currShipNumber, &currShipSize); // ?
+
+    int index;
     ch = 219;
+
+    enum actWind {ARRANGE = 1, SHIP = 2};
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip); // Начальная инициализация.
-
-    int index;
-    DrawActiveShip(WArrange->ptrWin, currLine, currShip);
-
-    enum actWind {ARRANGE = 1, SHIP = 2};
+    DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
 
     while((key = getch()) != KEY_F(2)){
         switch(key){
@@ -194,9 +195,9 @@ int main(){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
-						// changeActiveShip(ShipsPlayer, &currShip, &currLine, key);
-						// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
-						// DrawActiveShip(WArrange->ptrWin, currLine, currShip);
+                        DrawShips_InArangeWindow(WArrange, ShipsPlayer);
+						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
+						DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
@@ -208,7 +209,7 @@ int main(){
 	                break;            
 	            }
 	            break;
-	        case 9:
+	        case 9: // tab
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
@@ -221,14 +222,15 @@ int main(){
 	                	break;
 	        	}
     		    break;
-	        case '\n': 
+	        case '\n':
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
-	                    index = getIndex(currLine, currShip, ShipsPlayer);
+	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
                     	clearTmpShip(TmpShip);
-	                    if (ShipsPlayer.Ships[index].stand == FALSE)
-	                        InitPrimaryCoordinates(currLine, TmpShip, BoardPlayer);
+	                    if (ShipsPlayer.Ships[index].stand == FALSE){
+	                        InitPrimaryCoordinates(currShipSize, TmpShip, BoardPlayer);
+                        }
 	                    else {
 	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
@@ -236,18 +238,19 @@ int main(){
                         refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
                         DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 	                    break;
+
 	                case SHIP:
-	                    index = getIndex(currLine, currShip, ShipsPlayer);
+	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
 	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
 	                        DrawErrorMessage(WArrange->ptrWin);
 	                    else {
-	                    	active_window = ARRANGE;
 	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
-	                    	DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
-	                    	DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
+	                    	// DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
+	                    	// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
 
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
+	                    	active_window = ARRANGE;
                             
                             //showDebugFieid(Board);
 	                    	// tmp_otladchik_tmp_ship(TmpShip);
@@ -449,39 +452,39 @@ int main(){
 	return 0;
 }
 
-void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){
-    int number_ships_comp = 0;
-    int number_ships_player = 0;
-    for (int i = 0; i < 10; i++)
-       for (int j = 0; j < 15; j++){
-           if (ship_player_field[i][j] == TRUE)
-                number_ships_player++;
-            if (ship_comp_field[i][j] == TRUE)
-                number_ships_comp++; 
-       }
-    if (number_ships_player == 0 || number_ships_comp == 0){
-        if (number_ships_player == 0){
-            attron(COLOR_PAIR(66));
-            mvprintw(4, 12, "                 ");
-            mvprintw(4, 47, "                 ");
-            attroff(COLOR_PAIR(50));
-            mvprintw(4, 16, "You lose!");
-            mvprintw(4, 47, "Computer wins!");
-        }
-        if (number_ships_comp == 0){
-            attron(COLOR_PAIR(66));
-            mvprintw(4, 12, "                 ");
-            mvprintw(4, 47, "                 ");
-            attroff(COLOR_PAIR(50));
-            mvprintw(4, 16, "You win!");
-            mvprintw(4, 47, "Computer lose!");
-        }
-    }
-    else {
-    mvprintw(4, 12, "Number of ships: %d ", number_ships_player);
-    mvprintw(4, 47, "Number of ships: %d ", number_ships_comp);
-    }
-}
+// void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){
+//     int number_ships_comp = 0;
+//     int number_ships_player = 0;
+//     for (int i = 0; i < 10; i++)
+//        for (int j = 0; j < 15; j++){
+//            if (ship_player_field[i][j] == TRUE)
+//                 number_ships_player++;
+//             if (ship_comp_field[i][j] == TRUE)
+//                 number_ships_comp++; 
+//        }
+//     if (number_ships_player == 0 || number_ships_comp == 0){
+//         if (number_ships_player == 0){
+//             attron(COLOR_PAIR(66));
+//             mvprintw(4, 12, "                 ");
+//             mvprintw(4, 47, "                 ");
+//             attroff(COLOR_PAIR(50));
+//             mvprintw(4, 16, "You lose!");
+//             mvprintw(4, 47, "Computer wins!");
+//         }
+//         if (number_ships_comp == 0){
+//             attron(COLOR_PAIR(66));
+//             mvprintw(4, 12, "                 ");
+//             mvprintw(4, 47, "                 ");
+//             attroff(COLOR_PAIR(50));
+//             mvprintw(4, 16, "You win!");
+//             mvprintw(4, 47, "Computer lose!");
+//         }
+//     }
+//     else {
+//     mvprintw(4, 12, "Number of ships: %d ", number_ships_player);
+//     mvprintw(4, 47, "Number of ships: %d ", number_ships_comp);
+//     }
+// }
 
 void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x){
     int mimo = 79;
