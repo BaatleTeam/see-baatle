@@ -1,2 +1,2 @@
 make
-Build\sea_battle.exe
+see_baatle.exe
