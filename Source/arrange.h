@@ -5,16 +5,19 @@
 void DrawDefaltArrangeWindow(WindowParametres*,struct ShipsInfo);
 
 void changeActiveShip(struct ShipsInfo const Ship, int*, int*, const int);
-void changeActiveShip_LeftKey(int maxNumber, int *x, int *y);
-void changeActiveShip_DownKey(int maxNumber, int *x, int *y);
-void changeActiveShip_RightKey(int maxNumber, int *x, int *y);
-void changeActiveShip_UpKey(int maxNumber, int *x, int *y);
+void changeActiveShip_LeftKey(struct ShipsInfo const Ships, int* currNumber, int* currType);
+void changeActiveShip_RightKey(struct ShipsInfo const Ships, int* currNumber, int* currType);
+void changeActiveShip_DownKey(int maxNumber, int* currNumber);
+void changeActiveShip_UpKey(int maxNumber, int* currNumber);
 
+void DrawShips_InArangeWindow(WindowParametres *warr, struct ShipsInfo Ships);
+void DrawActiveShip_InArrangeWindow(WindowParametres *warr, int number, int size);
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
 void DrawErrorMessage(WINDOW*);
-void DrawStandingShips(WINDOW* WIN, struct ShipsInfo);
-void DrawActiveShip(WINDOW* WIN, int y, int x);
+// void DrawStandingShips(WINDOW* WIN, struct ShipsInfo);
 
-int getIndex(int lineY, int currNumber, struct ShipsInfo Ships);
-int getSize(int); // Преобразовывает текущий y в размер корабля
-int getMaxNumberOfShipsFromSize(struct ShipsInfo const Ships, int lineY);
+int getIndex(struct ShipsInfo Ships, int number, int size);
+int getNumberOfShipsFromSize(struct ShipsInfo const Ships, int size);
+
+
+void initCurrActiveShip_Arrange(struct ShipsInfo, int *currShipNumber, int *currShipSize);
