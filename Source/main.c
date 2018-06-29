@@ -201,7 +201,7 @@ int main(){
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
-	                    refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
+	                    refreshStandingShips(WShip->ptrWin, BoardPlayer);
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 
 	                    //showDebugFieid(BoardPlayer);
@@ -213,7 +213,7 @@ int main(){
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
-	                    refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);	
+	                    refreshStandingShips(WShip->ptrWin, BoardPlayer);	
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 
 	                    //tmp_otladchik_tmp_ship(TmpShip);
@@ -235,7 +235,7 @@ int main(){
 	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
 	                    }
-                        refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
+                        refreshStandingShips(WShip->ptrWin, BoardPlayer);
                         DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 	                    break;
 
@@ -249,7 +249,7 @@ int main(){
 	                    	// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
 
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
-	                    	refresh_ship_player_gpaphics(WShip->ptrWin, BoardPlayer);
+	                    	refreshStandingShips(WShip->ptrWin, BoardPlayer);
 	                    	active_window = ARRANGE;
                             
                             //showDebugFieid(Board);
@@ -433,7 +433,7 @@ int main(){
     //             }
     //             wrefresh(WShip->ptrWin);
     //             podchet_ships(ship_player_field, ship_comp_field);
-    //             refresh_ship_player_gpaphics(WShip->ptrWin, Board);
+    //             refreshStandingShips(WShip->ptrWin, Board);
     
     // /*
     // move(29,0);

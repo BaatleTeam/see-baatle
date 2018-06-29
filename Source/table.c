@@ -13,7 +13,7 @@ void initWindowsParametres(struct Board board, WindowParametres *mainW, WindowPa
 	ship->Begin_y = TopIndent;
 	ship->Begin_x = LeftIndent;
     ship->Height = 3 + board.Height * 2;
-	ship->Width  = 3 + board.Width  * 2;
+	ship->Width  = 4 + board.Width  * 2;
 
     // Окно arrange на одном уровне с ship.
     arrange->Begin_y = TopIndent;
@@ -64,9 +64,13 @@ void DrawTableWindow(WindowParametres *Wship){
 
 void str_numb(WINDOW *WIN, int width, int x){
     int lin = 179;
-    mvwprintw(WIN, x, 0, "%c%d",lin, (int)x/2-1);
-    for (int i = 2; i < width; i++){
-        if (i % 2 == 0)
+    int LineNumber = (int)x/2-1;
+    if (LineNumber < 10)
+        mvwprintw(WIN, x, 0, "%c %d", lin, LineNumber);
+    else
+        mvwprintw(WIN, x, 0, "%c%d", lin, LineNumber);
+    for (int i = 3; i < width; i++){
+        if (i % 2 != 0)
             mvwprintw(WIN, x, i, "%c", lin);
         else 
             mvwprintw(WIN, x, i, " ");
@@ -79,7 +83,7 @@ void str_line(WINDOW *WIN, int width, int x){
     int krest = 197; 
     mvwprintw(WIN, x, 0, "%c%c", chert, lin);
     for (int i = 2; i < width; i++){
-        if (i % 2 == 0 )
+        if (i % 2 != 0 )
             mvwprintw(WIN, x, i, "%c", krest);
         else
             mvwprintw(WIN, x, i, "%c", lin);
@@ -94,19 +98,20 @@ void str_top(WINDOW *WIN, int width){
     int chert_t = 194;
     int word = 65;
     mvwprintw(WIN, 0,0, "%c", ugol);
-    for (int i = 1; i< width-1; i++){
-        if (i % 2 != 0)
+    mvwprintw(WIN, 0,1, "%c", chert);
+    for (int i = 2; i < width-1; i++)
+        if (i % 2 == 0)
             mvwprintw(WIN, 0, i, "%c", chert);
         else
             mvwprintw(WIN, 0, i, "%c", chert_t);
-    }
+
     ugol = 191;
-    mvwprintw(WIN, 0, width-1, "%c", ugol);
     chert = 179;
+    mvwprintw(WIN, 0, width-1, "%c", ugol);
     mvwprintw(WIN, 1, 0, "%c ",chert);
-    for (int i = 2; i < width-1; i+=2, word++){
+    mvwprintw(WIN, 1, 2, " ");
+    for (int i = 3; i < width-1; i+=2, word++)
         mvwprintw(WIN, 1, i, "%c%c",chert, word);
-    }
     mvwprintw(WIN, 1, width-1, "%c",chert);
 }
 
@@ -115,8 +120,9 @@ void str_bottom(WINDOW *WIN, int width, int height){
     int chert = 196;
     int chert_t = 193;
     mvwprintw(WIN, height-1, 0, "%c", ugol);
-    for (int i = 1; i< width-1; i++){
-        if (i % 2 != 0)
+    mvwprintw(WIN, height-1, 1, "%c", chert);
+    for (int i = 2; i< width-1; i++){
+        if (i % 2 == 0)
             mvwprintw(WIN, height-1, i, "%c", chert);
         else
             mvwprintw(WIN, height-1, i, "%c", chert_t);
