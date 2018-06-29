@@ -44,7 +44,7 @@ enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; //
 
 extern int getSize(int);
 void deleteShipFromField(ship* ship, struct Board Board);
-void refresh_ship_player_gpaphics(WINDOW *WIN, struct Board Board);
+void refreshStandingShips(WINDOW *WIN, struct Board Board);
 
 bool checkShipBorders(const ship* const ship, const struct Board Board);
 bool checkShipBorders_top_bottom_horizontal(const ship* const ship, const struct Board Board);
