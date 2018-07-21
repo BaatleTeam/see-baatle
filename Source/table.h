@@ -2,7 +2,9 @@
 #include <curses.h>
 #include "ships.h"
 
-void initWindowsParametres(struct Board board, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*);
+extern int calculateArrangeHeight(struct ShipsInfo Ships);
+
+void initWindowsParametres(struct ShipsInfo ships, struct Board board, Indents Indents, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*);
 void DrawTableWindow(WindowParametres *Wship);
 void DrawMainWindow(WindowParametres *Wmain);
 void str_top(WINDOW*, int);

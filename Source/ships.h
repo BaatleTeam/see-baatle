@@ -39,6 +39,17 @@ typedef struct GameDataCase {
 	int BoardHeight[3];
 } GameDataCase;
 
+typedef struct Indents {
+    size_t LeftIndent;
+    size_t BetweenIndent;
+    size_t RightIndent;
+    size_t TopIndent;
+    size_t BottomIndent;
+} Indents;
+
+void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
+
+
 enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
 enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 

@@ -1,24 +1,17 @@
 #include "table.h"
 
 
-void initWindowsParametres(struct Board board, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
-    // Отступы между окнами и краями главного окна.
-    size_t LeftIndent    = 4;
-    size_t BetweenIndent = 3;
-    size_t RightIndent   = 4;
-    size_t TopIndent     = 3;
-    size_t BottomIndent  = 4;
-
+void initWindowsParametres(struct ShipsInfo Ships, struct Board board, Indents Indents,  WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
     // Зависимости от размера отступов.
-	ship->Begin_y = TopIndent;
-	ship->Begin_x = LeftIndent;
+	ship->Begin_y = Indents.TopIndent;
+	ship->Begin_x = Indents.LeftIndent;
     ship->Height = 3 + board.Height * 2;
 	ship->Width  = 4 + board.Width  * 2;
 
     // Окно arrange на одном уровне с ship.
-    arrange->Begin_y = TopIndent;
-    arrange->Begin_x = LeftIndent + ship->Width + BetweenIndent;
-    arrange->Height = 21; // min
+    arrange->Begin_y = Indents.TopIndent;
+    arrange->Begin_x = Indents.LeftIndent + ship->Width + Indents.BetweenIndent;
+    arrange->Height = calculateArrangeHeight(Ships);
     arrange->Width = 38; // min
 
     // Размеры окна под стрельбу должны соотвествовать окну ship.
@@ -28,10 +21,13 @@ void initWindowsParametres(struct Board board, WindowParametres *mainW, WindowPa
     shoot->Width = ship->Width;
 
     // Новое главное окно // - ?
-    mainW->Width = arrange->Begin_x + arrange->Width + RightIndent;
-    mainW->Height = TopIndent + ship->Height + BottomIndent;
+    mainW->Width = arrange->Begin_x + arrange->Width + Indents.RightIndent;
+    mainW->Height = Indents.TopIndent + ship->Height + Indents.BottomIndent;
     mainW->Begin_y = 0;
     mainW->Begin_x = 0;
+
+    if (arrange->Height > ship->Height)
+        mainW->Height += ship->Height - arrange->Height;
 
     ship->ptrWin = newwin(ship->Height, ship->Width, ship->Begin_y, ship->Begin_x);
     arrange->ptrWin = newwin(arrange->Height, arrange->Width, arrange->Begin_y, arrange->Begin_x);
@@ -39,9 +35,9 @@ void initWindowsParametres(struct Board board, WindowParametres *mainW, WindowPa
     mainW->ptrWin = newwin(mainW->Height, mainW->Width, mainW->Begin_y, mainW->Begin_x);
     // + help
 
-    if (mainW->Height < arrange->Height + 4)
- 		mainW->Height = arrange->Height + 4;
     resize_term(mainW->Height, mainW->Width);
+    clear();
+    refresh();
 }
 
 void DrawMainWindow(WindowParametres *Wmain){

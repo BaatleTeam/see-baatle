@@ -22,12 +22,10 @@ int main(){
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
 
 	savetty();
-    // resize_term(heightOfMainWindow, widthOfMainWindow);
     resize_term(38,89); // Beta
     clear();
     refresh();
 
-    int active_window = 1; // Номер активного окна.
     int number_stand_ships = 0; 
 	int ch; // ??
     int key;
@@ -42,13 +40,6 @@ int main(){
     WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
     wbkgdset(win_menu, COLOR_PAIR(200));
     wclear(win_menu);
-    // wattron(win_menu, COLOR_PAIR(2));
-    // for (int i = 0; i < LINES; i++)
-    // 	mvwprintw(win_menu, i, 0, "%d", i);
-    // for (int i = 0; i < COLS; i++){
-    // 	mvwprintw(win_menu, 0, i, "%d", i / 10);
-    // 	mvwprintw(win_menu, 1, i, "%d", i % 10);
-    // }
     wrefresh(win_menu);
 
     WINDOW* win_hello = newwin(9, 61, 1, 14);
@@ -61,7 +52,6 @@ int main(){
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
 	DrawLegendDelay(win_menu);
 
-	// enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
 	enum chooseMode { choosingShips, choosingSize } chooseMode;
 	active_case = CASE_1;
 	chooseMode = choosingShips;
@@ -148,15 +138,23 @@ int main(){
     	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
     }
 
-    wbkgdset(win_hello, COLOR_PAIR(200));
+    wbkgdset(win_menu, COLOR_PAIR(200));
     wclear(win_menu);
     wrefresh(win_menu);
-	for (int i = 0; i < 4; i++)
-		delwin(WCaseParametres[i].ptrWin);
+    delwin(win_menu);
+
+	for (int i = 0; i < GAME_CASES_NUMBER; i++) delwin(WCaseParametres[i].ptrWin);
     delwin(win_hello);
     free(WCaseParametres);
     free(GDCases);
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
+
+    // Объявление размеров отступов.
+    Indents Indents = {.LeftIndent    = 4,
+                       .BetweenIndent = 5,
+                       .RightIndent   = 4,
+                       .TopIndent     = 3,
+                       .BottomIndent  = 4 };
 
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
@@ -164,10 +162,7 @@ int main(){
     WindowParametres *WShip = malloc(sizeof(WindowParametres));
     WindowParametres *WShoot = malloc(sizeof(WindowParametres));
     WindowParametres *WHelp = malloc(sizeof(WindowParametres));
-    initWindowsParametres(BoardPlayer, WMain, WArrange, WShip, WShoot, WHelp);
-
-    // Окно заднего фона.
-    delwin(win_menu);
+    initWindowsParametres(ShipsPlayer, BoardPlayer, Indents, WMain, WArrange, WShip, WShoot, WHelp);
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
@@ -181,7 +176,8 @@ int main(){
     int index;
     ch = 219;
 
-    enum actWind {ARRANGE = 1, SHIP = 2};
+    enum actWind { ARRANGE = 1, SHIP = 2 };
+    int active_window = 1; // Номер активного окна.
 
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip); // Начальная инициализация.

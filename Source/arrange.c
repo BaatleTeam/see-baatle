@@ -28,6 +28,20 @@ void DrawDefaltArrangeWindow(WindowParametres *Warr, struct ShipsInfo Ships){
     wrefresh(Warr->ptrWin);
 }
 
+int calculateArrangeHeight(struct ShipsInfo Ships){
+    int Height = 0;
+    Height = getMaxNumOfShips(Ships) * 2 + 6 + 4;
+    return Height;
+}
+
+int getMaxNumOfShips(struct ShipsInfo ships){
+    int max = ships.Number_1_Size;
+    if (ships.Number_2_Size > max) max = ships.Number_2_Size;
+    if (ships.Number_3_Size > max) max = ships.Number_3_Size;
+    if (ships.Number_4_Size > max) max = ships.Number_4_Size;
+    return max;
+}
+
 void initCurrActiveShip_Arrange(struct ShipsInfo Ships, int *currShipNumber, int *currShipSize){
     *currShipSize = 4;
     *currShipNumber = 0;
