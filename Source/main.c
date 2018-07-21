@@ -186,6 +186,8 @@ int main(){
                         DrawShips_InArangeWindow(WArrange, ShipsPlayer);
 						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
 						DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
+                        reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+                        colorizeCurrShip(WShip->ptrWin, ShipsPlayer.Ships[getIndex(ShipsPlayer, currShipNumber, currShipSize)], BoardPlayer);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);

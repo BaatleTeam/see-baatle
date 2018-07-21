@@ -241,3 +241,26 @@ int getIndex(struct ShipsInfo Ships, int number, int shipSize){
         default: return -1;
     }
 }
+
+void colorizeCurrShip(WINDOW* WIN, ship Ship, struct Board Board){
+    if (Ship.stand == TRUE){
+        wattron(WIN, COLOR_PAIR(2));
+        char rect = 254;
+        int i = Ship.y;
+        int j = Ship.x;
+
+        switch(Ship.type){
+            case TRUE:
+                for (; i < Ship.size + Ship.y; i++){
+                    mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
+                }
+                break;
+            case FALSE:
+                for (; j < Ship.size + Ship.x; j++){
+                    mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
+                }
+                break;
+        }
+        wrefresh(WIN);
+    }
+}
