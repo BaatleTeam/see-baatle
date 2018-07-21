@@ -218,8 +218,6 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, struct ShipsInfo Ships){
 void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size){
     char ch = 219;
     int y = 6 + number*2;
-    // move(0,0);
-    // printw("ActShip number: %d", number);
     int x = 0;
     switch (size){
         case 4: x =  3; break;
