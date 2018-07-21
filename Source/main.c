@@ -235,6 +235,17 @@ int main(){
 	                    break;
         		}
                 break;
+            case 27: // Esc
+                switch (active_window){
+                    case SHIP:
+                        reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+	                    active_window = ARRANGE;
+                        break;
+                    case ARRANGE:
+                        // /No any reaction/
+                        break;
+                }
+                break;
     	}
 	}
     
