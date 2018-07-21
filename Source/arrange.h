@@ -3,6 +3,8 @@
 #include "ships.h"
 
 void DrawDefaltArrangeWindow(WindowParametres*,struct ShipsInfo);
+int calculateArrangeHeight(struct ShipsInfo Ships);
+int getMaxNumOfShips(struct ShipsInfo ships);
 
 void changeActiveShip(struct ShipsInfo const Ship, int*, int*, const int);
 void changeActiveShip_LeftKey(struct ShipsInfo const Ships, int* currNumber, int* currType);

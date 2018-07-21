@@ -13,7 +13,7 @@ void deleteShipFromField(ship* ship, struct Board Board){
     }
 }
 
-void refreshStandingShips(WINDOW *WIN, struct Board Board){
+void reDrawStandingShips(WINDOW *WIN, struct Board Board){
     int rect = 254;
     for (int i = 0; i < Board.Height; i++)
         for (int j = 0; j < Board.Width; j++){
@@ -27,6 +27,25 @@ void refreshStandingShips(WINDOW *WIN, struct Board Board){
             }
         }
     wrefresh(WIN);
+}
+
+void refresh_ship_player_array(struct ShipsInfo Ships, struct Board Board){
+    for (int i = 0; i < Ships.Number_4_Size + Ships.Number_3_Size + Ships.Number_2_Size + Ships.Number_1_Size; i++)
+        if (Ships.Ships[i].stand == TRUE)
+            standing_ship(&Ships.Ships[i], Board);
+}
+
+void standing_ship(ship* ship, struct Board Board){
+    switch (ship->type){
+        case FALSE:
+            for (int i = 0; i < ship->size; i++)
+                Board.field[ship->y][i+ship->x] = TRUE;
+            break;
+        case TRUE:
+            for (int i = 0; i < ship->size; i++)
+                Board.field[i+ship->y][ship->x] = TRUE;
+            break;
+    }
 }
 
 // -------------------------------------------------------------------------------
@@ -359,15 +378,11 @@ void changeTypeOfShip(ship* ship, struct Board Board){
             if (ship->y + ship->size > Board.Height)
                 ship->y = Board.Height - ship->size;
             ship->type = TRUE;
-            //move(1,0);
-            //printw("Change in vertical, new x: %d, new y: %d\n", ship->x, ship->y);
             break;
         case TRUE:
             if (ship->x + ship->size > Board.Width)
                 ship->x = Board.Width - ship->size;
             ship->type = FALSE;
-            //move(1,0);
-            //printw("Change in horizontal, new x: %d, new y: %d\n", ship->x, ship->y);
             break;
     }
 }

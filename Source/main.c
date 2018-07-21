@@ -22,16 +22,9 @@ int main(){
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
 
 	savetty();
-    // resize_term(heightOfMainWindow, widthOfMainWindow);
     resize_term(38,89); // Beta
     clear();
     refresh();
-
-    int active_window = 1; // Номер активного окна.
-    int number_stand_ships = 0; 
-	int ch; // ??
-    int key;
-    int kr = 197; // ??
 
     // Создание и инициализация возможных вариантов игры.
     GameDataCase* GDCases;
@@ -42,15 +35,9 @@ int main(){
     WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
     wbkgdset(win_menu, COLOR_PAIR(200));
     wclear(win_menu);
-    // wattron(win_menu, COLOR_PAIR(2));
-    // for (int i = 0; i < LINES; i++)
-    // 	mvwprintw(win_menu, i, 0, "%d", i);
-    // for (int i = 0; i < COLS; i++){
-    // 	mvwprintw(win_menu, 0, i, "%d", i / 10);
-    // 	mvwprintw(win_menu, 1, i, "%d", i % 10);
-    // }
     wrefresh(win_menu);
 
+    // Окно с надписью.
     WINDOW* win_hello = newwin(9, 61, 1, 14);
     DrawHelloWindow(win_hello, 9, 61);
 
@@ -61,13 +48,13 @@ int main(){
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
 	DrawLegendDelay(win_menu);
 
-	// enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
 	enum chooseMode { choosingShips, choosingSize } chooseMode;
 	active_case = CASE_1;
 	chooseMode = choosingShips;
 	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
-	int active_size = 0; // 
 
+	int indexOfCurrSizeOfBoard = 0; // 0/1/2 (3 варианта)
+    int key; // Хранение кода нажатой клавиши.
     while((key = getch()) != '\n' || chooseMode != choosingSize) {
     	switch(key){
     		case KEY_LEFT:
@@ -82,9 +69,9 @@ int main(){
 			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
 		    			break;
 		    		case choosingSize:
-		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
-		    			changeActiveSize(&active_size, key);
-		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 33);
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 3);
+		    			changeActiveSize(&indexOfCurrSizeOfBoard, key);
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 33);
 		    			break;
 		    	}
 		    	break;
@@ -94,7 +81,7 @@ int main(){
 			    		chooseMode = choosingSize;
 			    		printPhraseChoose(WCaseParametres[active_case].ptrWin, 33);
 			    		napms(100);
-			    		DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 33);
+			    		DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 33);
 			    		break;
 			    	case choosingSize:
 						chooseMode = choosingShips;
@@ -104,8 +91,8 @@ int main(){
 		    case 27: // ESC
 		    	if (chooseMode == choosingSize){
 		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
-	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], active_size, 3);
-	    			active_size = 0;
+	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 3);
+	    			indexOfCurrSizeOfBoard = 0;
 		    		chooseMode = choosingShips;
 		    	}
 		    	break;
@@ -135,8 +122,8 @@ int main(){
     }
 
     //Размеры игорового поля на основе выбора игрока.
-    int board_width = GDCases[active_case].BoardWidth[active_size];
-    int board_height = GDCases[active_case].BoardHeight[active_size];
+    int board_width = GDCases[active_case].BoardWidth[indexOfCurrSizeOfBoard];
+    int board_height = GDCases[active_case].BoardHeight[indexOfCurrSizeOfBoard];
 
  	// Создание и инициализация данных игровых досок игрока и компьютера.
     struct Board BoardPlayer   = { board_height, board_width, NULL };
@@ -148,15 +135,19 @@ int main(){
     	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
     }
 
-    wbkgdset(win_hello, COLOR_PAIR(200));
-    wclear(win_menu);
-    wrefresh(win_menu);
-	for (int i = 0; i < 4; i++)
-		delwin(WCaseParametres[i].ptrWin);
+    delwin(win_menu);
+	for (int i = 0; i < GAME_CASES_NUMBER; i++) delwin(WCaseParametres[i].ptrWin);
     delwin(win_hello);
     free(WCaseParametres);
     free(GDCases);
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
+
+    // Объявление размеров отступов.
+    Indents Indents = {.LeftIndent    = 4,
+                       .BetweenIndent = 5,
+                       .RightIndent   = 4,
+                       .TopIndent     = 3,
+                       .BottomIndent  = 4 };
 
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
@@ -164,10 +155,7 @@ int main(){
     WindowParametres *WShip = malloc(sizeof(WindowParametres));
     WindowParametres *WShoot = malloc(sizeof(WindowParametres));
     WindowParametres *WHelp = malloc(sizeof(WindowParametres));
-    initWindowsParametres(BoardPlayer, WMain, WArrange, WShip, WShoot, WHelp);
-
-    // Окно заднего фона.
-    delwin(win_menu);
+    initWindowsParametres(ShipsPlayer, BoardPlayer, Indents, WMain, WArrange, WShip, WShoot, WHelp);
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
@@ -177,15 +165,15 @@ int main(){
     int currShipSize = 0; 
     int currShipNumber = 0; // 1..number
     initCurrActiveShip_Arrange(ShipsPlayer, &currShipNumber, &currShipSize); // ?
-
-    int index;
-    ch = 219;
-
-    enum actWind {ARRANGE = 1, SHIP = 2};
-
-    ship* TmpShip = malloc(sizeof(ship));
-    clearTmpShip(TmpShip); // Начальная инициализация.
     DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
+
+    enum actWind { ARRANGE = 1, SHIP = 2 } active_window;
+    active_window = ARRANGE; // Номер активного окна.
+    int index; // Индекс выбранного корабля в массиве кораблей
+
+    // Вспомогательный корабль для работы с полем ship.
+    ship* TmpShip = malloc(sizeof(ship));
+    clearTmpShip(TmpShip);
 
     while((key = getch()) != KEY_F(2)){
         switch(key){
@@ -201,11 +189,8 @@ int main(){
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
-	                    refreshStandingShips(WShip->ptrWin, BoardPlayer);
+	                    reDrawStandingShips(WShip->ptrWin, BoardPlayer);
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
-
-	                    //showDebugFieid(BoardPlayer);
-	                    //tmp_otladchik_tmp_ship(TmpShip);
 	                break;            
 	            }
 	            break;
@@ -213,10 +198,8 @@ int main(){
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
-	                    refreshStandingShips(WShip->ptrWin, BoardPlayer);	
+	                    reDrawStandingShips(WShip->ptrWin, BoardPlayer);	
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
-
-	                    //tmp_otladchik_tmp_ship(TmpShip);
 	                    break;
 	                case ARRANGE:
 	                	break;
@@ -235,7 +218,7 @@ int main(){
 	                    	deleteShipFromField(&ShipsPlayer.Ships[index], BoardPlayer);
 	                    	makeShipTmp(&ShipsPlayer.Ships[index], TmpShip);
 	                    }
-                        refreshStandingShips(WShip->ptrWin, BoardPlayer);
+                        reDrawStandingShips(WShip->ptrWin, BoardPlayer);
                         DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
 	                    break;
 
@@ -245,15 +228,9 @@ int main(){
 	                        DrawErrorMessage(WArrange->ptrWin);
 	                    else {
 	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
-	                    	// DrawNewNumberOfStandingShips(WArrange->ptrWin, ShipsPlayer.Ships, &number_stand_ships);
-	                    	// DrawStandingShips(WArrange->ptrWin, ShipsPlayer);
-
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
-	                    	refreshStandingShips(WShip->ptrWin, BoardPlayer);
+	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
 	                    	active_window = ARRANGE;
-                            
-                            //showDebugFieid(Board);
-	                    	// tmp_otladchik_tmp_ship(TmpShip);
 	                    }
 	                    break;
         		}
@@ -433,7 +410,7 @@ int main(){
     //             }
     //             wrefresh(WShip->ptrWin);
     //             podchet_ships(ship_player_field, ship_comp_field);
-    //             refreshStandingShips(WShip->ptrWin, Board);
+    //             reDrawStandingShips(WShip->ptrWin, Board);
     
     // /*
     // move(29,0);
@@ -522,31 +499,3 @@ void showDebugFieid(struct Board Board){
     }
     refresh();
 }
-
-void tmp_otladchik_tmp_ship(ship* TmpShip){
-	move(28,0);
-	printw("X: %d, Y: %d, type: %d, stand: %d, size: %d", TmpShip->x, TmpShip->y, TmpShip->type, TmpShip->stand, TmpShip->size);
-}
-
-void refresh_ship_player_array(struct ShipsInfo Ships, struct Board Board){
-    // !!! КОСТЫЛЬ !!!
-    for (int i = 0; i < Ships.Number_4_Size+Ships.Number_3_Size+Ships.Number_2_Size+Ships.Number_1_Size; i++){
-        if (Ships.Ships[i].stand == TRUE)
-            standing_ship(&Ships.Ships[i], Board);
-    }
-    // !!! КОСТЫЛЬ !!!
-}
-
-void standing_ship(ship* ship, struct Board Board){
-    switch (ship->type){
-        case FALSE:
-            for (int i = 0; i < ship->size; i++)
-                Board.field[ship->y][i+ship->x] = TRUE;
-            break;
-        case TRUE:
-            for (int i = 0; i < ship->size; i++)
-                Board.field[i+ship->y][ship->x] = TRUE;
-            break;
-    }
-}
-
