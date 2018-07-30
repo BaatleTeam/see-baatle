@@ -242,7 +242,7 @@ int getIndex(struct ShipsInfo Ships, int number, int shipSize){
     }
 }
 
-void colorizeCurrShip(WINDOW* WIN, ship Ship, struct Board Board){
+void colorizeCurrShip(WINDOW* WIN, ship Ship){
     if (Ship.stand == TRUE){
         wattron(WIN, COLOR_PAIR(2));
         char rect = 254;

@@ -59,6 +59,7 @@ bool checkShipBorders(const ship* const ship, const struct Board Board){
                     return FALSE;
                 else 
                     return TRUE;
+                break;
         case TRUE:
                 if (checkShipBorders_top_bottom_vertical(ship, Board) == FALSE ||
                     checkShipBorders_left_right_vertical(ship, Board) == FALSE ||
@@ -66,6 +67,7 @@ bool checkShipBorders(const ship* const ship, const struct Board Board){
                     return FALSE;
                 else 
                     return TRUE;
+                break;
     }    
 }
 

@@ -16,7 +16,7 @@ void DrawShips_InArangeWindow(WindowParametres *warr, struct ShipsInfo Ships);
 void DrawActiveShip_InArrangeWindow(WindowParametres *warr, int number, int size);
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
 void DrawErrorMessage(WINDOW*);
-void colorizeCurrShip(WINDOW* WIN, ship Ship, struct Board Board);
+void colorizeCurrShip(WINDOW* WIN, ship Ship);
 // void DrawStandingShips(WINDOW* WIN, struct ShipsInfo);
 
 int getIndex(struct ShipsInfo Ships, int number, int size);

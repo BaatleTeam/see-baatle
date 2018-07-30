@@ -68,7 +68,6 @@ void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int col
 	wbkgdset(wp->ptrWin, COLOR_PAIR(color));
     wclear(wp->ptrWin);
     box(wp->ptrWin, 0, 0);
-    // mvwprintw(wp->ptrWin, 0, 14, "Case 1");
     for (int i = 1; i < wp->Width-1; i++)
     	mvwprintw(wp->ptrWin, 2, i, "%c", 196);
     for (int i = 1; i < 16; i++)
@@ -103,9 +102,6 @@ void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int col
 void DrawGameDataCasesSize(WINDOW* WIN, GameDataCase gdc, int index, int color){
 	wattron(WIN, COLOR_PAIR(color));
 	mvwprintw(WIN, 4+index*2, 23, "%dx%d", gdc.BoardWidth[index], gdc.BoardHeight[index]);
-    // mvwprintw(WIN, 4, 23, "%dx%d", gdc.BoardWidth[0], gdc.BoardHeight[0]);
-    // mvwprintw(WIN, 6, 23, "%dx%d", gdc.BoardWidth[1], gdc.BoardHeight[1]);
-    // mvwprintw(WIN, 8, 23, "%dx%d", gdc.BoardWidth[2], gdc.BoardHeight[2]);
     wrefresh(WIN);
 }
 
@@ -338,24 +334,6 @@ void drawSeeBattle_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int beg
 
 	mvwprintw(WIN, begin_y+4, begin_x+word_width/2-2, "%c", smbl);
     mvwprintw(WIN, begin_y+4, begin_x+word_width/2+2, "%c", smbl);
-
-
-
-	 //        mvwprintw(WIN, begin_y+0, begin_x+word_width/2, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+1, begin_x+word_width/2+1, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+1, begin_x+word_width/2-1, "%c", smbl);
-
-	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2-2, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2-1, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2+1, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+2, begin_x+word_width/2+2, "%c", smbl);
-
-	 //    mvwprintw(WIN, begin_y+3, begin_x+word_width/2-2, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+3, begin_x+word_width/2+2, "%c", smbl);
-
-		// mvwprintw(WIN, begin_y+4, begin_x+word_width/2-2, "%c", smbl);
-	 //    mvwprintw(WIN, begin_y+4, begin_x+word_width/2+2, "%c", smbl);
 }
 
 void drawSeeBattle_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){

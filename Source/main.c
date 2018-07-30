@@ -48,9 +48,9 @@ int main(){
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
 	DrawLegendDelay(win_menu);
 
-	enum chooseMode { choosingShips, choosingSize } chooseMode;
-	active_case = CASE_1;
-	chooseMode = choosingShips;
+	enum chooseMode { choosingShips, choosingSize };
+    enum chooseMode chooseMode = choosingShips;
+    enum actCase active_case = CASE_1;
 	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
 
 	int indexOfCurrSizeOfBoard = 0; // 0/1/2 (3 варианта)
@@ -135,8 +135,9 @@ int main(){
     	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
     }
 
+	for (int i = 0; i < GAME_CASES_NUMBER; i++) 
+        delwin(WCaseParametres[i].ptrWin);
     delwin(win_menu);
-	for (int i = 0; i < GAME_CASES_NUMBER; i++) delwin(WCaseParametres[i].ptrWin);
     delwin(win_hello);
     free(WCaseParametres);
     free(GDCases);
@@ -167,15 +168,16 @@ int main(){
     initCurrActiveShip_Arrange(ShipsPlayer, &currShipNumber, &currShipSize); // ?
     DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
 
-    enum actWind { ARRANGE = 1, SHIP = 2 } active_window;
-    active_window = ARRANGE; // Номер активного окна.
+    enum actWind { ARRANGE = 1, SHIP = 2 };
+    enum actWind active_window = ARRANGE; // Номер активного окна.
     int index; // Индекс выбранного корабля в массиве кораблей
 
     // Вспомогательный корабль для работы с полем ship.
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
 
-    while((key = getch()) != KEY_F(2)){
+    bool isAllShipsStanding = FALSE; // todo проверка постановки кораблей
+    while((key = getch()) != KEY_F(2) && isAllShipsStanding != TRUE){
         switch(key){
         	case KEY_LEFT:
         	case KEY_RIGHT:
@@ -187,7 +189,7 @@ int main(){
 						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
 						DrawActiveShip_InArrangeWindow(WArrange, currShipNumber, currShipSize);
                         reDrawStandingShips(WShip->ptrWin, BoardPlayer);
-                        colorizeCurrShip(WShip->ptrWin, ShipsPlayer.Ships[getIndex(ShipsPlayer, currShipNumber, currShipSize)], BoardPlayer);
+                        colorizeCurrShip(WShip->ptrWin, ShipsPlayer.Ships[getIndex(ShipsPlayer, currShipNumber, currShipSize)]);
 	                    break;
 	                case SHIP:
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
@@ -250,6 +252,8 @@ int main(){
                 break;
     	}
 	}
+    free(TmpShip);
+
     
     wbkgdset(WArrange->ptrWin, COLOR_PAIR(66));
     wclear(WArrange->ptrWin);
@@ -258,6 +262,20 @@ int main(){
     wbkgdset(WShoot->ptrWin, COLOR_PAIR(2));
     wclear(WShoot->ptrWin);
 	wrefresh(WShoot->ptrWin);
+
+    // Закончили расстановку кораблей. Очищаем ненужные окна.
+    delwin(WArrange->ptrWin);
+
+    delwin(WMain->ptrWin);
+    delwin(WShip->ptrWin);
+    delwin(WShoot->ptrWin);
+    // delwin(WHelp->ptrWin); // WHelp не используется, поэтому и не удаляем
+
+    free(WArrange);
+    free(WMain);
+    free(WShoot);
+    free(WHelp);
+    free(WShip);
 
     // str_top(WShoot->ptrWin, WShoot->Width);
     // wattron(WShoot->ptrWin,COLOR_PAIR(3));

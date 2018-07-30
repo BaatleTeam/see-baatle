@@ -50,7 +50,7 @@ typedef struct Indents {
 void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
 
 
-enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 } active_case;
+enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 };
 enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 
 // Функции для работы с полями-массивами и их отрисовкой
