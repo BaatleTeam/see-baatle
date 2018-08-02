@@ -234,6 +234,7 @@ int main(){
 	                    	addShip(&ShipsPlayer.Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+
 	                    	active_window = ARRANGE;
 	                    }
 	                    break;
@@ -254,14 +255,10 @@ int main(){
 	}
     free(TmpShip);
 
-    
-    wbkgdset(WArrange->ptrWin, COLOR_PAIR(66));
-    wclear(WArrange->ptrWin);
-	wrefresh(WArrange->ptrWin);
+    // Окно заднего фона.
+    drawShootWindows(WMain, WShip, WShoot, &Indents);
 
-    wbkgdset(WShoot->ptrWin, COLOR_PAIR(2));
-    wclear(WShoot->ptrWin);
-	wrefresh(WShoot->ptrWin);
+    while((key = getch()) != KEY_F(5));
 
     // Закончили расстановку кораблей. Очищаем ненужные окна.
     delwin(WArrange->ptrWin);
@@ -276,15 +273,6 @@ int main(){
     free(WShoot);
     free(WHelp);
     free(WShip);
-
-    // str_top(WShoot->ptrWin, WShoot->Width);
-    // wattron(WShoot->ptrWin,COLOR_PAIR(3));
-    // for (int i = 2; i < WShoot->Height-1; i+=2){
-    //     str_line(WShoot->ptrWin, WShoot->Width, i);
-    //     str_numb(WShoot->ptrWin, WShoot->Width, i+1);
-    // }
-    // str_bottom(WShoot->ptrWin, WShoot->Width, WShoot->Height);
-    // wrefresh(WShoot->ptrWin);
 
     // // choosing_comp_strategy(ship_comp_field);
     // // podchet_ships(ship_player_field, ship_comp_field);
@@ -458,6 +446,33 @@ int main(){
     resetty();
 	endwin();
 	return 0;
+}
+
+// todo убрать везде struct у ShipsInfo
+bool isAllShipsStanding(ShipsInfo ships){
+    int shipsNum = ships.Number_1_Size + ships.Number_2_Size + ships.Number_3_Size + ships.Number_4_Size;
+    for (int i = 0; i < shipsNum; i++)
+        if (ships.Ships[i].stand == FALSE)
+            return FALSE;
+    return TRUE;
+}
+
+void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents){
+    delwin(WMain->ptrWin);
+    WMain->Width = Indents->LeftIndent + 2*WShip->Width + Indents->BetweenIndent + Indents->RightIndent;
+    WMain->Height = Indents->TopIndent + WShip->Height + Indents->BottomIndent;
+    WMain->ptrWin = newwin(WMain->Height, WMain->Width, WMain->Begin_y, WMain->Begin_x);
+
+    resize_term(WMain->Height, WMain->Width);
+    DrawMainWindow(WMain);
+
+    delwin(WShip->ptrWin);
+    WShip->ptrWin = newwin(WShip->Height, WShip->Width, WShip->Begin_y, WShip->Begin_x);
+    DrawTableWindow(WShip);
+
+    delwin(WShoot->ptrWin);
+    WShoot->ptrWin = newwin(WShoot->Height, WShoot->Width, WShoot->Begin_y, WShoot->Begin_x);
+    DrawTableWindow(WShoot);
 }
 
 // void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){

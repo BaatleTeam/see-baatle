@@ -2,7 +2,7 @@
 #include <curses.h>
 #include "ships.h"
 
-void DrawDefaltArrangeWindow(WindowParametres*,struct ShipsInfo);
+void DrawDefaltArrangeWindow(WindowParametres*, struct ShipsInfo);
 int calculateArrangeHeight(struct ShipsInfo Ships);
 int getMaxNumOfShips(struct ShipsInfo ships);
 

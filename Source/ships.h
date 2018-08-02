@@ -16,13 +16,13 @@ typedef struct ship_player
     bool stand;
 } ship;
 
-struct ShipsInfo {
+typedef struct ShipsInfo {
 	int Number_4_Size;
 	int Number_3_Size;
 	int Number_2_Size;
 	int Number_1_Size;
 	ship* Ships;
-};
+} ShipsInfo;
 
 typedef struct WindowParametres {
 	int Begin_x;

@@ -1,6 +1,5 @@
 #include "table.h"
 
-
 void initWindowsParametres(struct ShipsInfo Ships, struct Board board, Indents Indents,  WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
     // Зависимости от размера отступов.
 	ship->Begin_y = Indents.TopIndent;
@@ -33,6 +32,7 @@ void initWindowsParametres(struct ShipsInfo Ships, struct Board board, Indents I
     arrange->ptrWin = newwin(arrange->Height, arrange->Width, arrange->Begin_y, arrange->Begin_x);
     shoot->ptrWin = newwin(shoot->Height, shoot->Width, shoot->Begin_y, shoot->Begin_x);
     mainW->ptrWin = newwin(mainW->Height, mainW->Width, mainW->Begin_y, mainW->Begin_x);
+    help->ptrWin = NULL;
     // + help
 
     resize_term(mainW->Height, mainW->Width);
@@ -42,13 +42,14 @@ void initWindowsParametres(struct ShipsInfo Ships, struct Board board, Indents I
 
 void DrawMainWindow(WindowParametres *Wmain){
     wbkgdset(Wmain->ptrWin, COLOR_PAIR(200));
+    clear();
+    refresh();
     wclear(Wmain->ptrWin); 
     wrefresh(Wmain->ptrWin);
-    refresh();
 }
 
 void DrawTableWindow(WindowParametres *Wship){
-    wattron(Wship->ptrWin,COLOR_PAIR(3));
+    wattron(Wship->ptrWin, COLOR_PAIR(3));
     str_top(Wship->ptrWin, Wship->Width);
     for (int i = 2; i < Wship->Height-1; i+=2){
         str_line(Wship->ptrWin, Wship->Width, i);
