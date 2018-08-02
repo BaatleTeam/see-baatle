@@ -1,5 +1,106 @@
 #include "menu.h"
 
+void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard){
+	resize_term(38,89); // Beta
+    clear();
+    refresh();
+
+    // Окно заднего фона.
+    WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
+    wbkgdset(win_menu, COLOR_PAIR(200));
+    wclear(win_menu);
+    wrefresh(win_menu);
+
+    // Окно с надписью.
+    WINDOW* win_hello = newwin(9, 61, 1, 14);
+    DrawHelloWindow(win_hello, 9, 61);
+
+	WindowParametres *WCaseParametres;
+	WCaseParametres = malloc(GAME_CASES_NUMBER * sizeof(WindowParametres));
+	initCaseWindowData(WCaseParametres);
+	for (int i = 0; i < GAME_CASES_NUMBER; i++)
+		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
+	DrawLegendDelay(win_menu);
+
+	enum chooseMode { choosingShips, choosingSize };
+    enum chooseMode chooseMode = choosingShips;
+    enum actCase active_case = CASE_1;
+	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+
+	int indexOfCurrSizeOfBoard = 0; // 0/1/2 (3 варианта)
+    int key; // Хранение кода нажатой клавиши.
+    while((key = getch()) != '\n' || chooseMode != choosingSize) {
+    	switch(key){
+    		case KEY_LEFT:
+    		case KEY_RIGHT:
+    		case KEY_UP:
+    		case KEY_DOWN:
+    			switch (chooseMode){
+    				case choosingShips:
+		    			if (CheckChangingOfCaseWindow(active_case, key))
+			    			DrawNonActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 2);
+			    			changeActiveCase(&active_case, key);
+			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+		    			break;
+		    		case choosingSize:
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 3);
+		    			changeActiveSize(&indexOfCurrSizeOfBoard, key);
+		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 33);
+		    			break;
+		    	}
+		    	break;
+		    case '\n':
+			    switch (chooseMode){
+			    	case choosingShips:
+			    		chooseMode = choosingSize;
+			    		printPhraseChoose(WCaseParametres[active_case].ptrWin, 33);
+			    		napms(100);
+			    		DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 33);
+			    		break;
+			    	case choosingSize:
+						chooseMode = choosingShips;
+			    		break;
+			    }
+		    	break;
+		    case 27: // ESC
+		    	if (chooseMode == choosingSize){
+		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
+	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 3);
+	    			indexOfCurrSizeOfBoard = 0;
+		    		chooseMode = choosingShips;
+		    	}
+		    	break;
+    	}
+    }
+	*caseShips = active_case;
+	*caseBoard = indexOfCurrSizeOfBoard;
+
+	for (int i = 0; i < GAME_CASES_NUMBER; i++) 
+        delwin(WCaseParametres[i].ptrWin);
+    delwin(win_menu);
+    delwin(win_hello);
+    free(WCaseParametres);
+}
+
+void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
+    // Количество кораблей на основе выбора игрока.
+    #define S_N_S(num) GDCases->NumberOfShips[num-1] // Ships_Number_Size 
+
+    ShipsInfo tmp = { S_N_S(4), S_N_S(3), S_N_S(2), S_N_S(1), NULL };
+	*info = tmp;
+    info->Ships = calloc(S_N_S(1) + S_N_S(2) + S_N_S(3) + S_N_S(4), sizeof(ship));
+	// calloc -> везде 0
+}
+
+void initBoard(Board *board, int height, int width){
+	Board tmp = { height, width, NULL } ;
+	*board = tmp;
+
+	board->field = malloc(board->Height * sizeof(bool*));
+    for (int i = 0; i < board->Height; i++)
+    	board->field[i] = calloc(board->Width, sizeof(bool));
+}
+
 void initCaseWindowData(WindowParametres* array){
 	array[0].Begin_x = array[2].Begin_x = 7;
 	array[1].Begin_x = array[3].Begin_x = 47;
@@ -63,7 +164,7 @@ void initGameDataCases(GameDataCase *array){
 
 }
 
-void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int color){
+void DrawCaseWindow(WindowParametres* wp, const GameDataCase* gdc, int number, int color){
 	wattron(wp->ptrWin, COLOR_PAIR(color));
 	wbkgdset(wp->ptrWin, COLOR_PAIR(color));
     wclear(wp->ptrWin);
@@ -93,24 +194,24 @@ void DrawCaseWindow(WindowParametres* wp, GameDataCase* gdc, int number, int col
     mvwprintw(wp->ptrWin, 3, 9, "Number");
 
     for (int index = 0; index < 3; index++)
-    	DrawGameDataCasesSize(wp->ptrWin, gdc[number], index, color);
-    DrawGameDataCasesShips(wp->ptrWin, gdc[number]);
+    	DrawGameDataCasesSize(wp->ptrWin, &gdc[number], index, color);
+    DrawGameDataCasesShips(wp->ptrWin, &gdc[number]);
     wrefresh(wp->ptrWin);
     napms(100);
 }
 
-void DrawGameDataCasesSize(WINDOW* WIN, GameDataCase gdc, int index, int color){
+void DrawGameDataCasesSize(WINDOW* WIN, const GameDataCase *gdc, int index, int color){
 	wattron(WIN, COLOR_PAIR(color));
-	mvwprintw(WIN, 4+index*2, 23, "%dx%d", gdc.BoardWidth[index], gdc.BoardHeight[index]);
+	mvwprintw(WIN, 4+index*2, 23, "%dx%d", gdc->BoardWidth[index], gdc->BoardHeight[index]);
     wrefresh(WIN);
 }
 
-void DrawGameDataCasesShips(WINDOW* WIN, GameDataCase gdc){
+void DrawGameDataCasesShips(WINDOW* WIN, const GameDataCase *gdc){
 	int y;
 	int index;
 	for (y = 5, index = 0; index < 4; index++, y++){
 		mvwprintw(WIN, y, 3, "%d", index+1);
-		mvwprintw(WIN, y, 11, "%d", gdc.NumberOfShips[index]);
+		mvwprintw(WIN, y, 11, "%d", gdc->NumberOfShips[index]);
 	}
 }
 
@@ -198,7 +299,7 @@ bool CheckChangingOfCaseWindow(enum actCase activeCase, int key){
 	return FALSE;
 }
 
-void DrawNonActiveCaseWindow(WindowParametres* WIN, GameDataCase* gdc, int number, int color){	
+void DrawNonActiveCaseWindow(WindowParametres* WIN, const GameDataCase* gdc, int number, int color){	
 	DrawCaseWindow(WIN, gdc, number, color);
 }
 
@@ -247,7 +348,7 @@ void changeActiveCase(enum actCase *activeCase, int key){
 	}
 }
 
-void DrawActiveCaseWindow(WindowParametres* WIN, GameDataCase* gdc, int number, int color){
+void DrawActiveCaseWindow(WindowParametres* WIN, const GameDataCase* gdc, int number, int color){
 	DrawCaseWindow(WIN, gdc, number, color);
 }
 

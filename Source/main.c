@@ -20,126 +20,29 @@ int main(){
     init_pair (1, COLOR_RED + 8, COLOR_BLUE); // ??
     init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
-
 	savetty();
-    resize_term(38,89); // Beta
-    clear();
-    refresh();
 
     // Создание и инициализация возможных вариантов игры.
     GameDataCase* GDCases;
     GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
     initGameDataCases(GDCases);
 
-    // Окно заднего фона.
-    WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
-    wbkgdset(win_menu, COLOR_PAIR(200));
-    wclear(win_menu);
-    wrefresh(win_menu);
-
-    // Окно с надписью.
-    WINDOW* win_hello = newwin(9, 61, 1, 14);
-    DrawHelloWindow(win_hello, 9, 61);
-
-	WindowParametres *WCaseParametres;
-	WCaseParametres = malloc(GAME_CASES_NUMBER * sizeof(WindowParametres));
-	initCaseWindowData(WCaseParametres);
-	for (int i = 0; i < GAME_CASES_NUMBER; i++)
-		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
-	DrawLegendDelay(win_menu);
-
-	enum chooseMode { choosingShips, choosingSize };
-    enum chooseMode chooseMode = choosingShips;
-    enum actCase active_case = CASE_1;
-	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
-
-	int indexOfCurrSizeOfBoard = 0; // 0/1/2 (3 варианта)
-    int key; // Хранение кода нажатой клавиши.
-    while((key = getch()) != '\n' || chooseMode != choosingSize) {
-    	switch(key){
-    		case KEY_LEFT:
-    		case KEY_RIGHT:
-    		case KEY_UP:
-    		case KEY_DOWN:
-    			switch (chooseMode){
-    				case choosingShips:
-		    			if (CheckChangingOfCaseWindow(active_case, key))
-			    			DrawNonActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 2);
-			    			changeActiveCase(&active_case, key);
-			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
-		    			break;
-		    		case choosingSize:
-		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 3);
-		    			changeActiveSize(&indexOfCurrSizeOfBoard, key);
-		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 33);
-		    			break;
-		    	}
-		    	break;
-		    case '\n':
-			    switch (chooseMode){
-			    	case choosingShips:
-			    		chooseMode = choosingSize;
-			    		printPhraseChoose(WCaseParametres[active_case].ptrWin, 33);
-			    		napms(100);
-			    		DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 33);
-			    		break;
-			    	case choosingSize:
-						chooseMode = choosingShips;
-			    		break;
-			    }
-		    	break;
-		    case 27: // ESC
-		    	if (chooseMode == choosingSize){
-		    		deletePhraseChoose(WCaseParametres[active_case].ptrWin, 3);
-	    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, GDCases[active_case], indexOfCurrSizeOfBoard, 3);
-	    			indexOfCurrSizeOfBoard = 0;
-		    		chooseMode = choosingShips;
-		    	}
-		    	break;
-    	}
-    }
-
-    // Количество кораблей на основе выбора игрока.
-    int N_1 = GDCases[active_case].NumberOfShips[0];
-    int N_2 = GDCases[active_case].NumberOfShips[1];
-    int N_3 = GDCases[active_case].NumberOfShips[2];
-    int N_4 = GDCases[active_case].NumberOfShips[3];
+    int caseShips; // тип кол-ва кораблйей
+    int caseBoard; // тип размера поля
+    choosingGDCase(GDCases, &caseShips,&caseBoard);
 
     // Создание и инициализация данных о кораблях игрока и компьютера.
-    struct ShipsInfo ShipsPlayer   = { N_4, N_3, N_2, N_1, NULL };
-    struct ShipsInfo ShipsComputer = { N_4, N_3, N_2, N_1, NULL };
-    ShipsPlayer.Ships   = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
-    ShipsComputer.Ships = malloc((N_1+N_2+N_3+N_4) * sizeof(ship));
-    for (int i = 0; i < N_1+N_2+N_3+N_4; i++){
-    	ShipsPlayer.Ships[i].x = 0;
-    	ShipsPlayer.Ships[i].y = 0;
-    	ShipsPlayer.Ships[i].type = FALSE;
-    	ShipsPlayer.Ships[i].stand = FALSE;
-    	ShipsComputer.Ships[i].x = 0;
-    	ShipsComputer.Ships[i].y = 0;
-    	ShipsComputer.Ships[i].type = FALSE;
-    	ShipsComputer.Ships[i].stand = FALSE;
-    }
+    ShipsInfo ShipsPlayer;
+    ShipsInfo ShipsComputer;
+    initShipsInfo(&GDCases[caseShips], &ShipsPlayer);
+    initShipsInfo(&GDCases[caseShips], &ShipsComputer);
+    
+    // Создание и инициализация размеров игорового поля.
+    Board BoardPlayer;
+    Board BoardComputer;
+    initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
+    initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
 
-    //Размеры игорового поля на основе выбора игрока.
-    int board_width = GDCases[active_case].BoardWidth[indexOfCurrSizeOfBoard];
-    int board_height = GDCases[active_case].BoardHeight[indexOfCurrSizeOfBoard];
-
- 	// Создание и инициализация данных игровых досок игрока и компьютера.
-    struct Board BoardPlayer   = { board_height, board_width, NULL };
-    struct Board BoardComputer = { board_height, board_width, NULL };
-    BoardPlayer.field   = malloc(BoardPlayer.Height * sizeof(bool*));
-    BoardComputer.field = malloc(BoardComputer.Height * sizeof(bool*));
-    for (int i = 0; i < BoardPlayer.Height; i++){
-    	BoardPlayer.field[i]   = calloc(BoardPlayer.Width, sizeof(bool));
-    	BoardComputer.field[i] = calloc(BoardComputer.Width, sizeof(bool));
-    }
-
-	for (int i = 0; i < GAME_CASES_NUMBER; i++) 
-        delwin(WCaseParametres[i].ptrWin);
-    delwin(win_menu);
-    delwin(win_hello);
-    free(WCaseParametres);
     free(GDCases);
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
 
@@ -177,6 +80,7 @@ int main(){
     clearTmpShip(TmpShip);
 
     bool isAllShipsStanding = FALSE; // todo проверка постановки кораблей
+    int key;
     while((key = getch()) != KEY_F(2) && isAllShipsStanding != TRUE){
         switch(key){
         	case KEY_LEFT:

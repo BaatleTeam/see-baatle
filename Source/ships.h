@@ -1,11 +1,11 @@
 #pragma once
 #include <curses.h>
 
-struct Board {
+typedef struct Board {
 	int Height;
 	int Width;
 	bool** field;
-};
+} Board;
 
 typedef struct ship_player
 {
