@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "ships.h"
 
+enum chooseMode { choosingShips, choosingSize };
+enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 };
+
 #define GAME_CASES_NUMBER 4
 
 void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard);

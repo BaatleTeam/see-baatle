@@ -22,7 +22,6 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
 	DrawLegendDelay(win_menu);
 
-	enum chooseMode { choosingShips, choosingSize };
     enum chooseMode chooseMode = choosingShips;
     enum actCase active_case = CASE_1;
 	DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
