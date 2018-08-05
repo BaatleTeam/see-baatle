@@ -1,6 +1,13 @@
 #include "table.h"
 
-void initWindowsParametres(const ShipsInfo *Ships, const Board *board, Indents Indents,  WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
+void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres* help){
+    // Объявление размеров отступов.
+    Indents Indents = {.LeftIndent    = 4,
+                       .BetweenIndent = 5,
+                       .RightIndent   = 4,
+                       .TopIndent     = 3,
+                       .BottomIndent  = 4 };
+
     // Зависимости от размера отступов.
 	ship->Begin_y = Indents.TopIndent;
 	ship->Begin_x = Indents.LeftIndent;
@@ -13,12 +20,6 @@ void initWindowsParametres(const ShipsInfo *Ships, const Board *board, Indents I
     arrange->Height = calculateArrangeHeight(Ships);
     arrange->Width = 38; // min
 
-    // Размеры окна под стрельбу должны соотвествовать окну ship.
-    shoot->Begin_y = arrange->Begin_y;
-    shoot->Begin_x = arrange->Begin_x;
-    shoot->Height = ship->Height;
-    shoot->Width = ship->Width;
-
     // Новое главное окно // - ?
     mainW->Width = arrange->Begin_x + arrange->Width + Indents.RightIndent;
     mainW->Height = Indents.TopIndent + ship->Height + Indents.BottomIndent;
@@ -28,12 +29,10 @@ void initWindowsParametres(const ShipsInfo *Ships, const Board *board, Indents I
     if (arrange->Height > ship->Height)
         mainW->Height += ship->Height - arrange->Height;
 
-    ship->ptrWin = newwin(ship->Height, ship->Width, ship->Begin_y, ship->Begin_x);
-    arrange->ptrWin = newwin(arrange->Height, arrange->Width, arrange->Begin_y, arrange->Begin_x);
-    shoot->ptrWin = newwin(shoot->Height, shoot->Width, shoot->Begin_y, shoot->Begin_x);
-    mainW->ptrWin = newwin(mainW->Height, mainW->Width, mainW->Begin_y, mainW->Begin_x);
+    initWindow(ship);
+    initWindow(arrange);
+    initWindow(mainW);
     help->ptrWin = NULL;
-    // + help
 
     resize_term(mainW->Height, mainW->Width);
     clear();

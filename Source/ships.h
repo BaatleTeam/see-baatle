@@ -47,7 +47,12 @@ typedef struct Indents {
     size_t BottomIndent;
 } Indents;
 
-void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
+// void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
+
+// Инициализирует окно в соответсвии с параметрами.
+#define initWindow(wp){ \
+    wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x); \
+}
 
 enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 

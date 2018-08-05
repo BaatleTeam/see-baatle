@@ -3,23 +3,15 @@
 #include "arrange.h"
 #include "header.h"
 
-// подключён через header
+// подключён через header.h
 
 void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
-    // Объявление размеров отступов.
-    Indents Indents = {.LeftIndent    = 4,
-                       .BetweenIndent = 5,
-                       .RightIndent   = 4,
-                       .TopIndent     = 3,
-                       .BottomIndent  = 4 };
-
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
     WindowParametres *WArrange = malloc(sizeof(WindowParametres));
     WindowParametres *WShip = malloc(sizeof(WindowParametres));
-    WindowParametres *WShoot = malloc(sizeof(WindowParametres));
     WindowParametres *WHelp = malloc(sizeof(WindowParametres));
-    initWindowsParametres(ShipsPlayer, BoardPlayer, Indents, WMain, WArrange, WShip, WShoot, WHelp);
+    initWindowsParametres(ShipsPlayer, BoardPlayer, WMain, WArrange, WShip, WHelp);
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
@@ -123,12 +115,10 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     delwin(WArrange->ptrWin);
     delwin(WMain->ptrWin);
     delwin(WShip->ptrWin);
-    delwin(WShoot->ptrWin);
     // delwin(WHelp->ptrWin); // WHelp не используется, поэтому и не удаляем
 
     free(WArrange);
     free(WMain);
-    free(WShoot);
     free(WHelp);
     free(WShip);
 }

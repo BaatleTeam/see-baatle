@@ -48,10 +48,18 @@ int main(){
 
     arrangingShips(&ShipsPlayer, &BoardPlayer);
 
+    WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
+    WBackGround->Begin_x = WBackGround->Begin_y = 0;
+    WBackGround->Height = LINES;
+    WBackGround->Width = COLS;
+    
+    resize_term(20,20);
+    mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
+
     // Окно заднего фона.
     // drawShootWindows(WMain, WShip, WShoot, &Indents);
-
-    // while((key = getch()) != KEY_F(5));
+    int key;
+    while((key = getch()) != KEY_F(5));
 
 
     // // choosing_comp_strategy(ship_comp_field);
