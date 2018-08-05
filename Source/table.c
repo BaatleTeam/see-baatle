@@ -1,11 +1,11 @@
 #include "table.h"
 
-void initWindowsParametres(struct ShipsInfo Ships, struct Board board, Indents Indents,  WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
+void initWindowsParametres(const ShipsInfo *Ships, const Board *board, Indents Indents,  WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres *shoot, WindowParametres* help){
     // Зависимости от размера отступов.
 	ship->Begin_y = Indents.TopIndent;
 	ship->Begin_x = Indents.LeftIndent;
-    ship->Height = 3 + board.Height * 2;
-	ship->Width  = 4 + board.Width  * 2;
+    ship->Height = 3 + board->Height * 2;
+	ship->Width  = 4 + board->Width  * 2;
 
     // Окно arrange на одном уровне с ship.
     arrange->Begin_y = Indents.TopIndent;
