@@ -7,6 +7,7 @@
 
 #include "table.h"
 #include "ships.h"
+#include "shootWindows.h"
 
 void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
 void showDebugFieid(struct Board Board);

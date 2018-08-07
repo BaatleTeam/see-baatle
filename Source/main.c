@@ -49,12 +49,37 @@ int main(){
     arrangingShips(&ShipsPlayer, &BoardPlayer);
 
     WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
-    WBackGround->Begin_x = WBackGround->Begin_y = 0;
-    WBackGround->Height = LINES;
-    WBackGround->Width = COLS;
+    WindowParametres *WInfoPlayer = malloc(sizeof(WindowParametres));
+    WindowParametres *WInfoComputer = malloc(sizeof(WindowParametres));
+    WindowParametres *WBoardPlayer = malloc(sizeof(WindowParametres));
+    WindowParametres *WBoardComputer = malloc(sizeof(WindowParametres));
+    WindowParametres *WHelp = malloc(sizeof(WindowParametres));
+    initWindowsShooting(&ShipsPlayer, &BoardPlayer, WBackGround, WInfoPlayer, WInfoComputer, WBoardPlayer, WBoardComputer);
+
+
+
+    wbkgdset(WBackGround->ptrWin, COLOR_PAIR(200));
+    wclear(WBackGround->ptrWin);
+    wrefresh(WBackGround->ptrWin);
+    // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
+    wrefresh(WBackGround->ptrWin);
+
+    DrawWInfo_Default(WInfoPlayer);
+    DrawWInfo_Default(WInfoComputer);
+    DrawWBoard_Default(WBoardPlayer);
+    DrawWBoard_Default(WBoardComputer);
+
+
+    // WindowParametres *WTest = malloc(sizeof(WindowParametres));
+    // WTest->Height = calculateArrangeHeight(&ShipsPlayer);
+    // WTest->Width = 38;
+    // WTest->Begin_x = 1;
+    // WTest->Begin_y = 1;
+    // initWindow(WTest);
+    // DrawDefaltArrangeWindow(WTest, &ShipsPlayer);
+
+
     
-    resize_term(20,20);
-    mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
 
     // Окно заднего фона.
     // drawShootWindows(WMain, WShip, WShoot, &Indents);
