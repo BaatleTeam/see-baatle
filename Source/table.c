@@ -11,8 +11,8 @@ void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowPar
     // Зависимости от размера отступов.
 	ship->Begin_y = Indents.TopIndent;
 	ship->Begin_x = Indents.LeftIndent;
-    ship->Height = 3 + board->Height * 2;
-	ship->Width  = 4 + board->Width  * 2;
+    ship->Height = getTableHeight(board);
+	ship->Width  = getTableWidth(board);
 
     // Окно arrange на одном уровне с ship.
     arrange->Begin_y = Indents.TopIndent;
@@ -28,6 +28,8 @@ void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowPar
 
     if (arrange->Height > ship->Height)
         mainW->Height += ship->Height - arrange->Height;
+    if (mainW->Height <= 25)
+        mainW->Height = 25;
 
     initWindow(ship);
     initWindow(arrange);
@@ -56,6 +58,14 @@ void DrawTableWindow(WindowParametres *Wship){
     }
     str_bottom(Wship->ptrWin, Wship->Width, Wship->Height);
     wrefresh(Wship->ptrWin);
+}
+
+int getTableWidth(const Board *board){
+    return 4 + board->Width * 2;
+}
+
+int getTableHeight(const Board *board){
+    return 3 + board->Height * 2;
 }
 
 void str_numb(WINDOW *WIN, int width, int x){
