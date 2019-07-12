@@ -2,6 +2,12 @@
 #include <curses.h>
 #include <stdlib.h>
 
+typedef struct PlayerStats {
+	unsigned shots;
+	unsigned hits;
+    unsigned shipsDestroyed;
+} PlayerStats;
+
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 
 void change_x_leftkey(int* x);

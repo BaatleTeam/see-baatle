@@ -7,6 +7,11 @@ file(GLOB src
 	) # Adding source files here
 
 
+set(CMAKE_C_STANDARD 11)
+# include_directories("C:/msys64/mingw32/include/ncurses")
+include_directories("C:/MinGW/include")
+include_directories("C:/MinGW/lib")
+
 # Tried to link pdcurses like it's done in big projects:
 
 # list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/Modules") # Search path for "Findpdcurses.cmake"

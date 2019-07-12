@@ -42,10 +42,9 @@ int main(){
     Board BoardComputer;
     initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
     initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-
-    free(GDCases);
+    
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-
+    free(GDCases);
     arrangingShips(&ShipsPlayer, &BoardPlayer);
 
     WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
@@ -57,12 +56,14 @@ int main(){
     initWindowsShooting(&ShipsPlayer, &BoardPlayer, WBackGround, WInfoPlayer, WInfoComputer, WBoardPlayer, WBoardComputer);
 
 
-
     wbkgdset(WBackGround->ptrWin, COLOR_PAIR(200));
     wclear(WBackGround->ptrWin);
     wrefresh(WBackGround->ptrWin);
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
+
+    PlayerStats statisticsPlayer = {0};
+    PlayerStats statisticsComputer = {0};
 
     DrawWInfo_Default(WInfoPlayer);
     DrawWInfo_Default(WInfoComputer);
@@ -82,7 +83,6 @@ int main(){
     
 
     // Окно заднего фона.
-    // drawShootWindows(WMain, WShip, WShoot, &Indents);
     int key;
     while((key = getch()) != KEY_F(5));
 

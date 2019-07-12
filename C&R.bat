@@ -1,2 +1,0 @@
-make
-see_baatle.exe
