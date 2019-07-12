@@ -90,7 +90,7 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
-
+							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
 	                    	active_window = ARRANGE;
 	                    }
 	                    break;

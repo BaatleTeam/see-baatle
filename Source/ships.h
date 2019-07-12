@@ -49,7 +49,7 @@ typedef struct Indents {
 
 // void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
 
-// Инициализирует окно в соответсвии с параметрами.
+// Инициализирует окно в соответствии с параметрами.
 #define initWindow(wp){ \
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x); \
 }
@@ -71,8 +71,9 @@ bool checkShipBorders_left_right_vertical(const ship* ship, const Board *Board);
 bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board);
 bool checkItself(const ship* ship, const Board *Board);
 
-// Установка начальных коориданат при первой постановке
-int InitPrimaryCoordinates(int curr_y, ship* ship, const Board*); 
+bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlayer); // Проверка постановки всех кораблей
+int getShipsNumber(const ShipsInfo* info); // Возврат общего количества кораблей игрока
+int InitPrimaryCoordinates(int curr_y, ship* ship, const Board*); // Установка начальных координат при первой постановке
 bool checkPlace(int x, int y, int size, const Board *Board); // Проверка места под корабль
 
 void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board); // Рисует tmpShip в окне SHIP
