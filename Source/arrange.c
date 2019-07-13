@@ -156,9 +156,18 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_shi
     wrefresh(WIN);
 }
 
-void DrawErrorMessage(WINDOW* WIN){
+void DrawErrorMessage_InArrangeWindow(WINDOW* WIN){
     wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, 15 , 1, "Ships can not stand near which other!");
+    mvwprintw(WIN, 12 , 1, "Ships can`t stand near which other!");
+    wattron(WIN, COLOR_PAIR(2));
+    box(WIN, 0, 0);
+    wrefresh(WIN);
+}
+
+void EraseErrorMessage_InArrangeWindow(WINDOW* WIN){
+    wattron(WIN, COLOR_PAIR(100));
+    for (int i = 0; i < WIN->_maxx; i++)
+        mvwprintw(WIN, 12 , i, " ");
     wattron(WIN, COLOR_PAIR(2));
     box(WIN, 0, 0);
     wrefresh(WIN);

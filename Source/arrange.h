@@ -15,7 +15,8 @@ void changeActiveShip_UpKey(int maxNumber, int* currNumber);
 void DrawShips_InArangeWindow(WindowParametres *warr, const ShipsInfo *Ships);
 void DrawActiveShip_InArrangeWindow(WindowParametres *warr, int number, int size);
 void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
-void DrawErrorMessage(WINDOW*);
+void DrawErrorMessage_InArrangeWindow(WINDOW*);
+void EraseErrorMessage_InArrangeWindow(WINDOW*);
 void colorizeCurrShip(WINDOW* WIN, ship Ship);
 // void DrawStandingShips(WINDOW* WIN, const ShipsInfo);
 

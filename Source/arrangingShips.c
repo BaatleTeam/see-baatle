@@ -34,6 +34,7 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     bool isAllShipsStanding = FALSE; // todo проверка постановки кораблей
     int key;
     while((key = getch()) != KEY_F(2) && isAllShipsStanding != TRUE){
+		EraseErrorMessage_InArrangeWindow(WArrange->ptrWin);
         switch(key){
         	case KEY_LEFT:
         	case KEY_RIGHT:
@@ -85,7 +86,7 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                case SHIP:
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
 	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
-	                        DrawErrorMessage(WArrange->ptrWin);
+	                        DrawErrorMessage_InArrangeWindow(WArrange->ptrWin);
 	                    else {
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
