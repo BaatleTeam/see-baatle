@@ -92,6 +92,9 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
 							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
+							if (isAllShipsStanding == TRUE)
+								DrawMessage_InArrangeWindow(WArrange->ptrWin,
+								"All ships arranged!\n Press any key to start the baatle!\n");
 	                    	active_window = ARRANGE;
 	                    }
 	                    break;
