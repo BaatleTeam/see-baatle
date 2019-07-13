@@ -156,9 +156,9 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_shi
     wrefresh(WIN);
 }
 
-void DrawErrorMessage_InArrangeWindow(WINDOW* WIN){
+void DrawMessage_InArrangeWindow(WINDOW* WIN, const char* msg){
     wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, 12 , 1, "Ships can`t stand near which other!");
+    mvwprintw(WIN, 12 , 1, msg);
     wattron(WIN, COLOR_PAIR(2));
     box(WIN, 0, 0);
     wrefresh(WIN);

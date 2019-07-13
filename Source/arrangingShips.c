@@ -86,7 +86,7 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                case SHIP:
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
 	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
-	                        DrawErrorMessage_InArrangeWindow(WArrange->ptrWin);
+	                        DrawMessage_InArrangeWindow(WArrange->ptrWin, "Ships can`t stand near which other!");
 	                    else {
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
