@@ -48,6 +48,10 @@ void standing_ship(ship* ship, const Board *Board){
     }
 }
 
+int getShipsNumber(const ShipsInfo* info){
+	return info->Number_4_Size + info->Number_3_Size + info->Number_2_Size + info->Number_1_Size;
+}
+
 // -------------------------------------------------------------------------------
 // Секция функций проверки свободы границ корабля
 bool checkShipBorders(const ship* ship, const Board *Board){
@@ -247,6 +251,14 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board){
 }
 
 // -------------------------------------------------------------------------------
+
+bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlayer){
+    for (int i = 0; i < getShipsNumber(ShipsPlayer); i++){
+        if (ShipsPlayer->Ships[i].stand == FALSE)
+            return FALSE;
+    }
+    return TRUE;
+}
 
 int InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
     int x = 0;
