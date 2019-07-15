@@ -65,8 +65,8 @@ int main(){
     PlayerStats statisticsPlayer = {0};
     PlayerStats statisticsComputer = {0};
 
-    DrawWInfo_Default(WInfoPlayer);
-    DrawWInfo_Default(WInfoComputer);
+    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
     DrawWBoard_Default(WBoardPlayer);
     DrawWBoard_Default(WBoardComputer);
 

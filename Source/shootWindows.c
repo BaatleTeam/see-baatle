@@ -57,7 +57,22 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
     initWindow(WBackGround);
 }
 
-void DrawWInfo_Default(WindowParametres *WInfo){
+void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
+    DrawWInfo_Shoting_Default(WInfo);
+
+    mvwprintw(WInfo->ptrWin, 3, 3, "4-size: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 5, 3, "3-size: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %c%c", 32, 32);
+
+    mvwprintw(WInfo->ptrWin, 11, 3, "Shoots: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 13, 3, "Hits: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 15, 3, "Percent: %c%c%c%%", 32, 32, 32);
+
+    wrefresh(WInfo->ptrWin);
+}
+
+void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wattron(WInfo->ptrWin, COLOR_PAIR(2));
     wbkgdset(WInfo->ptrWin, COLOR_PAIR(2));
     wclear(WInfo->ptrWin);
@@ -65,25 +80,12 @@ void DrawWInfo_Default(WindowParametres *WInfo){
 
     mvwprintw(WInfo->ptrWin, 1, 9, "YOUR SHIPS");
 
-    mvwprintw(WInfo->ptrWin, 3, 3, "4-size: %c%c", 178, 178);
-    mvwprintw(WInfo->ptrWin, 5, 3, "3-size: %c%c", 178, 178);
-    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %c%c", 178, 178);
-    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %c%c", 178, 178);
-
     mvwprintw(WInfo->ptrWin, 8, 0, "%c", 195);
     mvwprintw(WInfo->ptrWin, 8, WInfo->Width-1, "%c", 180);
     for (int i = 1; i < WInfo->Width-1; i++)
         mvwprintw(WInfo->ptrWin, 8, i, "%c", 196);
     mvwprintw(WInfo->ptrWin, 9, 9, "STATISTICS");
-
-    mvwprintw(WInfo->ptrWin, 11, 3, "Shoots: %c%c", 178, 178);
-    mvwprintw(WInfo->ptrWin, 13, 3, "Hits: %c%c", 178, 178);
-    mvwprintw(WInfo->ptrWin, 15, 3, "Percent: %c%c%c%%", 178, 178, 178);
     
-
-
-
-
     wrefresh(WInfo->ptrWin);
 }
 
