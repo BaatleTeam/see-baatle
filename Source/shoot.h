@@ -3,6 +3,12 @@
 #include <stdlib.h>
 
 typedef struct PlayerStats {
+	// [0] - на плаву, [1] - всего
+	unsigned ship_4[2];
+	unsigned ship_3[2];
+	unsigned ship_2[2];
+	unsigned ship_1[2];
+
 	unsigned shots;
 	unsigned hits;
     unsigned shipsDestroyed;
