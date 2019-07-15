@@ -60,14 +60,17 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
     DrawWInfo_Shoting_Default(WInfo);
 
-    mvwprintw(WInfo->ptrWin, 3, 3, "4-size: %c%c", 32, 32);
-    mvwprintw(WInfo->ptrWin, 5, 3, "3-size: %c%c", 32, 32);
-    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %c%c", 32, 32);
-    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %c%c", 32, 32);
+    mvwprintw(WInfo->ptrWin, 3, 2, "4-size: %d/%d", stats->ship_4[0], stats->ship_4[1]);
+    mvwprintw(WInfo->ptrWin, 5, 2, "3-size: %d/%d", stats->ship_3[0], stats->ship_3[1]);
+    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %d/%d", stats->ship_2[0], stats->ship_2[1]);
+    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %d/%d", stats->ship_1[0], stats->ship_1[1]);
 
-    mvwprintw(WInfo->ptrWin, 11, 3, "Shoots: %c%c", 32, 32);
-    mvwprintw(WInfo->ptrWin, 13, 3, "Hits: %c%c", 32, 32);
-    mvwprintw(WInfo->ptrWin, 15, 3, "Percent: %c%c%c%%", 32, 32, 32);
+    mvwprintw(WInfo->ptrWin, 11, 2, "Shoots: %d", stats->shots);
+    mvwprintw(WInfo->ptrWin, 13, 2, "Hits: %d", stats->hits);
+    if (stats->shots == 0)
+        mvwprintw(WInfo->ptrWin, 15, 2, "Percent: 0.0%%");
+    else
+        mvwprintw(WInfo->ptrWin, 15, 2, "Percent: %.2f%%", (float)stats->hits / (float)stats->shots);
 
     wrefresh(WInfo->ptrWin);
 }

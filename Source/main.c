@@ -62,8 +62,14 @@ int main(){
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
 
-    PlayerStats statisticsPlayer = {0};
-    PlayerStats statisticsComputer = {0};
+    PlayerStats statisticsPlayer = {.ship_4[1] = ShipsPlayer.Number_4_Size,
+                                    .ship_3[1] = ShipsPlayer.Number_3_Size,
+                                    .ship_2[1] = ShipsPlayer.Number_2_Size,
+                                    .ship_1[1] = ShipsPlayer.Number_1_Size,};
+    PlayerStats statisticsComputer = {.ship_4[1] = ShipsComputer.Number_4_Size,
+                                    .ship_3[1] = ShipsComputer.Number_3_Size,
+                                    .ship_2[1] = ShipsComputer.Number_2_Size,
+                                    .ship_1[1] = ShipsComputer.Number_1_Size,};
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
