@@ -92,8 +92,37 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWBoard_Default(WindowParametres *WBoard){
-    DrawTableWindow(WBoard);
-
+void DrawWBoard_Shoting(const WindowParametres *WBoard, int cur_x, int cur_y, const PlayerShotBoard *board){
+    DrawWBoard_Shoting_Default(WBoard);
+    // todo draw cursor function
     wrefresh(WBoard->ptrWin);
+}
+
+void DrawWBoard_Shoting_Default(WindowParametres *WBoard){
+    DrawTableWindow(WBoard);
+    wrefresh(WBoard->ptrWin);
+}
+
+// ----------------------
+
+void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_position, int key){
+    switch (key){
+        case KEY_LEFT:
+            if (*cursor_x_position > 0)
+                (*cursor_x_position)--;
+            break;
+        case KEY_RIGHT:
+            if (*cursor_x_position < board.Width-1)
+                (*cursor_x_position)++;
+        case KEY_UP:
+            if (*cursor_y_position > 0)
+                (*cursor_y_position)--;
+            break;
+        case KEY_DOWN:
+            if (*cursor_y_position < board.Height-1)
+                (*cursor_y_position)++;
+        default:
+            // No Any reaction for another key
+            break;
+    }
 }

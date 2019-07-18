@@ -56,3 +56,4 @@ bw-output
 # SonarLint working directories, configuration files (including credentials)
 .sonarlint/
 *.bat
+*.sh

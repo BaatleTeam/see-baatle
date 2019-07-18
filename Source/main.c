@@ -29,7 +29,7 @@ int main(){
 
     int caseShips; // тип кол-ва кораблйей
     int caseBoard; // тип размера поля
-    choosingGDCase(GDCases, &caseShips,&caseBoard);
+    choosingGDCase(GDCases, &caseShips, &caseBoard);
 
     // Создание и инициализация данных о кораблях игрока и компьютера.
     ShipsInfo ShipsPlayer;
@@ -70,28 +70,44 @@ int main(){
                                     .ship_3[1] = ShipsComputer.Number_3_Size,
                                     .ship_2[1] = ShipsComputer.Number_2_Size,
                                     .ship_1[1] = ShipsComputer.Number_1_Size,};
-
-    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
-    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
-    DrawWBoard_Default(WBoardPlayer);
-    DrawWBoard_Default(WBoardComputer);
-
-
-    // WindowParametres *WTest = malloc(sizeof(WindowParametres));
-    // WTest->Height = calculateArrangeHeight(&ShipsPlayer);
-    // WTest->Width = 38;
-    // WTest->Begin_x = 1;
-    // WTest->Begin_y = 1;
-    // initWindow(WTest);
-    // DrawDefaltArrangeWindow(WTest, &ShipsPlayer);
+    PlayerShotBoard shotBoard;
 
 
     
-
-    // Окно заднего фона.
     int key;
-    while((key = getch()) != KEY_F(5));
+    int cursor_x_position = 0;
+    int cursor_y_position = 0;
 
+    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+    DrawWBoard_Shoting_Default(WBoardPlayer);
+    DrawWBoard_Shoting(WBoardComputer, cursor_x_position, cursor_y_position, &shotBoard);
+
+    while((key = getch()) != KEY_F(5)){
+        switch(key){
+        	case KEY_LEFT:
+        	case KEY_RIGHT:
+        	case KEY_UP:
+        	case KEY_DOWN:
+                moveCursor_Shooting(BoardPlayer, &cursor_x_position, &cursor_y_position, key);
+                // drawBoa(WBoardComputer, shotBoard, cursor_x_position, cursor_y_position);
+	            break;
+	        case '\n':
+
+                break;
+            case 27: // Esc
+                // switch (active_window){
+                //     case SHIP:
+                //         reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+	            //         active_window = ARRANGE;
+                //         break;
+                //     case ARRANGE:
+                //         // /No any reaction/
+                //         break;
+                // }
+                break;
+    	}
+	}
 
     // // choosing_comp_strategy(ship_comp_field);
     // // podchet_ships(ship_player_field, ship_comp_field);

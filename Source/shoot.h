@@ -2,6 +2,12 @@
 #include <curses.h>
 #include <stdlib.h>
 
+enum ShootBoardState {
+	EMPTY, // пусто
+	SHOTED, // точка
+	KILLED // крестик
+};
+
 typedef struct PlayerStats {
 	// [0] - на плаву, [1] - всего
 	unsigned ship_4[2];
@@ -13,6 +19,14 @@ typedef struct PlayerStats {
 	unsigned hits;
     unsigned shipsDestroyed;
 } PlayerStats;
+
+// Поле для храненя и отображения выстрелови и попаданий игрока игрока
+typedef struct PlayerShotBoard {
+	unsigned Height;
+	unsigned Width;
+	enum ShootBoardState **board;
+} PlayerShotBoard;
+
 
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 
