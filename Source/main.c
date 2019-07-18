@@ -20,6 +20,7 @@ int main(){
     init_pair (1, COLOR_RED + 8, COLOR_BLUE); // ??
     init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
+    init_pair (49, COLOR_BLACK, COLOR_GREEN+8); // Для окна shot board
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
@@ -70,10 +71,13 @@ int main(){
                                     .ship_3[1] = ShipsComputer.Number_3_Size,
                                     .ship_2[1] = ShipsComputer.Number_2_Size,
                                     .ship_1[1] = ShipsComputer.Number_1_Size,};
-    PlayerShotBoard shotBoard;
+    enum ShootBoardState **boardArray = malloc(BoardComputer.Height * sizeof(enum ShootBoardState*));
+    for (int i = 0; i < BoardComputer.Height; i++)
+        boardArray[i] = calloc(BoardComputer.Width, sizeof(enum ShootBoardState));
+    PlayerShotBoard shotBoard = {.Height = BoardComputer.Height,
+                                 .Width = BoardComputer.Width,
+                                 .board = boardArray };
 
-
-    
     int key;
     int cursor_x_position = 0;
     int cursor_y_position = 0;

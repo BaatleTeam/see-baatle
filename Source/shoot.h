@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 enum ShootBoardState {
-	EMPTY, // пусто
+	EMPTY = 0, // пусто
 	SHOTED, // точка
 	KILLED // крестик
 };

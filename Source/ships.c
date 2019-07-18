@@ -72,7 +72,8 @@ bool checkShipBorders(const ship* ship, const Board *Board){
                 else 
                     return TRUE;
                 break;
-    }    
+    }
+    return TRUE; // should be not reached - for warning suspend
 }
 
 bool checkShipBorders_top_bottom_horizontal(const ship* ship, const Board *Board){
@@ -260,7 +261,7 @@ bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlaye
     return TRUE;
 }
 
-int InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
+void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
     int x = 0;
     int y = 0;
     while (checkPlace(x, y, ShipSize, Board) != TRUE){

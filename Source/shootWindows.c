@@ -92,8 +92,31 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWBoard_Shoting(const WindowParametres *WBoard, int cur_x, int cur_y, const PlayerShotBoard *board){
+void DrawWBoard_Shoting(WindowParametres *WBoard, int cur_x, int cur_y, const PlayerShotBoard *boardData){
     DrawWBoard_Shoting_Default(WBoard);
+    int charToDraw = 254;
+    for (int i = 0; i < boardData->Height; i++)
+        for (int j = 0; j < boardData->Width; j++){
+            switch (boardData->board[i][j]) {
+                case EMPTY:
+                    wattron(WBoard->ptrWin, COLOR_PAIR(3));
+                    charToDraw = ' ';
+                    break;
+                case SHOTED:
+                    wattron(WBoard->ptrWin, COLOR_PAIR(49));
+                    charToDraw = 249;
+                    break;
+                case KILLED:
+                    wattron(WBoard->ptrWin, COLOR_PAIR(49));
+                    charToDraw = 'X';
+                    break;
+                
+                default:
+                    printf("Error switch value statement in drawing board shooting!\n");
+                    break;
+            }
+            mvwprintw(WBoard->ptrWin, i*2+3, j*2+4, "%c", charToDraw);
+        }
     // todo draw cursor function
     wrefresh(WBoard->ptrWin);
 }
