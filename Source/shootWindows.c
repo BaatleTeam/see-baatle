@@ -117,7 +117,9 @@ void DrawWBoard_Shoting(WindowParametres *WBoard, int cur_x, int cur_y, const Pl
             }
             mvwprintw(WBoard->ptrWin, i*2+3, j*2+4, "%c", charToDraw);
         }
-    // todo draw cursor function
+    // cursor
+    wattron(WBoard->ptrWin, COLOR_PAIR(49));
+    mvwprintw(WBoard->ptrWin, cur_y*2+3, cur_x*2+4, "%c", 254);
     wrefresh(WBoard->ptrWin);
 }
 
@@ -133,17 +135,27 @@ void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_posi
         case KEY_LEFT:
             if (*cursor_x_position > 0)
                 (*cursor_x_position)--;
+            else if (*cursor_x_position == 0)
+                (*cursor_x_position) = board.Width-1;
             break;
         case KEY_RIGHT:
             if (*cursor_x_position < board.Width-1)
                 (*cursor_x_position)++;
+            else if (*cursor_x_position == board.Width-1)
+                (*cursor_x_position) = 0;
+            break;
         case KEY_UP:
             if (*cursor_y_position > 0)
                 (*cursor_y_position)--;
+            else if (*cursor_y_position == 0)
+                (*cursor_y_position) = board.Height-1;
             break;
         case KEY_DOWN:
             if (*cursor_y_position < board.Height-1)
                 (*cursor_y_position)++;
+            else if (*cursor_y_position == board.Height-1)
+                (*cursor_y_position) = 0;
+            break;
         default:
             // No Any reaction for another key
             break;

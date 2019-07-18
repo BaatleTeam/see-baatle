@@ -94,7 +94,7 @@ int main(){
         	case KEY_UP:
         	case KEY_DOWN:
                 moveCursor_Shooting(BoardPlayer, &cursor_x_position, &cursor_y_position, key);
-                // drawBoa(WBoardComputer, shotBoard, cursor_x_position, cursor_y_position);
+                DrawWBoard_Shoting(WBoardComputer, cursor_x_position, cursor_y_position, &shotBoard);
 	            break;
 	        case '\n':
 
