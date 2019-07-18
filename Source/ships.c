@@ -72,7 +72,8 @@ bool checkShipBorders(const ship* ship, const Board *Board){
                 else 
                     return TRUE;
                 break;
-    }    
+    }
+    return TRUE; // control should not be reached
 }
 
 bool checkShipBorders_top_bottom_horizontal(const ship* ship, const Board *Board){
@@ -260,7 +261,7 @@ bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlaye
     return TRUE;
 }
 
-int InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
+void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
     int x = 0;
     int y = 0;
     while (checkPlace(x, y, ShipSize, Board) != TRUE){
@@ -343,6 +344,7 @@ bool checkBorderRight(ship* ship, const Board *Board){
             else 
                 return TRUE;
     }
+    return TRUE; // control should not be reached
 }
 
 bool checkBorderTop(ship* ship, const Board *Board){
@@ -365,6 +367,7 @@ bool checkBorderBot(ship* ship, const Board *Board){
             else 
                 return TRUE;
     }
+    return TRUE; // control should not be reached
 }
 
 // -------------------------------------------------------------------------------

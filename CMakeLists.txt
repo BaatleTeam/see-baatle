@@ -8,6 +8,7 @@ file(GLOB src
 
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS "-Wall -g")
 # include_directories("C:/msys64/mingw32/include/ncurses")
 include_directories("C:/MinGW/include")
 include_directories("C:/MinGW/lib")

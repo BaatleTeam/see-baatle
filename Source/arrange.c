@@ -236,7 +236,7 @@ void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size
         default: x = 0;
     }
     wattron(warr->ptrWin, COLOR_PAIR(100));
-    for (int i = 0; i < size+1; i++, y)
+    for (int i = 0; i < size+1; i++)
         mvwprintw(warr->ptrWin, y, x+i,"%c", ch);
     wrefresh(warr->ptrWin);
 }

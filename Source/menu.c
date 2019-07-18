@@ -38,8 +38,8 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
     				case choosingShips:
 		    			if (CheckChangingOfCaseWindow(active_case, key))
 			    			DrawNonActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 2);
-			    			changeActiveCase(&active_case, key);
-			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+			    		changeActiveCase(&active_case, key);
+			    		DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
 		    			break;
 		    		case choosingSize:
 		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 3);

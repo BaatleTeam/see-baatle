@@ -52,7 +52,7 @@ int main(){
     WindowParametres *WInfoComputer = malloc(sizeof(WindowParametres));
     WindowParametres *WBoardPlayer = malloc(sizeof(WindowParametres));
     WindowParametres *WBoardComputer = malloc(sizeof(WindowParametres));
-    WindowParametres *WHelp = malloc(sizeof(WindowParametres));
+    // WindowParametres *WHelp = malloc(sizeof(WindowParametres));
     initWindowsShooting(&ShipsPlayer, &BoardPlayer, WBackGround, WInfoPlayer, WInfoComputer, WBoardPlayer, WBoardComputer);
 
 
