@@ -92,22 +92,22 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWBoard_Shoting(WindowParametres *WBoard, int cur_x, int cur_y, const PlayerShotBoard *boardData){
+void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
-    for (int i = 0; i < boardData->Height; i++)
-        for (int j = 0; j < boardData->Width; j++){
-            switch (boardData->board[i][j]) {
+    for (int i = 0; i < boardData.Height; i++)
+        for (int j = 0; j < boardData.Width; j++){
+            switch (boardData.board[i][j]) {
                 case EMPTY:
-                    wattron(WBoard->ptrWin, COLOR_PAIR(3));
+                    wattron(WBoard.ptrWin, COLOR_PAIR(3));
                     charToDraw = ' ';
                     break;
                 case SHOTED:
-                    wattron(WBoard->ptrWin, COLOR_PAIR(49));
+                    wattron(WBoard.ptrWin, COLOR_PAIR(49));
                     charToDraw = 249;
                     break;
                 case KILLED:
-                    wattron(WBoard->ptrWin, COLOR_PAIR(49));
+                    wattron(WBoard.ptrWin, COLOR_PAIR(49));
                     charToDraw = 'X';
                     break;
                 
@@ -115,17 +115,29 @@ void DrawWBoard_Shoting(WindowParametres *WBoard, int cur_x, int cur_y, const Pl
                     printf("Error switch value statement in drawing board shooting!\n");
                     break;
             }
-            mvwprintw(WBoard->ptrWin, i*2+3, j*2+4, "%c", charToDraw);
+            mvwprintw(WBoard.ptrWin, i*2+3, j*2+4, "%c", charToDraw);
         }
-    // cursor
-    wattron(WBoard->ptrWin, COLOR_PAIR(49));
-    mvwprintw(WBoard->ptrWin, cur_y*2+3, cur_x*2+4, "%c", 254);
-    wrefresh(WBoard->ptrWin);
 }
 
-void DrawWBoard_Shoting_Default(WindowParametres *WBoard){
-    DrawTableWindow(WBoard);
-    wrefresh(WBoard->ptrWin);
+void DrawWBoard_Shoting_Default(WindowParametres WBoard){
+    DrawTableWindow(&WBoard);
+    wrefresh(WBoard.ptrWin);
+}
+
+bool checkShotPos(const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+    if (boardData.board[cursor_y_pos][cursor_x_pos] == EMPTY)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isActive){
+    if (isActive)
+        wattron(WBoard.ptrWin, COLOR_PAIR(49));
+    else
+        wattron(WBoard.ptrWin, COLOR_PAIR(51));
+    mvwprintw(WBoard.ptrWin, cur_y*2+3, cur_x*2+4, "%c", 254);
+    wrefresh(WBoard.ptrWin);
 }
 
 // ----------------------

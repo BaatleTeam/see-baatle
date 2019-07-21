@@ -21,6 +21,7 @@ int main(){
     init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
     init_pair (49, COLOR_BLACK, COLOR_GREEN+8); // Для окна shot board
+    init_pair (51, COLOR_BLACK+8, COLOR_GREEN+8); // ??
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
@@ -81,11 +82,13 @@ int main(){
     int key;
     int cursor_x_pos = 0;
     int cursor_y_pos = 0;
+    bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
-    DrawWBoard_Shoting_Default(WBoardPlayer);
-    DrawWBoard_Shoting(WBoardComputer, cursor_x_pos, cursor_y_pos, &shotBoard);
+    DrawWBoard_Shoting_Default(*WBoardPlayer);
+    DrawWBoard_Shoting(*WBoardComputer, shotBoard);
+    DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
 
     while((key = getch()) != KEY_F(5)){
         switch(key){
@@ -94,10 +97,20 @@ int main(){
         	case KEY_UP:
         	case KEY_DOWN:
                 moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
-                DrawWBoard_Shoting(WBoardComputer, cursor_x_pos, cursor_y_pos, &shotBoard);
+                DrawWBoard_Shoting(*WBoardComputer, shotBoard);
+                isShotAvailable = checkShotPos(shotBoard, cursor_x_pos, cursor_y_pos);
+                DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
 	            break;
 	        case '\n':
-                markSHOTED(shotBoard, cursor_x_pos, cursor_y_pos);
+                if (isShotAvailable){
+                    // do shot
+                    // enum ShootBoardState shotResult = makeShot(ShipsComputer, cursor_x_pos, cursor_y_pos);
+                    markSHOTED(shotBoard, cursor_x_pos, cursor_y_pos);
+
+                }
+                else {
+                    // print msg shot is not available
+                }
                 break;
             case 27: // Esc
                 // switch (active_window){
