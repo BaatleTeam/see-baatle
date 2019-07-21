@@ -79,13 +79,13 @@ int main(){
                                  .board = boardArray };
 
     int key;
-    int cursor_x_position = 0;
-    int cursor_y_position = 0;
+    int cursor_x_pos = 0;
+    int cursor_y_pos = 0;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
     DrawWBoard_Shoting_Default(WBoardPlayer);
-    DrawWBoard_Shoting(WBoardComputer, cursor_x_position, cursor_y_position, &shotBoard);
+    DrawWBoard_Shoting(WBoardComputer, cursor_x_pos, cursor_y_pos, &shotBoard);
 
     while((key = getch()) != KEY_F(5)){
         switch(key){
@@ -93,11 +93,11 @@ int main(){
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
-                moveCursor_Shooting(BoardPlayer, &cursor_x_position, &cursor_y_position, key);
-                DrawWBoard_Shoting(WBoardComputer, cursor_x_position, cursor_y_position, &shotBoard);
+                moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
+                DrawWBoard_Shoting(WBoardComputer, cursor_x_pos, cursor_y_pos, &shotBoard);
 	            break;
 	        case '\n':
-
+                markSHOTED(shotBoard, cursor_x_pos, cursor_y_pos);
                 break;
             case 27: // Esc
                 // switch (active_window){

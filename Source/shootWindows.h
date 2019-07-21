@@ -16,3 +16,8 @@ void DrawWBoard_Shoting(WindowParametres *WBoard, int cur_x, int cur_y, const Pl
 void DrawWBoard_Shoting_Default(WindowParametres *WBoard);
 
 void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_position, int key);
+
+
+void markEMPTY(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
+void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
+void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);

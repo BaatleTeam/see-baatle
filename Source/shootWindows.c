@@ -161,3 +161,15 @@ void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_posi
             break;
     }
 }
+
+void markEMPTY(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+    board.board[cursor_y_pos][cursor_x_pos] = EMPTY;
+}
+
+void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+    board.board[cursor_y_pos][cursor_x_pos] = SHOTED;
+}
+
+void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+    board.board[cursor_y_pos][cursor_x_pos] = KILLED;
+}
