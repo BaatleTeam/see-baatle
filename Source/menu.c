@@ -38,8 +38,8 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
     				case choosingShips:
 		    			if (CheckChangingOfCaseWindow(active_case, key))
 			    			DrawNonActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 2);
-			    			changeActiveCase(&active_case, key);
-			    			DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
+			    		changeActiveCase(&active_case, key);
+			    		DrawActiveCaseWindow(&WCaseParametres[active_case], GDCases, active_case, 3);
 		    			break;
 		    		case choosingSize:
 		    			DrawGameDataCasesSize(WCaseParametres[active_case].ptrWin, &GDCases[active_case], indexOfCurrSizeOfBoard, 3);
@@ -88,7 +88,6 @@ void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
     ShipsInfo tmp = { S_N_S(4), S_N_S(3), S_N_S(2), S_N_S(1), NULL };
 	*info = tmp;
     info->Ships = calloc(S_N_S(1) + S_N_S(2) + S_N_S(3) + S_N_S(4), sizeof(ship));
-	// calloc -> везде 0
 }
 
 void initBoard(Board *board, int height, int width){

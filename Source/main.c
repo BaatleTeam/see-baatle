@@ -54,7 +54,7 @@ int main(){
     WindowParametres *WInfoComputer = malloc(sizeof(WindowParametres));
     WindowParametres *WBoardPlayer = malloc(sizeof(WindowParametres));
     WindowParametres *WBoardComputer = malloc(sizeof(WindowParametres));
-    WindowParametres *WHelp = malloc(sizeof(WindowParametres));
+    // WindowParametres *WHelp = malloc(sizeof(WindowParametres));
     initWindowsShooting(&ShipsPlayer, &BoardPlayer, WBackGround, WInfoPlayer, WInfoComputer, WBoardPlayer, WBoardComputer);
 
 
@@ -292,6 +292,24 @@ int main(){
     //             break;
     //     }
     // }
+
+    free(WBackGround);
+    free(WInfoComputer);
+    free(WInfoPlayer);
+    free(WBoardComputer);
+    free(WBoardPlayer);
+    // free(WHelp);
+
+    free(ShipsPlayer.Ships);
+    free(ShipsComputer.Ships);
+
+    for (int i = 0; i < BoardPlayer.Height; i++)
+        free(BoardPlayer.field[i]);
+    free(BoardPlayer.field);
+    for (int i = 0; i < BoardComputer.Height; i++)
+        free(BoardComputer.field[i]);
+    free(BoardComputer.field);
+
     resetty();
 	endwin();
 	return 0;

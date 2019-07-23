@@ -344,6 +344,7 @@ bool checkBorderRight(ship* ship, const Board *Board){
             else 
                 return TRUE;
     }
+    return TRUE; // control should not be reached
 }
 
 bool checkBorderTop(ship* ship, const Board *Board){
@@ -366,6 +367,7 @@ bool checkBorderBot(ship* ship, const Board *Board){
             else 
                 return TRUE;
     }
+    return TRUE; // control should not be reached
 }
 
 // -------------------------------------------------------------------------------
