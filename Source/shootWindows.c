@@ -200,7 +200,7 @@ bool isShipKilled(ship* ship, const PlayerShotBoard boardData){
 
 void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isActive){
     if (isActive)
-        wattron(WBoard.ptrWin, COLOR_PAIR(49));
+        wattron(WBoard.ptrWin, COLOR_PAIR(33));
     else
         wattron(WBoard.ptrWin, COLOR_PAIR(51));
     mvwprintw(WBoard.ptrWin, cur_y*2+3, cur_x*2+4, "%c", 254);
