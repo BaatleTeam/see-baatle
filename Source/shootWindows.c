@@ -161,6 +161,7 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, in
     return result;
 }
 
+// TODO change vars 
 void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
     switch (ship.type) {
         case FALSE:
@@ -177,12 +178,21 @@ void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
                 if (isValidBoardCell(boardData, ship.x+ship.size, ship.y+i)) // столбец правее
                     markSHOTED(boardData, ship.x+ship.size, ship.y+i);                
             }
-            
             break;
         case TRUE:
+            for (int i = 0; i < ship.size; i++){
+                if (isValidBoardCell(boardData, ship.x-1, ship.y+i)) // ряд левее
+                    markSHOTED(boardData, ship.x-1, ship.y+i);
+                if (isValidBoardCell(boardData, ship.x+1, ship.y+i)) // ряд правее
+                    markSHOTED(boardData, ship.x+1, ship.y+i);
+            }
 
-            break;
-        default:
+            for (int i = -1; i < 2; i++){
+                if (isValidBoardCell(boardData, ship.x+i, ship.y-1)) // столбец выше
+                    markSHOTED(boardData, ship.x+i, ship.y-1);
+                if (isValidBoardCell(boardData, ship.x+i, ship.y+ship.size)) // столбец ниже
+                    markSHOTED(boardData, ship.x+i, ship.y+ship.size);                
+            }
             break;
     }
 }
