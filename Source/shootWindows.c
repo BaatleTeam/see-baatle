@@ -95,7 +95,7 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
 void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
-    for (int i = 0; i < boardData.Height; i++)
+    for (int i = 0; i < boardData.Height; i++){
         for (int j = 0; j < boardData.Width; j++){
             switch (boardData.board[i][j]) {
                 case EMPTY:
@@ -117,6 +117,7 @@ void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
             }
             mvwprintw(WBoard.ptrWin, i*2+3, j*2+4, "%c", charToDraw);
         }
+    }
     wrefresh(WBoard.ptrWin);
 }
 

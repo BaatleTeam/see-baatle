@@ -27,12 +27,6 @@ typedef struct PlayerShotBoard {
 	enum ShootBoardState **board;
 } PlayerShotBoard;
 
-typedef struct ShotResult {
-	bool isHit; // попал или нет
-	int shipSize; // если потопил полностью - размер потопленого корабля. Иначе - 0
-} ShotResult;
-
-
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 
 void change_x_leftkey(int* x);
