@@ -401,3 +401,22 @@ void changeTypeOfShip(ship* ship, const Board *Board){
             break;
     }
 }
+
+// -------------------------------------------------------------------------------
+
+
+bool isShipHit(const ship* ship, int coord_x, int coord_y){
+    switch (ship->type){
+        case FALSE:
+            for (int i = 0; i < ship->size; i++)
+                if (ship->y == coord_y && ship->x+i == coord_x)
+                    return TRUE;
+            break;
+        case TRUE:
+            for (int i = 0; i < ship->size; i++)
+                if (ship->x == coord_x && ship->y+i == coord_y)
+                    return TRUE;
+            break;
+    }
+    return FALSE;
+}

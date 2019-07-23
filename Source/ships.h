@@ -89,3 +89,7 @@ bool checkBorderLeft(ship* ship, const Board*);
 bool checkBorderRight(ship* ship, const Board*);
 bool checkBorderTop(ship* ship, const Board*);
 bool checkBorderBot(ship* ship, const Board*);
+
+
+// Функции для обработки стрельбы
+bool isShipHit(const ship* ship, int coord_x, int coord_y);

@@ -102,15 +102,12 @@ int main(){
                 DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
 	            break;
 	        case '\n':
-                if (isShotAvailable){
-                    // do shot
-                    // enum ShootBoardState shotResult = makeShot(ShipsComputer, cursor_x_pos, cursor_y_pos);
-                    markSHOTED(shotBoard, cursor_x_pos, cursor_y_pos);
-
-                }
-                else {
-                    // print msg shot is not available
-                }
+                if (isShotAvailable) // do shot
+                    makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
+                    // ShipsPlayer arg for debug here !!!
+                DrawWBoard_Shoting(*WBoardComputer, shotBoard);
+                isShotAvailable = checkShotPos(shotBoard, cursor_x_pos, cursor_y_pos);
+                DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
                 break;
             case 27: // Esc
                 // switch (active_window){

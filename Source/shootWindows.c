@@ -117,6 +117,7 @@ void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
             }
             mvwprintw(WBoard.ptrWin, i*2+3, j*2+4, "%c", charToDraw);
         }
+    wrefresh(WBoard.ptrWin);
 }
 
 void DrawWBoard_Shoting_Default(WindowParametres WBoard){
@@ -129,6 +130,65 @@ bool checkShotPos(const PlayerShotBoard boardData, int cursor_x_pos, int cursor_
         return TRUE;
     else
         return FALSE;
+}
+
+void makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+    // найти индекс подбитого корабля
+    int shipIndex = -1;
+    for (int i = 0; i < getShipsNumber(&ShipsComputer); i++){
+        if (isShipHit(&ShipsComputer.Ships[i], cursor_x_pos, cursor_y_pos)) // если попадание
+            shipIndex = i;
+    }
+
+    // изменить массив-карту
+    if (shipIndex != -1){
+        markKILLED(boardData, cursor_x_pos, cursor_y_pos);
+        if (isShipKilled(&ShipsComputer.Ships[shipIndex], boardData)) // если при этом уничтожен
+            fillBoardNearKilledShip(ShipsComputer.Ships[shipIndex], boardData);
+    }
+    else markSHOTED(boardData, cursor_x_pos, cursor_y_pos);
+}
+
+void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
+    switch (ship.type) {
+        case FALSE:
+            for (int i = 0; i < ship.size; i++){
+                if (isValidBoardCell(boardData, ship.x+i, ship.y-1)) // ряд выше
+                    markSHOTED(boardData, ship.x+i, ship.y-1);
+                if (isValidBoardCell(boardData, ship.x+i, ship.y+1)) // ряд ниже
+                    markSHOTED(boardData, ship.x+i, ship.y+1);
+            }
+
+            for (int i = -1; i < 2; i++){
+                if (isValidBoardCell(boardData, ship.x-1, ship.y+i)) // столбец левее
+                    markSHOTED(boardData, ship.x-1, ship.y+i);
+                if (isValidBoardCell(boardData, ship.x+ship.size, ship.y+i)) // столбец правее
+                    markSHOTED(boardData, ship.x+ship.size, ship.y+i);                
+            }
+            
+            break;
+        case TRUE:
+
+            break;
+        default:
+            break;
+    }
+}
+
+bool isShipKilled(ship* ship, const PlayerShotBoard boardData){
+    switch (ship->type){
+        case FALSE:
+            for (int i = 0; i < ship->size; i++)
+                if (boardData.board[ship->y][ship->x+i] == EMPTY)
+                    return FALSE;
+            break;
+        case TRUE:
+            for (int i = 0; i < ship->size; i++)
+                if (boardData.board[ship->y+i][ship->x] == EMPTY)
+                    return FALSE;
+            break;
+    }
+    return TRUE;
 }
 
 void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isActive){
@@ -184,4 +244,12 @@ void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
 
 void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
     board.board[cursor_y_pos][cursor_x_pos] = KILLED;
+}
+
+bool isValidBoardCell(PlayerShotBoard board, int check_x, int check_y){
+    if (check_x < 0 || check_y < 0)
+        return FALSE;
+    if (check_x >= board.Width || check_y >= board.Height)
+        return FALSE;
+    return TRUE;
 }
