@@ -57,6 +57,12 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
     initWindow(WBackGround);
 }
 
+void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard boardData, int cur_x, int cur_y){
+    DrawWBoard_Shoting(WBoard, boardData);
+    bool isShotAvailable = checkShotPos(boardData, cur_x, cur_y);
+    DrawCursor_Shoting(WBoard, cur_x, cur_y, isShotAvailable);
+}
+
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
     DrawWInfo_Shoting_Default(WInfo);
 

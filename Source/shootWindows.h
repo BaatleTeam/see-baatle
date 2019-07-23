@@ -10,6 +10,7 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
                         WindowParametres *WBoardPlayer,
                         WindowParametres *WBoardComputer);
 
+void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats *stats);
 void DrawWInfo_Shoting_Default(WindowParametres *WShipsPlayer);
 void DrawWBoard_Shoting(WindowParametres WBoard, const PlayerShotBoard board);

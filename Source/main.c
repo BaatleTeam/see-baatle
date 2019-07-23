@@ -97,28 +97,13 @@ int main(){
         	case KEY_UP:
         	case KEY_DOWN:
                 moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
-                DrawWBoard_Shoting(*WBoardComputer, shotBoard);
-                isShotAvailable = checkShotPos(shotBoard, cursor_x_pos, cursor_y_pos);
-                DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
+                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
 	            break;
 	        case '\n':
                 if (isShotAvailable) // do shot
                     makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
                     // ShipsPlayer arg for debug here !!!
-                DrawWBoard_Shoting(*WBoardComputer, shotBoard);
-                isShotAvailable = checkShotPos(shotBoard, cursor_x_pos, cursor_y_pos);
-                DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
-                break;
-            case 27: // Esc
-                // switch (active_window){
-                //     case SHIP:
-                //         reDrawStandingShips(WShip->ptrWin, BoardPlayer);
-	            //         active_window = ARRANGE;
-                //         break;
-                //     case ARRANGE:
-                //         // /No any reaction/
-                //         break;
-                // }
+                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
                 break;
     	}
 	}
