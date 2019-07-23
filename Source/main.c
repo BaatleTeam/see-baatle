@@ -64,14 +64,14 @@ int main(){
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
 
-    PlayerStats statisticsPlayer = {.ship_4[1] = ShipsPlayer.Number_4_Size,
-                                    .ship_3[1] = ShipsPlayer.Number_3_Size,
-                                    .ship_2[1] = ShipsPlayer.Number_2_Size,
-                                    .ship_1[1] = ShipsPlayer.Number_1_Size,};
-    PlayerStats statisticsComputer = {.ship_4[1] = ShipsComputer.Number_4_Size,
-                                    .ship_3[1] = ShipsComputer.Number_3_Size,
-                                    .ship_2[1] = ShipsComputer.Number_2_Size,
-                                    .ship_1[1] = ShipsComputer.Number_1_Size,};
+    PlayerStats statisticsPlayer = {.shipCount[3][1] = ShipsPlayer.Number_4_Size, .shipCount[3][0] = ShipsPlayer.Number_4_Size,
+                                    .shipCount[2][1] = ShipsPlayer.Number_3_Size, .shipCount[2][0] = ShipsPlayer.Number_3_Size,
+                                    .shipCount[1][1] = ShipsPlayer.Number_2_Size, .shipCount[1][0] = ShipsPlayer.Number_2_Size,
+                                    .shipCount[0][1] = ShipsPlayer.Number_1_Size, .shipCount[0][0] = ShipsPlayer.Number_1_Size,};
+    PlayerStats statisticsComputer = {.shipCount[3][1] = ShipsComputer.Number_4_Size, .shipCount[3][0] = ShipsComputer.Number_4_Size,
+                                      .shipCount[2][1] = ShipsComputer.Number_3_Size, .shipCount[2][0] = ShipsComputer.Number_3_Size,
+                                      .shipCount[1][1] = ShipsComputer.Number_2_Size, .shipCount[1][0] = ShipsComputer.Number_2_Size,
+                                      .shipCount[0][1] = ShipsComputer.Number_1_Size, .shipCount[0][0] = ShipsComputer.Number_1_Size,};
     enum ShootBoardState **boardArray = malloc(BoardComputer.Height * sizeof(enum ShootBoardState*));
     for (int i = 0; i < BoardComputer.Height; i++)
         boardArray[i] = calloc(BoardComputer.Width, sizeof(enum ShootBoardState));
@@ -99,11 +99,16 @@ int main(){
                 moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
                 updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
 	            break;
-	        case '\n':
+	        case '\n': ;
+                ShotResult shotResult = {0};
                 if (isShotAvailable) // do shot
-                    makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
+                    shotResult = makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
                     // ShipsPlayer arg for debug here !!!
                 updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
+                
+                updateStats(&statisticsPlayer, &statisticsComputer, shotResult);
+                DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+                DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
                 break;
     	}
 	}

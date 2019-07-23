@@ -9,11 +9,8 @@ enum ShootBoardState {
 };
 
 typedef struct PlayerStats {
-	// [0] - на плаву, [1] - всего
-	unsigned ship_4[2];
-	unsigned ship_3[2];
-	unsigned ship_2[2];
-	unsigned ship_1[2];
+	// [size][0] - на плаву, [size][1] - всего
+	unsigned shipCount[4][2];
 
 	unsigned shots;
 	unsigned hits;
@@ -26,6 +23,11 @@ typedef struct PlayerShotBoard {
 	unsigned Width;
 	enum ShootBoardState **board;
 } PlayerShotBoard;
+
+typedef struct ShotResult {
+	bool isHit; // попал или нет
+	int shipSize; // если потопил полностью - размер потопленого корабля. Иначе - 0
+} ShotResult;
 
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 

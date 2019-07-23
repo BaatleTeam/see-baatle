@@ -66,17 +66,17 @@ void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard board
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
     DrawWInfo_Shoting_Default(WInfo);
 
-    mvwprintw(WInfo->ptrWin, 3, 2, "4-size: %d/%d", stats->ship_4[0], stats->ship_4[1]);
-    mvwprintw(WInfo->ptrWin, 5, 2, "3-size: %d/%d", stats->ship_3[0], stats->ship_3[1]);
-    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %d/%d", stats->ship_2[0], stats->ship_2[1]);
-    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %d/%d", stats->ship_1[0], stats->ship_1[1]);
+    mvwprintw(WInfo->ptrWin, 3, 2, "4-size: %d/%d", stats->shipCount[3][0], stats->shipCount[3][1]);
+    mvwprintw(WInfo->ptrWin, 5, 2, "3-size: %d/%d", stats->shipCount[2][0], stats->shipCount[2][1]);
+    mvwprintw(WInfo->ptrWin, 3, 15, "2-size: %d/%d", stats->shipCount[1][0], stats->shipCount[1][1]);
+    mvwprintw(WInfo->ptrWin, 5, 15, "1-size: %d/%d", stats->shipCount[0][0], stats->shipCount[0][1]);
 
     mvwprintw(WInfo->ptrWin, 11, 2, "Shoots: %d", stats->shots);
     mvwprintw(WInfo->ptrWin, 13, 2, "Hits: %d", stats->hits);
     if (stats->shots == 0)
         mvwprintw(WInfo->ptrWin, 15, 2, "Percent: 0.0%%");
     else
-        mvwprintw(WInfo->ptrWin, 15, 2, "Percent: %.2f%%", (float)stats->hits / (float)stats->shots);
+        mvwprintw(WInfo->ptrWin, 15, 2, "Percent: %.2f%%", (float)stats->hits / (float)stats->shots * 100);
 
     wrefresh(WInfo->ptrWin);
 }
@@ -139,7 +139,8 @@ bool checkShotPos(const PlayerShotBoard boardData, int cursor_x_pos, int cursor_
         return FALSE;
 }
 
-void makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+    ShotResult result = {0};
     // найти индекс подбитого корабля
     int shipIndex = -1;
     for (int i = 0; i < getShipsNumber(&ShipsComputer); i++){
@@ -149,11 +150,15 @@ void makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int curs
 
     // изменить массив-карту
     if (shipIndex != -1){
+        result.isHit = TRUE;
         markKILLED(boardData, cursor_x_pos, cursor_y_pos);
-        if (isShipKilled(&ShipsComputer.Ships[shipIndex], boardData)) // если при этом уничтожен
+        if (isShipKilled(&ShipsComputer.Ships[shipIndex], boardData)){ // если при этом уничтожен
+            result.shipSize = ShipsComputer.Ships[shipIndex].size;
             fillBoardNearKilledShip(ShipsComputer.Ships[shipIndex], boardData);
+        }
     }
     else markSHOTED(boardData, cursor_x_pos, cursor_y_pos);
+    return result;
 }
 
 void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
@@ -207,7 +212,20 @@ void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isAc
     wrefresh(WBoard.ptrWin);
 }
 
-// ----------------------
+// ------------------------------------------------------------
+
+void updateStats(PlayerStats *stats_shots, PlayerStats *stats_shooted, ShotResult shotResult){
+    stats_shots->shots++;
+    if (shotResult.isHit){
+        stats_shots->hits++;
+        if (shotResult.shipSize){
+            stats_shots->shipsDestroyed++;
+            stats_shooted->shipCount[shotResult.shipSize-1][0]--;
+        }
+    }
+}
+
+// ------------------------------------------------------------
 
 void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_position, int key){
     switch (key){
