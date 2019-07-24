@@ -91,6 +91,7 @@ int main(){
     // int cursor_x_pos = 0;
     // int cursor_y_pos = 0;
     Coordinate cursorPostion = {0};
+    Coordinate computerShot = {-1};
     bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
@@ -119,8 +120,12 @@ int main(){
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
 
                 ShotResult shotResultComputer = {0};
-
-                // shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, )
+                computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
+                shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
+                DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
+                updateStats(&statisticsComputer, &statisticsPlayer, shotResultPlayer);
+                DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+                DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
                 
                 // DrawWBoard_Shoting(*WBoardPlayer, );
                 break;

@@ -305,3 +305,10 @@ bool isValidBoardCell(ShotBoard board, Coordinate point){
         return FALSE;
     return TRUE;
 }
+
+// ---------------------------------------------------------------
+
+Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot){
+    // TODO norm alogrithm
+    return (Coordinate) {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
+}

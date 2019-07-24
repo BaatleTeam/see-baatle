@@ -31,3 +31,7 @@ void markEMPTY(ShotBoard board, Coordinate curPos);
 void markSHOTED(ShotBoard board, Coordinate curPos);
 void markKILLED(ShotBoard board, Coordinate curPos);
 bool isValidBoardCell(ShotBoard board, Coordinate checkPos);
+
+
+// ai
+Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot);
