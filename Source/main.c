@@ -119,13 +119,17 @@ int main(){
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
 
+                if (shotResultPlayer.isHit)
+                    break; // если игрок попал, то он ходит снова
                 ShotResult shotResultComputer = {0};
-                computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
-                shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
-                DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
-                updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
-                DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
-                DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                do {
+                    computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
+                    shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
+                    DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
+                    updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
+                    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+                    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                } while (shotResultComputer.isHit);
                 
                 // DrawWBoard_Shoting(*WBoardPlayer, );
                 break;
