@@ -123,7 +123,7 @@ int main(){
                 computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
                 shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
                 DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
-                updateStats(&statisticsComputer, &statisticsPlayer, shotResultPlayer);
+                updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
                 
