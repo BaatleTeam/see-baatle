@@ -29,6 +29,13 @@ typedef struct ShotResult {
 	int shipSize; // если потопил полностью - размер потопленого корабля. Иначе - 0
 } ShotResult;
 
+typedef struct Coordinate {
+	int x;
+	int y;
+} Coordinate;
+
+void initCoordiante(Coordinate *coord, int x, int y);
+
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 
 void change_x_leftkey(int* x);

@@ -88,15 +88,16 @@ int main(){
                                  .board = boardArrayComputer };
 
     int key;
-    int cursor_x_pos = 0;
-    int cursor_y_pos = 0;
+    // int cursor_x_pos = 0;
+    // int cursor_y_pos = 0;
+    Coordinate cursorPostion = {0};
     bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
     DrawWBoard_Shoting_Default(*WBoardPlayer);
     DrawWBoard_Shoting(*WBoardComputer, shotBoardPlayer);
-    DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
+    DrawCursor_Shoting(*WBoardComputer, cursorPostion, isShotAvailable);
 
     while((key = getch()) != KEY_F(5)){
         switch(key){
@@ -104,15 +105,15 @@ int main(){
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
-                moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
-                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
+                moveCursor_Shooting(BoardPlayer, &cursorPostion, key);
+                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
                 if (isShotAvailable) // do shot
-                    shotResultPlayer = makeShot(ShipsPlayer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
+                    shotResultPlayer = makeShot(ShipsPlayer, shotBoardPlayer, cursorPostion);
                     // ShipsPlayer arg for debug here !!!
-                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
+                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
