@@ -1,5 +1,10 @@
 #include "shoot.h"
 
+void initCoordiante(Coordinate *coord, int x, int y){
+    coord->x = x;
+    coord->y = y;
+}
+
 void choosing_comp_strategy(bool ship_comp_field[10][15]){
     int key = rand() % 2;
     switch (key){

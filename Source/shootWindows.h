@@ -10,24 +10,28 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
                         WindowParametres *WBoardPlayer,
                         WindowParametres *WBoardComputer);
 
-void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
+void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard board, Coordinate curPos);
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats *stats);
 void DrawWInfo_Shoting_Default(WindowParametres *WShipsPlayer);
-void DrawWBoard_Shoting(WindowParametres WBoard, const PlayerShotBoard board);
+void DrawWBoard_Shoting(WindowParametres WBoard, const ShotBoard board);
 void DrawWBoard_Shoting_Default(WindowParametres WBoard);
-ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos);
-bool checkShotPos(const PlayerShotBoard shotBoard, int cursor_x_pos, int cursor_y_pos);
-bool isShipKilled(ship* ship, const PlayerShotBoard boardData);
-void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData);
+ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordinate curPos);
+bool checkShotPos(const ShotBoard shotBoard, Coordinate curPos);
+bool isShipKilled(ship* ship, const ShotBoard boardData);
+void fillBoardNearKilledShip(const ship ship, ShotBoard boardData);
 
 // stats and info-window
 void updateStats(PlayerStats *stats_1, PlayerStats *stats_2, ShotResult shotResult);
 
-void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_position, int key);
-void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isActive);
+void moveCursor_Shooting(Board board, Coordinate *curPos, int key);
+void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActive);
 
 
-void markEMPTY(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
-void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
-void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos);
-bool isValidBoardCell(PlayerShotBoard board, int check_x, int check_y);
+void markEMPTY(ShotBoard board, Coordinate curPos);
+void markSHOTED(ShotBoard board, Coordinate curPos);
+void markKILLED(ShotBoard board, Coordinate curPos);
+bool isValidBoardCell(ShotBoard board, Coordinate checkPos);
+
+
+// ai
+Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot);

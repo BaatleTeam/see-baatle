@@ -57,10 +57,10 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
     initWindow(WBackGround);
 }
 
-void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard boardData, int cur_x, int cur_y){
+void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard boardData, Coordinate curPos){
     DrawWBoard_Shoting(WBoard, boardData);
-    bool isShotAvailable = checkShotPos(boardData, cur_x, cur_y);
-    DrawCursor_Shoting(WBoard, cur_x, cur_y, isShotAvailable);
+    bool isShotAvailable = checkShotPos(boardData, curPos);
+    DrawCursor_Shoting(WBoard, curPos, isShotAvailable);
 }
 
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
@@ -98,7 +98,7 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
+void DrawWBoard_Shoting(WindowParametres WBoard, ShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
     for (int i = 0; i < boardData.Height; i++){
@@ -132,72 +132,89 @@ void DrawWBoard_Shoting_Default(WindowParametres WBoard){
     wrefresh(WBoard.ptrWin);
 }
 
-bool checkShotPos(const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
-    if (boardData.board[cursor_y_pos][cursor_x_pos] == EMPTY)
+bool checkShotPos(const ShotBoard boardData, Coordinate curPos){
+    if (boardData.board[curPos.y][curPos.x] == EMPTY)
         return TRUE;
     else
         return FALSE;
 }
 
-ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordinate curPos){
     ShotResult result = {0};
     // найти индекс подбитого корабля
     int shipIndex = -1;
     for (int i = 0; i < getShipsNumber(&ShipsComputer); i++){
-        if (isShipHit(&ShipsComputer.Ships[i], cursor_x_pos, cursor_y_pos)) // если попадание
+        if (isShipHit(&ShipsComputer.Ships[i], curPos.x, curPos.y)) // если попадание
             shipIndex = i;
     }
 
     // изменить массив-карту
     if (shipIndex != -1){
         result.isHit = TRUE;
-        markKILLED(boardData, cursor_x_pos, cursor_y_pos);
+        markKILLED(boardData, curPos);
         if (isShipKilled(&ShipsComputer.Ships[shipIndex], boardData)){ // если при этом уничтожен
             result.shipSize = ShipsComputer.Ships[shipIndex].size;
             fillBoardNearKilledShip(ShipsComputer.Ships[shipIndex], boardData);
         }
     }
-    else markSHOTED(boardData, cursor_x_pos, cursor_y_pos);
+    else markSHOTED(boardData, curPos);
     return result;
 }
 
 // TODO change vars 
-void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
+void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
+    Coordinate pointToCheck = {0};
     switch (ship.type) {
         case FALSE:
             for (int i = 0; i < ship.size; i++){
-                if (isValidBoardCell(boardData, ship.x+i, ship.y-1)) // ряд выше
-                    markSHOTED(boardData, ship.x+i, ship.y-1);
-                if (isValidBoardCell(boardData, ship.x+i, ship.y+1)) // ряд ниже
-                    markSHOTED(boardData, ship.x+i, ship.y+1);
+                // ряд выше
+                initCoordiante(&pointToCheck, ship.x+i, ship.y-1);
+                if (isValidBoardCell(boardData, pointToCheck)) 
+                    markSHOTED(boardData, pointToCheck);
+                // ряд ниже
+                initCoordiante(&pointToCheck, ship.x+i, ship.y+1);
+                if (isValidBoardCell(boardData, pointToCheck)) 
+                    markSHOTED(boardData, pointToCheck);
             }
 
             for (int i = -1; i < 2; i++){
-                if (isValidBoardCell(boardData, ship.x-1, ship.y+i)) // столбец левее
-                    markSHOTED(boardData, ship.x-1, ship.y+i);
-                if (isValidBoardCell(boardData, ship.x+ship.size, ship.y+i)) // столбец правее
-                    markSHOTED(boardData, ship.x+ship.size, ship.y+i);                
+                // столбец левее
+                initCoordiante(&pointToCheck, ship.x-1, ship.y+i);
+                if (isValidBoardCell(boardData, pointToCheck)) 
+                    markSHOTED(boardData, pointToCheck);
+                // столбец правее
+                initCoordiante(&pointToCheck, ship.x+ship.size, ship.y+i);
+                if (isValidBoardCell(boardData, pointToCheck)) 
+                    markSHOTED(boardData, pointToCheck);                
             }
             break;
         case TRUE:
             for (int i = 0; i < ship.size; i++){
-                if (isValidBoardCell(boardData, ship.x-1, ship.y+i)) // ряд левее
-                    markSHOTED(boardData, ship.x-1, ship.y+i);
-                if (isValidBoardCell(boardData, ship.x+1, ship.y+i)) // ряд правее
-                    markSHOTED(boardData, ship.x+1, ship.y+i);
+                // ряд левее
+                initCoordiante(&pointToCheck, ship.x-1, ship.y+i);
+                if (isValidBoardCell(boardData, pointToCheck))
+                    markSHOTED(boardData, pointToCheck);
+                // ряд правее
+                initCoordiante(&pointToCheck, ship.x+1, ship.y+i);
+                if (isValidBoardCell(boardData, pointToCheck))
+                    markSHOTED(boardData, pointToCheck);
             }
 
             for (int i = -1; i < 2; i++){
-                if (isValidBoardCell(boardData, ship.x+i, ship.y-1)) // столбец выше
-                    markSHOTED(boardData, ship.x+i, ship.y-1);
-                if (isValidBoardCell(boardData, ship.x+i, ship.y+ship.size)) // столбец ниже
-                    markSHOTED(boardData, ship.x+i, ship.y+ship.size);                
+                // столбец выше
+                initCoordiante(&pointToCheck, ship.x+i, ship.y-1);
+                if (isValidBoardCell(boardData, pointToCheck))
+                    markSHOTED(boardData, pointToCheck);
+                // столбец ниже
+                initCoordiante(&pointToCheck, ship.x+i, ship.y+ship.size);
+                if (isValidBoardCell(boardData, pointToCheck))
+                    markSHOTED(boardData, pointToCheck);                
             }
             break;
     }
 }
 
-bool isShipKilled(ship* ship, const PlayerShotBoard boardData){
+bool isShipKilled(ship* ship, const ShotBoard boardData){
     switch (ship->type){
         case FALSE:
             for (int i = 0; i < ship->size; i++)
@@ -213,12 +230,12 @@ bool isShipKilled(ship* ship, const PlayerShotBoard boardData){
     return TRUE;
 }
 
-void DrawCursor_Shoting(WindowParametres WBoard, int cur_x, int cur_y, bool isActive){
+void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActive){
     if (isActive)
         wattron(WBoard.ptrWin, COLOR_PAIR(33));
     else
         wattron(WBoard.ptrWin, COLOR_PAIR(51));
-    mvwprintw(WBoard.ptrWin, cur_y*2+3, cur_x*2+4, "%c", 254);
+    mvwprintw(WBoard.ptrWin, curPos.y*2+3, curPos.x*2+4, "%c", 254);
     wrefresh(WBoard.ptrWin);
 }
 
@@ -237,31 +254,31 @@ void updateStats(PlayerStats *stats_shots, PlayerStats *stats_shooted, ShotResul
 
 // ------------------------------------------------------------
 
-void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_position, int key){
+void moveCursor_Shooting(Board board, Coordinate *curPos, int key){
     switch (key){
         case KEY_LEFT:
-            if (*cursor_x_position > 0)
-                (*cursor_x_position)--;
-            else if (*cursor_x_position == 0)
-                (*cursor_x_position) = board.Width-1;
+            if (curPos->x > 0)
+                (curPos->x)--;
+            else if (curPos->x == 0)
+                (curPos->x) = board.Width-1;
             break;
         case KEY_RIGHT:
-            if (*cursor_x_position < board.Width-1)
-                (*cursor_x_position)++;
-            else if (*cursor_x_position == board.Width-1)
-                (*cursor_x_position) = 0;
+            if (curPos->x < board.Width-1)
+                (curPos->x)++;
+            else if (curPos->x == board.Width-1)
+                (curPos->x) = 0;
             break;
         case KEY_UP:
-            if (*cursor_y_position > 0)
-                (*cursor_y_position)--;
-            else if (*cursor_y_position == 0)
-                (*cursor_y_position) = board.Height-1;
+            if (curPos->y > 0)
+                (curPos->y)--;
+            else if (curPos->y == 0)
+                (curPos->y) = board.Height-1;
             break;
         case KEY_DOWN:
-            if (*cursor_y_position < board.Height-1)
-                (*cursor_y_position)++;
-            else if (*cursor_y_position == board.Height-1)
-                (*cursor_y_position) = 0;
+            if (curPos->y < board.Height-1)
+                (curPos->y)++;
+            else if (curPos->y == board.Height-1)
+                (curPos->y) = 0;
             break;
         default:
             // No Any reaction for another key
@@ -269,22 +286,29 @@ void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_posi
     }
 }
 
-void markEMPTY(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
-    board.board[cursor_y_pos][cursor_x_pos] = EMPTY;
+void markEMPTY(ShotBoard board, Coordinate curPos){
+    board.board[curPos.y][curPos.x] = EMPTY;
 }
 
-void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
-    board.board[cursor_y_pos][cursor_x_pos] = SHOTED;
+void markSHOTED(ShotBoard board, Coordinate curPos){
+    board.board[curPos.y][curPos.x] = SHOTED;
 }
 
-void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
-    board.board[cursor_y_pos][cursor_x_pos] = KILLED;
+void markKILLED(ShotBoard board, Coordinate curPos){
+    board.board[curPos.y][curPos.x] = KILLED;
 }
 
-bool isValidBoardCell(PlayerShotBoard board, int check_x, int check_y){
-    if (check_x < 0 || check_y < 0)
+bool isValidBoardCell(ShotBoard board, Coordinate point){
+    if (point.x < 0 || point.y < 0)
         return FALSE;
-    if (check_x >= board.Width || check_y >= board.Height)
+    if (point.x >= board.Width || point.y >= board.Height)
         return FALSE;
     return TRUE;
+}
+
+// ---------------------------------------------------------------
+
+Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot){
+    // TODO norm alogrithm
+    return (Coordinate) {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
 }

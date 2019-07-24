@@ -17,17 +17,24 @@ typedef struct PlayerStats {
     unsigned shipsDestroyed;
 } PlayerStats;
 
-// Поле для храненя и отображения выстрелови и попаданий игрока игрока
-typedef struct PlayerShotBoard {
+// Поле для храненя и отображения выстрелови и попаданий игрока
+typedef struct ShotBoard {
 	unsigned Height;
 	unsigned Width;
 	enum ShootBoardState **board;
-} PlayerShotBoard;
+} ShotBoard;
 
 typedef struct ShotResult {
 	bool isHit; // попал или нет
 	int shipSize; // если потопил полностью - размер потопленого корабля. Иначе - 0
 } ShotResult;
+
+typedef struct Coordinate {
+	int x;
+	int y;
+} Coordinate;
+
+void initCoordiante(Coordinate *coord, int x, int y);
 
 void choosing_comp_strategy(bool ship_comp_field[10][15]);
 
