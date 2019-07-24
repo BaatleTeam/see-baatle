@@ -20,6 +20,8 @@ int main(){
     init_pair (1, COLOR_RED + 8, COLOR_BLUE); // ??
     init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
     init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
+    init_pair (49, COLOR_BLACK, COLOR_GREEN+8); // Для окна shot board
+    init_pair (51, COLOR_BLACK+8, COLOR_GREEN+8); // ??
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
@@ -29,7 +31,7 @@ int main(){
 
     int caseShips; // тип кол-ва кораблйей
     int caseBoard; // тип размера поля
-    choosingGDCase(GDCases, &caseShips,&caseBoard);
+    choosingGDCase(GDCases, &caseShips, &caseBoard);
 
     // Создание и инициализация данных о кораблях игрока и компьютера.
     ShipsInfo ShipsPlayer;
@@ -62,39 +64,54 @@ int main(){
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
 
-    PlayerStats statisticsPlayer = {.ship_4[1] = ShipsPlayer.Number_4_Size,
-                                    .ship_3[1] = ShipsPlayer.Number_3_Size,
-                                    .ship_2[1] = ShipsPlayer.Number_2_Size,
-                                    .ship_1[1] = ShipsPlayer.Number_1_Size,};
-    PlayerStats statisticsComputer = {.ship_4[1] = ShipsComputer.Number_4_Size,
-                                    .ship_3[1] = ShipsComputer.Number_3_Size,
-                                    .ship_2[1] = ShipsComputer.Number_2_Size,
-                                    .ship_1[1] = ShipsComputer.Number_1_Size,};
+    PlayerStats statisticsPlayer = {.shipCount[3][1] = ShipsPlayer.Number_4_Size, .shipCount[3][0] = ShipsPlayer.Number_4_Size,
+                                    .shipCount[2][1] = ShipsPlayer.Number_3_Size, .shipCount[2][0] = ShipsPlayer.Number_3_Size,
+                                    .shipCount[1][1] = ShipsPlayer.Number_2_Size, .shipCount[1][0] = ShipsPlayer.Number_2_Size,
+                                    .shipCount[0][1] = ShipsPlayer.Number_1_Size, .shipCount[0][0] = ShipsPlayer.Number_1_Size,};
+    PlayerStats statisticsComputer = {.shipCount[3][1] = ShipsComputer.Number_4_Size, .shipCount[3][0] = ShipsComputer.Number_4_Size,
+                                      .shipCount[2][1] = ShipsComputer.Number_3_Size, .shipCount[2][0] = ShipsComputer.Number_3_Size,
+                                      .shipCount[1][1] = ShipsComputer.Number_2_Size, .shipCount[1][0] = ShipsComputer.Number_2_Size,
+                                      .shipCount[0][1] = ShipsComputer.Number_1_Size, .shipCount[0][0] = ShipsComputer.Number_1_Size,};
+    enum ShootBoardState **boardArray = malloc(BoardComputer.Height * sizeof(enum ShootBoardState*));
+    for (int i = 0; i < BoardComputer.Height; i++)
+        boardArray[i] = calloc(BoardComputer.Width, sizeof(enum ShootBoardState));
+    PlayerShotBoard shotBoard = {.Height = BoardComputer.Height,
+                                 .Width = BoardComputer.Width,
+                                 .board = boardArray };
+
+    int key;
+    int cursor_x_pos = 0;
+    int cursor_y_pos = 0;
+    bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
-    DrawWBoard_Default(WBoardPlayer);
-    DrawWBoard_Default(WBoardComputer);
+    DrawWBoard_Shoting_Default(*WBoardPlayer);
+    DrawWBoard_Shoting(*WBoardComputer, shotBoard);
+    DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
 
-
-    // WindowParametres *WTest = malloc(sizeof(WindowParametres));
-    // WTest->Height = calculateArrangeHeight(&ShipsPlayer);
-    // WTest->Width = 38;
-    // WTest->Begin_x = 1;
-    // WTest->Begin_y = 1;
-    // initWindow(WTest);
-    // DrawDefaltArrangeWindow(WTest, &ShipsPlayer);
-
-
-    
-
-    // Окно заднего фона.
-    int key;
-    while((key = getch()) != KEY_F(5));
-
-
-    // // choosing_comp_strategy(ship_comp_field);
-    // // podchet_ships(ship_player_field, ship_comp_field);
+    while((key = getch()) != KEY_F(5)){
+        switch(key){
+        	case KEY_LEFT:
+        	case KEY_RIGHT:
+        	case KEY_UP:
+        	case KEY_DOWN:
+                moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
+                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
+	            break;
+	        case '\n': ;
+                ShotResult shotResult = {0};
+                if (isShotAvailable) // do shot
+                    shotResult = makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
+                    // ShipsPlayer arg for debug here !!!
+                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
+                
+                updateStats(&statisticsPlayer, &statisticsComputer, shotResult);
+                DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
+                DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                break;
+    	}
+	}
     
     // mvprintw(7, 76, "X - hit");
     // mvprintw(9, 76, "O - miss");
@@ -107,162 +124,7 @@ int main(){
     // mvprintw(18, 80, "GOOD LUCK!");
     // attroff(COLOR_PAIR(50));
     // refresh();
-
-    // int x_shoot = 0;
-    // int y_shoot = 0;
-    // int ran_x;
-    // int ran_y;
-    // char k = 88;
-
-    //ship_comp_field[2][2] = TRUE;
-
-    /*
-    move(29,0);
-    for (int i = 0; i < 10; i++){
-        for (int j = 0; j < 15; j++)
-            printw("%d ", shoot_comp_field[i][j]);
-        printw("\n");
-    }
-    */
-    // refresh();
-    // wattron(WShip->ptrWin, COLOR_PAIR(200));
-
-    // refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    // while((key = getch()) != KEY_F(1)){
-    //     switch(key){	
-    //         case KEY_LEFT:
-    //             if (check_border_left_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){ 
-    //                 change_x_leftkey(&x_shoot);
-    //                 refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //             }/*
-    //             else {
-    //                 int var_x = x_shoot - 1;
-    //                 for (var_x; var_x > 0; var_x++){
-    //                     if (check_border_left_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
-    //                         x_shoot = var_x;
-    //                         change_x_leftkey(&x_shoot);
-    //                         refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //                         continue;
-    //                     } 
-    //                 break;
-    //                 }
-    //             }*/
-    //             break;
-    //         case KEY_RIGHT:
-    //             if (check_border_right_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-    //                 change_x_rightkey(&x_shoot);
-    //                 refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //             }/*
-    //             else {
-    //                 int var_x = x_shoot + 1;
-    //                 for (var_x; var_x < 15; var_x--){
-    //                     if (check_border_right_shoot(y_shoot, var_x, shoot_player_field) == TRUE){
-    //                         x_shoot = var_x;
-    //                         change_x_rightkey(&x_shoot);
-    //                         refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //                         break;
-    //                     } 
-    //                 break;
-    //                 }
-    //             }*/
-    //             break;
-    //         case KEY_UP:
-    //             if (check_border_top_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-    //                 change_y_topkey(&y_shoot);
-    //                 refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //             }/*
-    //             else {
-    //                 int var_y = y_shoot - 1;
-    //                 for (var_y; var_y > 0; var_y--){
-    //                     if (check_border_top_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
-    //                         y_shoot = var_y;
-    //                         change_y_topkey(&y_shoot);
-    //                         refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //                         break;
-    //                     } 
-    //                 break;
-    //                 }
-    //             }*/
-    //             break;
-    //         case KEY_DOWN:
-    //             if (check_border_bot_shoot(y_shoot, x_shoot, shoot_player_field) == TRUE){
-    //                 change_y_botkey(&y_shoot);
-    //                 refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //             }
-    //             else {
-    //                 int var_y = y_shoot + 1;
-    //                 for (var_y; var_y < 10; var_y++){
-    //                     if (check_border_bot_shoot(y_shoot, var_y, shoot_player_field) == TRUE){
-    //                         y_shoot = var_y;
-    //                         change_y_botkey(&y_shoot);
-    //                         refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //                         break;
-    //                     } 
-    //                 break;
-    //                 }
-    //             }
-    //             break;
-    //         case '\n':
-    //             if (ship_comp_field[y_shoot][x_shoot] == TRUE){
-    //                 ship_comp_field[y_shoot][x_shoot] = FALSE;
-    //                 shoot_player_field[y_shoot][x_shoot] = 1;
-    //                 if (
-    //                     ship_comp_field[y_shoot-1][x_shoot-1] == FALSE &&
-    //                     ship_comp_field[y_shoot-1][x_shoot] == FALSE &&
-    //                     ship_comp_field[y_shoot-1][x_shoot+1] == FALSE &&
-    //                     ship_comp_field[y_shoot][x_shoot-1] == FALSE &&
-    //                     ship_comp_field[y_shoot][x_shoot+1] == FALSE &&
-    //                     ship_comp_field[y_shoot+1][x_shoot-1] == FALSE &&
-    //                     ship_comp_field[y_shoot+1][x_shoot] == FALSE &&
-    //                     ship_comp_field[y_shoot+1][x_shoot+1] == FALSE
-    //                     ){
-    //                         shoot_player_field[y_shoot-1][x_shoot] = 0;
-    //                         shoot_player_field[y_shoot+1][x_shoot] = 0;
-    //                         shoot_player_field[y_shoot][x_shoot+1] = 0;
-    //                         shoot_player_field[y_shoot][x_shoot-1] = 0;
-    //                         shoot_player_field[y_shoot-1][x_shoot+1] = 0;
-    //                         shoot_player_field[y_shoot+1][x_shoot+1] = 0;
-    //                         shoot_player_field[y_shoot-1][x_shoot-1] = 0;
-    //                         shoot_player_field[y_shoot+1][x_shoot-1] = 0;
-    //                     }
-    //             }
-    //             else 
-    //                 shoot_player_field[y_shoot][x_shoot] = 0;
-    //             //x_shoot = ;
-    //             //y_shoot = ;
-    //             refresh_shoot_player_gpaphics(WShoot->ptrWin, shoot_player_field, y_shoot, x_shoot);
-    //             podchet_ships(ship_player_field, ship_comp_field);
-    //             do {
-    //                 ran_y = rand() % 10;
-    //                 ran_x = rand() % 15;
-    //             }
-    //             while (shoot_comp_field[ran_y][ran_x] != -1);
-    //             if (ship_player_field[ran_y][ran_x] == TRUE){
-    //                 ship_player_field[ran_y][ran_x] = FALSE;
-    //                 shoot_comp_field[ran_y][ran_x] = 1;
-    //                 mvwprintw(WShip->ptrWin, ran_y*2+3, ran_x*2+3, "%c", k);
-    //             }
-    //             else{
-    //                 shoot_comp_field[ran_y][ran_x] = 0;
-    //                 mvwprintw(WShip->ptrWin, ran_y*2+3, ran_x*2+3, "%c", n);
-    //             }
-    //             wrefresh(WShip->ptrWin);
-    //             podchet_ships(ship_player_field, ship_comp_field);
-    //             reDrawStandingShips(WShip->ptrWin, Board);
     
-    // /*
-    // move(29,0);
-    // for (int i = 0; i < 10; i++){
-    //     for (int j = 0; j < 15; j++)
-    //         printw("%d ", shoot_comp_field[i][j]);
-    //     printw("\n");
-    // }
-    // */
-    // refresh();
-    //             break;
-    //     }
-    // }
-
     free(WBackGround);
     free(WInfoComputer);
     free(WInfoPlayer);
@@ -310,75 +172,4 @@ void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowPa
     delwin(WShoot->ptrWin);
     WShoot->ptrWin = newwin(WShoot->Height, WShoot->Width, WShoot->Begin_y, WShoot->Begin_x);
     DrawTableWindow(WShoot);
-}
-
-// void podchet_ships(bool ship_player_field[10][15], bool ship_comp_field[10][15]){
-//     int number_ships_comp = 0;
-//     int number_ships_player = 0;
-//     for (int i = 0; i < 10; i++)
-//        for (int j = 0; j < 15; j++){
-//            if (ship_player_field[i][j] == TRUE)
-//                 number_ships_player++;
-//             if (ship_comp_field[i][j] == TRUE)
-//                 number_ships_comp++; 
-//        }
-//     if (number_ships_player == 0 || number_ships_comp == 0){
-//         if (number_ships_player == 0){
-//             attron(COLOR_PAIR(66));
-//             mvprintw(4, 12, "                 ");
-//             mvprintw(4, 47, "                 ");
-//             attroff(COLOR_PAIR(50));
-//             mvprintw(4, 16, "You lose!");
-//             mvprintw(4, 47, "Computer wins!");
-//         }
-//         if (number_ships_comp == 0){
-//             attron(COLOR_PAIR(66));
-//             mvprintw(4, 12, "                 ");
-//             mvprintw(4, 47, "                 ");
-//             attroff(COLOR_PAIR(50));
-//             mvprintw(4, 16, "You win!");
-//             mvprintw(4, 47, "Computer lose!");
-//         }
-//     }
-//     else {
-//     mvprintw(4, 12, "Number of ships: %d ", number_ships_player);
-//     mvprintw(4, 47, "Number of ships: %d ", number_ships_comp);
-//     }
-// }
-
-void refresh_shoot_player_gpaphics(WINDOW *WIN, int field[10][15], int y, int x){
-    int mimo = 79;
-    int popal = 88;
-    int rect = 254;
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 15; j++){
-            switch(field[i][j]){
-                case -1:
-                    wattron(WIN,COLOR_PAIR(3));
-                    mvwprintw(WIN,i*2+3,j*2+3, " ");
-                    break;
-                case 0:
-                    wattron(WIN,COLOR_PAIR(3));
-                    mvwprintw(WIN,i*2+3,j*2+3, "%c", mimo);
-                    break;
-                case 1:
-                    wattron(WIN,COLOR_PAIR(3));
-                    mvwprintw(WIN,i*2+3,j*2+3, "%c", popal);
-                    break;
-            }
-        }
-    wattron(WIN,COLOR_PAIR(100));
-    mvwprintw(WIN, y*2+3, x*2+3, "%c", rect);
-    wrefresh(WIN);
-}
-
-
-void showDebugFieid(struct Board Board){
-	move(29,0);
-    for (int i = 0; i < Board.Height; i++){
-        for (int j = 0; j < Board.Width; j++)
-            printw("%d ", Board.field[i][j]);
-        printw("\n");
-    }
-    refresh();
 }
