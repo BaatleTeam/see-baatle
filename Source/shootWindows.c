@@ -57,7 +57,7 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
     initWindow(WBackGround);
 }
 
-void updateGraphics_Shoting(WindowParametres WBoard, const PlayerShotBoard boardData, int cur_x, int cur_y){
+void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard boardData, int cur_x, int cur_y){
     DrawWBoard_Shoting(WBoard, boardData);
     bool isShotAvailable = checkShotPos(boardData, cur_x, cur_y);
     DrawCursor_Shoting(WBoard, cur_x, cur_y, isShotAvailable);
@@ -98,7 +98,7 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWBoard_Shoting(WindowParametres WBoard, PlayerShotBoard boardData){
+void DrawWBoard_Shoting(WindowParametres WBoard, ShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
     for (int i = 0; i < boardData.Height; i++){
@@ -132,14 +132,14 @@ void DrawWBoard_Shoting_Default(WindowParametres WBoard){
     wrefresh(WBoard.ptrWin);
 }
 
-bool checkShotPos(const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+bool checkShotPos(const ShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
     if (boardData.board[cursor_y_pos][cursor_x_pos] == EMPTY)
         return TRUE;
     else
         return FALSE;
 }
 
-ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
+ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, int cursor_x_pos, int cursor_y_pos){
     ShotResult result = {0};
     // найти индекс подбитого корабля
     int shipIndex = -1;
@@ -162,7 +162,7 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const PlayerShotBoard boardData, in
 }
 
 // TODO change vars 
-void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
+void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
     switch (ship.type) {
         case FALSE:
             for (int i = 0; i < ship.size; i++){
@@ -197,7 +197,7 @@ void fillBoardNearKilledShip(const ship ship, PlayerShotBoard boardData){
     }
 }
 
-bool isShipKilled(ship* ship, const PlayerShotBoard boardData){
+bool isShipKilled(ship* ship, const ShotBoard boardData){
     switch (ship->type){
         case FALSE:
             for (int i = 0; i < ship->size; i++)
@@ -269,19 +269,19 @@ void moveCursor_Shooting(Board board, int *cursor_x_position, int *cursor_y_posi
     }
 }
 
-void markEMPTY(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+void markEMPTY(ShotBoard board, int cursor_x_pos, int cursor_y_pos){
     board.board[cursor_y_pos][cursor_x_pos] = EMPTY;
 }
 
-void markSHOTED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+void markSHOTED(ShotBoard board, int cursor_x_pos, int cursor_y_pos){
     board.board[cursor_y_pos][cursor_x_pos] = SHOTED;
 }
 
-void markKILLED(PlayerShotBoard board, int cursor_x_pos, int cursor_y_pos){
+void markKILLED(ShotBoard board, int cursor_x_pos, int cursor_y_pos){
     board.board[cursor_y_pos][cursor_x_pos] = KILLED;
 }
 
-bool isValidBoardCell(PlayerShotBoard board, int check_x, int check_y){
+bool isValidBoardCell(ShotBoard board, int check_x, int check_y){
     if (check_x < 0 || check_y < 0)
         return FALSE;
     if (check_x >= board.Width || check_y >= board.Height)

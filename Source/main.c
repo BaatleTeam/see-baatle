@@ -72,12 +72,20 @@ int main(){
                                       .shipCount[2][1] = ShipsComputer.Number_3_Size, .shipCount[2][0] = ShipsComputer.Number_3_Size,
                                       .shipCount[1][1] = ShipsComputer.Number_2_Size, .shipCount[1][0] = ShipsComputer.Number_2_Size,
                                       .shipCount[0][1] = ShipsComputer.Number_1_Size, .shipCount[0][0] = ShipsComputer.Number_1_Size,};
-    enum ShootBoardState **boardArray = malloc(BoardComputer.Height * sizeof(enum ShootBoardState*));
+    // поле для стрельбы человека по компьюеру                                      
+    enum ShootBoardState **boardArrayPlayer = malloc(BoardComputer.Height * sizeof(enum ShootBoardState*));
     for (int i = 0; i < BoardComputer.Height; i++)
-        boardArray[i] = calloc(BoardComputer.Width, sizeof(enum ShootBoardState));
-    PlayerShotBoard shotBoard = {.Height = BoardComputer.Height,
+        boardArrayPlayer[i] = calloc(BoardComputer.Width, sizeof(enum ShootBoardState));
+    ShotBoard shotBoardPlayer = {.Height = BoardComputer.Height,
                                  .Width = BoardComputer.Width,
-                                 .board = boardArray };
+                                 .board = boardArrayPlayer };
+    // поле для стрельбы компьютера по человеку
+    enum ShootBoardState **boardArrayComputer = malloc(BoardPlayer.Height * sizeof(enum ShootBoardState*));
+    for (int i = 0; i < BoardPlayer.Height; i++)
+        boardArrayComputer[i] = calloc(BoardPlayer.Width, sizeof(enum ShootBoardState));
+    ShotBoard shotBoardComputer = {.Height = BoardPlayer.Height,
+                                 .Width = BoardPlayer.Width,
+                                 .board = boardArrayComputer };
 
     int key;
     int cursor_x_pos = 0;
@@ -87,7 +95,7 @@ int main(){
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
     DrawWBoard_Shoting_Default(*WBoardPlayer);
-    DrawWBoard_Shoting(*WBoardComputer, shotBoard);
+    DrawWBoard_Shoting(*WBoardComputer, shotBoardPlayer);
     DrawCursor_Shoting(*WBoardComputer, cursor_x_pos, cursor_y_pos, isShotAvailable);
 
     while((key = getch()) != KEY_F(5)){
@@ -97,18 +105,23 @@ int main(){
         	case KEY_UP:
         	case KEY_DOWN:
                 moveCursor_Shooting(BoardPlayer, &cursor_x_pos, &cursor_y_pos, key);
-                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
+                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
 	            break;
 	        case '\n': ;
-                ShotResult shotResult = {0};
+                ShotResult shotResultPlayer = {0};
                 if (isShotAvailable) // do shot
-                    shotResult = makeShot(ShipsPlayer, shotBoard, cursor_x_pos, cursor_y_pos);
+                    shotResultPlayer = makeShot(ShipsPlayer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
                     // ShipsPlayer arg for debug here !!!
-                updateGraphics_Shoting(*WBoardComputer, shotBoard, cursor_x_pos, cursor_y_pos);
-                
-                updateStats(&statisticsPlayer, &statisticsComputer, shotResult);
+                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursor_x_pos, cursor_y_pos);
+                updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+
+                ShotResult shotResultComputer = {0};
+
+                // shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, )
+                
+                // DrawWBoard_Shoting(*WBoardPlayer, );
                 break;
     	}
 	}

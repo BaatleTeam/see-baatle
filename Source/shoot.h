@@ -17,12 +17,12 @@ typedef struct PlayerStats {
     unsigned shipsDestroyed;
 } PlayerStats;
 
-// Поле для храненя и отображения выстрелови и попаданий игрока игрока
-typedef struct PlayerShotBoard {
+// Поле для храненя и отображения выстрелови и попаданий игрока
+typedef struct ShotBoard {
 	unsigned Height;
 	unsigned Width;
 	enum ShootBoardState **board;
-} PlayerShotBoard;
+} ShotBoard;
 
 typedef struct ShotResult {
 	bool isHit; // попал или нет
