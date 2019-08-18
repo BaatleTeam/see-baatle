@@ -47,7 +47,9 @@ int main(){
     
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
     free(GDCases);
-    arrangingShips(&ShipsPlayer, &BoardPlayer);
+    arrangingShips_player(&ShipsPlayer, &BoardPlayer);
+    arrangingShips_computer(&ShipsComputer, &BoardComputer);
+
 
     WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
     WindowParametres *WInfoPlayer = malloc(sizeof(WindowParametres));
@@ -88,8 +90,6 @@ int main(){
                                  .board = boardArrayComputer };
 
     int key;
-    // int cursor_x_pos = 0;
-    // int cursor_y_pos = 0;
     Coordinate cursorPostion = {0};
     Coordinate computerShot = {-1};
     bool isShotAvailable = TRUE;

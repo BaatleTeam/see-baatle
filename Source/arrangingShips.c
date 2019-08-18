@@ -5,7 +5,7 @@
 
 // подключён через header.h
 
-void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
+void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
     WindowParametres *WArrange = malloc(sizeof(WindowParametres));
@@ -125,4 +125,104 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     free(WMain);
     free(WHelp);
     free(WShip);
+}
+
+
+void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
+	// цикл по всем кораблям, если ещё не поставлен, то пытаемся поставить
+	// циклами проверяем и ставим при первом совпадении
+	// если поставили -> идем дальше
+	// если не поставили -> окатываемся и ставим предыдущий заново
+	//  при постановке каждого корабля рандомим начальную точку x y и направление проверки
+
+	int index = 0;
+	#define isStand ShipsComputer->Ships[index].stand
+	#define curShip ShipsComputer->Ships[index]
+	f = fopen("tmp.txt", "w");
+	for (int i = 0; i < getShipsNumber(ShipsComputer); i++)
+		fprintf(f, "Stand_1: %d %d %d %d %d\n", ShipsComputer->Ships[i].x, ShipsComputer->Ships[i].y, ShipsComputer->Ships[i].size, ShipsComputer->Ships[i].stand, ShipsComputer->Ships[i].type);
+	// fprintf(f, "%d\n", getShipsNumber(ShipsComputer));
+	// for (int i = 0; i < getShipsNumber(ShipsComputer); i++)
+	// 	fprintf(f, "%d %d %d  ", ShipsComputer->Ships->x, ShipsComputer->Ships->y, ShipsComputer->Ships->stand);
+
+	Border borders[4];
+	while (index < getShipsNumber(ShipsComputer)){
+		chooseFilling(borders, BoardComputer->Width, BoardComputer->Height);
+		// for (int i = 0; i < 4; i++)
+		// 	fprintf(f, "X: %d %d Y: %d %d"	, borders[i].pair_x.first, borders[i].pair_x.second, borders[i].pair_y.first, borders[i].pair_y.second);
+
+		for (int i = 0; i < 4; i++){
+			ship tmpShip;
+			makeShipTmp(&curShip, &tmpShip);
+			if (tryToStandShip(&tmpShip, BoardComputer,
+								borders[i].pair_x.first, borders[i].pair_x.second,
+								borders[i].pair_y.first, borders[i].pair_y.second))
+			{
+				addShip(&curShip, &tmpShip);
+				fprintf(f, "Stand_2: %d %d %d %d %d\n", curShip.x, curShip.y, curShip.size, curShip.stand, curShip.type);
+				break;
+			}
+			else {
+				//  to do delete ship from board
+			}
+		}
+
+		if (isStand) // если смогли поставить
+			index++;
+		else { // иначе
+			index--;
+		}
+	}
+
+	for (int y = 0; y < BoardComputer->Height; y++){
+		for (int x = 0; x < BoardComputer->Width; x++)
+			fprintf(f, "%d ", BoardComputer->field[y][x]);
+		fprintf(f, "\n");
+	}
+}
+
+
+bool tryToStandShip(ship* thisShip, Board* board, int start_x, int end_x, int start_y, int end_y){
+	for (int y = start_y; y < end_y; y++){
+		for (int x = start_x; x < end_x; x++){
+			thisShip->x = x;
+			thisShip->y = y;
+			if (checkShipBorders(thisShip, board)){
+				standing_ship(thisShip, board);
+				thisShip->stand = TRUE;
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
+void chooseFilling(Border borders[4], int width, int height){
+	int start_x = rand() % width;
+	int start_y = rand() % height;
+	bool dir_x = rand() % 2;
+	bool dir_y = rand() % 2;
+
+	borders[0].pair_x.first = borders[2].pair_x.first = 0;
+	borders[0].pair_x.second = borders[2].pair_x.second = start_x;
+	borders[1].pair_x.first = borders[3].pair_x.first = start_x;
+	borders[1].pair_x.second = borders[3].pair_x.second = width;
+
+	borders[0].pair_y.first = borders[2].pair_y.first = 0;
+	borders[0].pair_y.second = borders[2].pair_y.second = start_y;
+	borders[1].pair_y.first = borders[3].pair_y.first = start_y;
+	borders[1].pair_y.second = borders[3].pair_y.second = height;
+
+	if (dir_x){
+		swapBorders(&borders[0].pair_x, &borders[1].pair_x);
+	}
+	if (dir_y){
+		swapBorders(&borders[2].pair_y, &borders[3].pair_y);
+	}
+}
+
+void swapBorders(Pair* a, Pair* b){
+	Pair tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
