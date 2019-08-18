@@ -149,6 +149,8 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 		// for (int i = 0; i < 4; i++)
 		// 	fprintf(f, "X: %d %d Y: %d %d"	, borders[i].pair_x.first, borders[i].pair_x.second, borders[i].pair_y.first, borders[i].pair_y.second);
 
+		if (curShip.stand == TRUE)
+			deleteShipFromField(&curShip, BoardComputer);
 		for (int i = 0; i < 4; i++){
 			ship tmpShip;
 			makeShipTmp(&curShip, &tmpShip);
@@ -160,14 +162,12 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 				fprintf(f, "Stand_2: %d %d %d %d %d\n", curShip.x, curShip.y, curShip.size, curShip.stand, curShip.type);
 				break;
 			}
-			else {
-				//  to do delete ship from board
-			}
 		}
 
 		if (isStand) // если смогли поставить
 			index++;
 		else { // иначе
+			fprintf(f, "unsuc\n");
 			index--;
 		}
 	}
@@ -183,6 +183,10 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 bool tryToStandShip(ship* thisShip, Board* board, int start_x, int end_x, int start_y, int end_y){
 	for (int y = start_y; y < end_y; y++){
 		for (int x = start_x; x < end_x; x++){
+			if ((thisShip->type == HORIZONTAL) && (x + thisShip->size > board->Width))
+				break;
+			if ((thisShip->type == VERTICAL) && (y + thisShip->size > board->Height))
+				break;
 			thisShip->x = x;
 			thisShip->y = y;
 			if (checkShipBorders(thisShip, board)){
