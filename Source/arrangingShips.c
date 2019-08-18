@@ -139,21 +139,18 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 	#define isStand ShipsComputer->Ships[index].stand
 	#define curShip ShipsComputer->Ships[index]
 	f = fopen("tmp.txt", "w");
-	// fprintf(f, "%d\n", getShipsNumber(ShipsComputer));
-	// for (int i = 0; i < getShipsNumber(ShipsComputer); i++)
-	// 	fprintf(f, "%d %d %d  ", ShipsComputer->Ships->x, ShipsComputer->Ships->y, ShipsComputer->Ships->stand);
 
-	Border borders[4];
+	Border borders[4]; // вляиет на очередь проверки участков на поле
+	// всего делится на 4 участка, разбивается одной точкой
 	while (index < getShipsNumber(ShipsComputer)){
 		chooseFilling(borders, BoardComputer->Width, BoardComputer->Height);
-		// for (int i = 0; i < 4; i++)
-		// 	fprintf(f, "X: %d %d Y: %d %d"	, borders[i].pair_x.first, borders[i].pair_x.second, borders[i].pair_y.first, borders[i].pair_y.second);
 
-		if (curShip.stand == TRUE)
+		if (curShip.stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
 			deleteShipFromField(&curShip, BoardComputer);
 		for (int i = 0; i < 4; i++){
 			ship tmpShip;
 			makeShipTmp(&curShip, &tmpShip);
+			tmpShip.type = rand() % 2;
 			if (tryToStandShip(&tmpShip, BoardComputer,
 								borders[i].pair_x.first, borders[i].pair_x.second,
 								borders[i].pair_y.first, borders[i].pair_y.second))
