@@ -139,8 +139,6 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 	#define isStand ShipsComputer->Ships[index].stand
 	#define curShip ShipsComputer->Ships[index]
 	f = fopen("tmp.txt", "w");
-	for (int i = 0; i < getShipsNumber(ShipsComputer); i++)
-		fprintf(f, "Stand_1: %d %d %d %d %d\n", ShipsComputer->Ships[i].x, ShipsComputer->Ships[i].y, ShipsComputer->Ships[i].size, ShipsComputer->Ships[i].stand, ShipsComputer->Ships[i].type);
 	// fprintf(f, "%d\n", getShipsNumber(ShipsComputer));
 	// for (int i = 0; i < getShipsNumber(ShipsComputer); i++)
 	// 	fprintf(f, "%d %d %d  ", ShipsComputer->Ships->x, ShipsComputer->Ships->y, ShipsComputer->Ships->stand);
