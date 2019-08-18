@@ -57,3 +57,4 @@ bw-output
 .sonarlint/
 *.bat
 *.sh
+*.txt
