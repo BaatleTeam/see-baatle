@@ -18,8 +18,6 @@ typedef struct Border {
     Pair pair_y;
 } Border;
 
-FILE* f;
-
 void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
 void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer);
 void chooseFilling(Border borders[4], int width, int height); // выбирает стратегию порядка проверки

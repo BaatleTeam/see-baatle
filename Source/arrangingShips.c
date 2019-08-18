@@ -129,51 +129,41 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 
 
 void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
-	// цикл по всем кораблям, если ещё не поставлен, то пытаемся поставить
-	// циклами проверяем и ставим при первом совпадении
-	// если поставили -> идем дальше
-	// если не поставили -> окатываемся и ставим предыдущий заново
-	//  при постановке каждого корабля рандомим начальную точку x y и направление проверки
-
 	int index = 0;
-	#define isStand ShipsComputer->Ships[index].stand
-	#define curShip ShipsComputer->Ships[index]
-	f = fopen("tmp.txt", "w");
-
 	Border borders[4]; // вляиет на очередь проверки участков на поле
 	// всего делится на 4 участка, разбивается одной точкой
 	while (index < getShipsNumber(ShipsComputer)){
 		chooseFilling(borders, BoardComputer->Width, BoardComputer->Height);
 
-		if (curShip.stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
-			deleteShipFromField(&curShip, BoardComputer);
+		if (ShipsComputer->Ships[index].stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
+			deleteShipFromField(&ShipsComputer->Ships[index], BoardComputer);
 		for (int i = 0; i < 4; i++){
 			ship tmpShip;
-			makeShipTmp(&curShip, &tmpShip);
+			makeShipTmp(&ShipsComputer->Ships[index], &tmpShip);
 			tmpShip.type = rand() % 2;
 			if (tryToStandShip(&tmpShip, BoardComputer,
 								borders[i].pair_x.first, borders[i].pair_x.second,
 								borders[i].pair_y.first, borders[i].pair_y.second))
 			{
-				addShip(&curShip, &tmpShip);
-				fprintf(f, "Stand_2: %d %d %d %d %d\n", curShip.x, curShip.y, curShip.size, curShip.stand, curShip.type);
+				addShip(&ShipsComputer->Ships[index], &tmpShip);
 				break;
 			}
 		}
 
-		if (isStand) // если смогли поставить
+		if (ShipsComputer->Ships[index].stand) // если смогли поставить
 			index++;
-		else { // иначе
-			fprintf(f, "unsuc\n");
+		else
 			index--;
-		}
 	}
 
+	FILE* f = fopen("compBoard.txt", "w");
 	for (int y = 0; y < BoardComputer->Height; y++){
 		for (int x = 0; x < BoardComputer->Width; x++)
 			fprintf(f, "%d ", BoardComputer->field[y][x]);
 		fprintf(f, "\n");
 	}
+	fflush(f);
+	fclose(f);
 }
 
 

@@ -112,7 +112,7 @@ int main(){
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
                 if (isShotAvailable) // do shot
-                    shotResultPlayer = makeShot(ShipsPlayer, shotBoardPlayer, cursorPostion);
+                    shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
                     // ShipsPlayer arg for debug here !!!
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
