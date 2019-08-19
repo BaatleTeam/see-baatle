@@ -57,6 +57,7 @@ typedef struct Indents {
 enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 
 // Функции для работы с полями-массивами и их отрисовкой
+bool isAllShipsStanding(ShipsInfo ships);
 extern int getSize(int);
 void deleteShipFromField(ship* ship, const Board *Board);
 void reDrawStandingShips(WINDOW *WIN, const Board *Board);

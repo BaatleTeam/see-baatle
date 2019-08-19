@@ -170,15 +170,6 @@ int main(){
 	return 0;
 }
 
-// todo убрать везде struct у ShipsInfo
-bool isAllShipsStanding(ShipsInfo ships){
-    int shipsNum = ships.Number_1_Size + ships.Number_2_Size + ships.Number_3_Size + ships.Number_4_Size;
-    for (int i = 0; i < shipsNum; i++)
-        if (ships.Ships[i].stand == FALSE)
-            return FALSE;
-    return TRUE;
-}
-
 void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents){
     delwin(WMain->ptrWin);
     WMain->Width = Indents->LeftIndent + 2*WShip->Width + Indents->BetweenIndent + Indents->RightIndent;

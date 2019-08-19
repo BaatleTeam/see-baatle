@@ -24,5 +24,5 @@ void chooseFilling(Border borders[4], int width, int height); // выбирае�
 bool tryToStandShip(ship* ship, Board* board, int start_x, int end_x, int start_y, int end_y);
 void swapBorders(Pair* a, Pair* b);
 
-bool isAllShipsStanding(ShipsInfo ships);
+
 void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents);
