@@ -88,6 +88,14 @@ void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
     ShipsInfo tmp = { S_N_S(4), S_N_S(3), S_N_S(2), S_N_S(1), NULL };
 	*info = tmp;
     info->Ships = calloc(S_N_S(1) + S_N_S(2) + S_N_S(3) + S_N_S(4), sizeof(ship));
+	for (int i = 0; i < S_N_S(4); i++)
+		info->Ships[i].size = 4;
+	for (int i = S_N_S(4); i < S_N_S(4) + S_N_S(3); i++)
+		info->Ships[i].size = 3;
+	for (int i = S_N_S(4) + S_N_S(3); i < S_N_S(4) + S_N_S(3) + S_N_S(2); i++)
+		info->Ships[i].size = 2;
+	for (int i = S_N_S(4) + S_N_S(3) + S_N_S(2); i < S_N_S(4) + S_N_S(3) + S_N_S(2) + S_N_S(1); i++)
+		info->Ships[i].size = 1;
 }
 
 void initBoard(Board *board, int height, int width){

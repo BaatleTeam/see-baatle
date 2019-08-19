@@ -47,7 +47,9 @@ int main(){
     
     // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
     free(GDCases);
-    arrangingShips(&ShipsPlayer, &BoardPlayer);
+    arrangingShips_player(&ShipsPlayer, &BoardPlayer);
+    arrangingShips_computer(&ShipsComputer, &BoardComputer);
+
 
     WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
     WindowParametres *WInfoPlayer = malloc(sizeof(WindowParametres));
@@ -88,8 +90,6 @@ int main(){
                                  .board = boardArrayComputer };
 
     int key;
-    // int cursor_x_pos = 0;
-    // int cursor_y_pos = 0;
     Coordinate cursorPostion = {0};
     Coordinate computerShot = {-1};
     bool isShotAvailable = TRUE;
@@ -112,7 +112,7 @@ int main(){
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
                 if (isShotAvailable) // do shot
-                    shotResultPlayer = makeShot(ShipsPlayer, shotBoardPlayer, cursorPostion);
+                    shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
                     // ShipsPlayer arg for debug here !!!
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
@@ -168,15 +168,6 @@ int main(){
     resetty();
 	endwin();
 	return 0;
-}
-
-// todo убрать везде struct у ShipsInfo
-bool isAllShipsStanding(ShipsInfo ships){
-    int shipsNum = ships.Number_1_Size + ships.Number_2_Size + ships.Number_3_Size + ships.Number_4_Size;
-    for (int i = 0; i < shipsNum; i++)
-        if (ships.Ships[i].stand == FALSE)
-            return FALSE;
-    return TRUE;
 }
 
 void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents){

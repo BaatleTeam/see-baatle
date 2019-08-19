@@ -9,7 +9,20 @@
 #include "ships.h"
 #include "shootWindows.h"
 
-void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
+typedef struct Pair {
+    int first;
+    int second;
+} Pair;
+typedef struct Border {
+    Pair pair_x;
+    Pair pair_y;
+} Border;
 
-bool isAllShipsStanding(ShipsInfo ships);
+void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
+void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer);
+void chooseFilling(Border borders[4], int width, int height); // выбирает стратегию порядка проверки
+bool tryToStandShip(ship* ship, Board* board, int start_x, int end_x, int start_y, int end_y);
+void swapBorders(Pair* a, Pair* b);
+
+
 void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents);

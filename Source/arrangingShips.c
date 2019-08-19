@@ -5,7 +5,7 @@
 
 // подключён через header.h
 
-void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
+void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
     WindowParametres *WArrange = malloc(sizeof(WindowParametres));
@@ -125,4 +125,93 @@ void arrangingShips(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     free(WMain);
     free(WHelp);
     free(WShip);
+}
+
+
+void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
+	int index = 0;
+	Border borders[4]; // вляиет на очередь проверки участков на поле
+	// всего делится на 4 участка, разбивается одной точкой
+	while (index < getShipsNumber(ShipsComputer)){
+		chooseFilling(borders, BoardComputer->Width, BoardComputer->Height);
+
+		if (ShipsComputer->Ships[index].stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
+			deleteShipFromField(&ShipsComputer->Ships[index], BoardComputer);
+		for (int i = 0; i < 4; i++){
+			ship tmpShip;
+			makeShipTmp(&ShipsComputer->Ships[index], &tmpShip);
+			tmpShip.type = rand() % 2;
+			if (tryToStandShip(&tmpShip, BoardComputer,
+								borders[i].pair_x.first, borders[i].pair_x.second,
+								borders[i].pair_y.first, borders[i].pair_y.second))
+			{
+				addShip(&ShipsComputer->Ships[index], &tmpShip);
+				break;
+			}
+		}
+
+		if (ShipsComputer->Ships[index].stand) // если смогли поставить
+			index++;
+		else
+			index--;
+	}
+
+	FILE* f = fopen("compBoard.txt", "w");
+	for (int y = 0; y < BoardComputer->Height; y++){
+		for (int x = 0; x < BoardComputer->Width; x++)
+			fprintf(f, "%d ", BoardComputer->field[y][x]);
+		fprintf(f, "\n");
+	}
+	fflush(f);
+	fclose(f);
+}
+
+
+bool tryToStandShip(ship* thisShip, Board* board, int start_x, int end_x, int start_y, int end_y){
+	for (int y = start_y; y < end_y; y++){
+		for (int x = start_x; x < end_x; x++){
+			if ((thisShip->type == HORIZONTAL) && (x + thisShip->size > board->Width))
+				break;
+			if ((thisShip->type == VERTICAL) && (y + thisShip->size > board->Height))
+				break;
+			thisShip->x = x;
+			thisShip->y = y;
+			if (checkShipBorders(thisShip, board)){
+				standing_ship(thisShip, board);
+				thisShip->stand = TRUE;
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
+void chooseFilling(Border borders[4], int width, int height){
+	int start_x = rand() % width;
+	int start_y = rand() % height;
+	bool dir_x = rand() % 2;
+	bool dir_y = rand() % 2;
+
+	borders[0].pair_x.first = borders[2].pair_x.first = 0;
+	borders[0].pair_x.second = borders[2].pair_x.second = start_x;
+	borders[1].pair_x.first = borders[3].pair_x.first = start_x;
+	borders[1].pair_x.second = borders[3].pair_x.second = width;
+
+	borders[0].pair_y.first = borders[2].pair_y.first = 0;
+	borders[0].pair_y.second = borders[2].pair_y.second = start_y;
+	borders[1].pair_y.first = borders[3].pair_y.first = start_y;
+	borders[1].pair_y.second = borders[3].pair_y.second = height;
+
+	if (dir_x){
+		swapBorders(&borders[0].pair_x, &borders[1].pair_x);
+	}
+	if (dir_y){
+		swapBorders(&borders[2].pair_y, &borders[3].pair_y);
+	}
+}
+
+void swapBorders(Pair* a, Pair* b){
+	Pair tmp = *a;
+	*a = *b;
+	*b = tmp;
 }

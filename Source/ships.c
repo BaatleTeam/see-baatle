@@ -1,5 +1,13 @@
 #include "ships.h"
 
+bool isAllShipsStanding(ShipsInfo ships){
+    int shipsNum = ships.Number_1_Size + ships.Number_2_Size + ships.Number_3_Size + ships.Number_4_Size;
+    for (int i = 0; i < shipsNum; i++)
+        if (ships.Ships[i].stand == FALSE)
+            return FALSE;
+    return TRUE;
+}
+
 void deleteShipFromField(ship* ship, const Board *Board){
     switch (ship->type){
         case FALSE:
