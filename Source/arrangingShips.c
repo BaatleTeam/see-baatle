@@ -1,9 +1,6 @@
-#include <curses.h>
-#include "ships.h"
 #include "arrange.h"
-#include "header.h"
 
-// подключён через header.h
+// подключён через arrange.h
 
 void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     // Объявление параметров создаваемых окон.

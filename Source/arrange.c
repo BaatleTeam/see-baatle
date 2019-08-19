@@ -1,5 +1,4 @@
 #include "arrange.h"
-#include "curses.h"
 
 void DrawDefaltArrangeWindow(WindowParametres *Warr, const ShipsInfo *Ships){
     wbkgdset(Warr->ptrWin, COLOR_PAIR(2));

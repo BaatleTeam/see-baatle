@@ -1,6 +1,17 @@
 #pragma once
 #include <curses.h>
+#include <stdlib.h>
 #include "ships.h"
+#include "table.h"
+
+typedef struct Pair {
+    int first;
+    int second;
+} Pair;
+typedef struct Border {
+    Pair pair_x;
+    Pair pair_y;
+} Border;
 
 void DrawDefaltArrangeWindow(WindowParametres*, const ShipsInfo*);
 int calculateArrangeHeight(const ShipsInfo *Ships);
@@ -23,5 +34,10 @@ void colorizeCurrShip(WINDOW* WIN, ship Ship);
 int getIndex(const ShipsInfo *Ships, int number, int size);
 int getNumberOfShipsFromSize(const ShipsInfo *Ships, int size);
 
-
 void initCurrActiveShip_Arrange(const ShipsInfo*, int *currShipNumber, int *currShipSize);
+
+void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
+void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer);
+void chooseFilling(Border borders[4], int width, int height); // выбирает стратегию порядка проверки
+bool tryToStandShip(ship* ship, Board* board, int start_x, int end_x, int start_y, int end_y);
+void swapBorders(Pair* a, Pair* b);
