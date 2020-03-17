@@ -1,6 +1,6 @@
 #include "arrange.h"
 
-void DrawDefaltArrangeWindow(WindowParametres *Warr, const ShipsInfo *Ships){
+void DrawDefaultArrangeWindow(WindowParametres *Warr, const ShipsInfo *Ships){
     wbkgdset(Warr->ptrWin, COLOR_PAIR(2));
     wclear(Warr->ptrWin);
     box(Warr->ptrWin, 0, 0);

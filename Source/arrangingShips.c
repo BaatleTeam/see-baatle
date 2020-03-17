@@ -12,7 +12,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
-    DrawDefaltArrangeWindow(WArrange, ShipsPlayer);
+    DrawDefaultArrangeWindow(WArrange, ShipsPlayer);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
     int currShipSize = 0; 
