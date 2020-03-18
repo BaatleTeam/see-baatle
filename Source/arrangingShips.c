@@ -40,7 +40,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
-				fprintf(db_out, "Arrow\n");
 	            switch (active_window){
 	                case ARRANGE:
                         DrawShips_InArangeWindow(WArrange, ShipsPlayer);
@@ -57,7 +56,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	            }
 	            break;
 	        case 9: // tab
-				fprintf(db_out, "Tab\n");
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
@@ -69,7 +67,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	        	}
     		    break;
 	        case '\n':
-				fprintf(db_out, "Enter\n");
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
@@ -92,7 +89,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                        DrawMessage_InArrangeWindow(WArrange->ptrWin, "Ships can`t stand near which other!");
 						}
 	                    else {
-							fprintf(db_out, "Yes!! %d\n", index);
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
@@ -107,7 +103,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
         		}
                 break;
             case 27: // Esc
-				fprintf(db_out, "Esc\n");
                 switch (active_window){
                     case SHIP:
                         reDrawStandingShips(WShip->ptrWin, BoardPlayer);
@@ -119,8 +114,6 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
                 }
                 break;
     	}
-		outputShip(db_out, TmpShip);
-		outputBoard(db_out, BoardPlayer);
 	}
     free(TmpShip);
 
