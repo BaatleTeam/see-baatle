@@ -1,5 +1,6 @@
 #pragma once
-#include <curses.h>
+// #include <ncurses.h>
+#include "curses.h"
 #include <stdlib.h>
 #include "ships.h"
 #include "table.h"
@@ -13,7 +14,7 @@ typedef struct Border {
     Pair pair_y;
 } Border;
 
-void DrawDefaltArrangeWindow(WindowParametres*, const ShipsInfo*);
+void DrawDefaultArrangeWindow(WindowParametres*, const ShipsInfo*);
 int calculateArrangeHeight(const ShipsInfo *Ships);
 int getMaxNumOfShips(const ShipsInfo *ships);
 
@@ -29,7 +30,6 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int*);
 void DrawMessage_InArrangeWindow(WINDOW* WIN, const char* msg);
 void EraseErrorMessage_InArrangeWindow(WINDOW*); // clear hardcoded line 12
 void colorizeCurrShip(WINDOW* WIN, ship Ship);
-// void DrawStandingShips(WINDOW* WIN, const ShipsInfo);
 
 int getIndex(const ShipsInfo *Ships, int number, int size);
 int getNumberOfShipsFromSize(const ShipsInfo *Ships, int size);

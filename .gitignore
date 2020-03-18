@@ -1,5 +1,6 @@
 # ignore all files in the Build/ directory
 Build/
+LinuxBuild/
 
 # CMake unnecessary files
 CMake*

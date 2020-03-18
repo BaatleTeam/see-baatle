@@ -1,7 +1,12 @@
 #include "header.h"
 #include "menu.h"
 
+FILE* db_out = NULL;
+
 int main(){	
+    // FOR DEBUG 
+    db_out = fopen("debug.txt", "w");
+    // 
     srand(time(NULL));
     initscr();
 	cbreak();
@@ -9,18 +14,18 @@ int main(){
     curs_set(FALSE);
 	keypad(stdscr, TRUE);
     start_color();
-    init_pair (2, COLOR_BLUE+8, COLOR_YELLOW+8); // Для окна aarange.
-    init_pair (55, COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
-    init_pair (3, COLOR_BLUE+8, COLOR_GREEN+8); // Для окна ship, выбора окна case.
-    init_pair (33, COLOR_RED+8, COLOR_GREEN+8); // Для окна ship, выбора размера доски.
-    init_pair (50, COLOR_BLACK+8, COLOR_CYAN+8); // Для неправильных корабликов на поле ship.
-    init_pair (10, COLOR_RED+8, COLOR_YELLOW+8); // Для корабликов в окне ship.
-    init_pair (100, COLOR_RED+8, COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
-    init_pair (1, COLOR_RED + 8, COLOR_BLUE); // ??
-    init_pair (66, COLOR_BLACK+8, COLOR_BLACK+8); // ??
-    init_pair (200, COLOR_BLUE+8, COLOR_WHITE+8); // ??
-    init_pair (49, COLOR_BLACK, COLOR_GREEN+8); // Для окна shot board
-    init_pair (51, COLOR_BLACK+8, COLOR_GREEN+8); // ??
+    init_pair (2,   COLOR_BLUE+8,  COLOR_YELLOW+8); // Для окна aarange.
+    init_pair (55,  COLOR_GREEN+8, COLOR_YELLOW+8); // Для окна arrange.
+    init_pair (3,   COLOR_BLUE+8,  COLOR_GREEN+8 ); // Для окна ship, выбора окна case.
+    init_pair (33,  COLOR_RED+8,   COLOR_GREEN+8 ); // Для окна ship, выбора размера доски.
+    init_pair (50,  COLOR_BLACK+8, COLOR_CYAN+8  ); // Для неправильных корабликов на поле ship.
+    init_pair (10,  COLOR_RED+8,   COLOR_YELLOW+8); // Для корабликов в окне ship.
+    init_pair (100, COLOR_RED+8,   COLOR_YELLOW+8); // Выбранный корабль в окне arrange.
+    init_pair (1,   COLOR_RED + 8, COLOR_BLUE    ); // ??
+    init_pair (66,  COLOR_BLACK+8, COLOR_BLACK+8 ); // ??
+    init_pair (200, COLOR_BLUE+8,  COLOR_WHITE+8 ); // ??
+    init_pair (49,  COLOR_BLACK,   COLOR_GREEN+8 ); // Для окна shot board
+    init_pair (51,  COLOR_BLACK+8, COLOR_GREEN+8 ); // ??
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
@@ -112,7 +117,6 @@ int main(){
                 ShotResult shotResultPlayer = {0};
                 if (isShotAvailable) // do shot
                     shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
-                    // ShipsPlayer arg for debug here !!!
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
@@ -129,8 +133,6 @@ int main(){
                     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
                 } while (shotResultComputer.isHit);
-                
-                // DrawWBoard_Shoting(*WBoardPlayer, );
                 break;
     	}
 	}
@@ -164,6 +166,7 @@ int main(){
         free(BoardComputer.field[i]);
     free(BoardComputer.field);
 
+    fclose(db_out);
     resetty();
 	endwin();
 	return 0;

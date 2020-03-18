@@ -74,7 +74,7 @@ bool checkItself(const ship* ship, const Board *Board);
 
 bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlayer); // Проверка постановки всех кораблей
 int getShipsNumber(const ShipsInfo* info); // Возврат общего количества кораблей игрока
-void InitPrimaryCoordinates(int curr_y, ship* ship, const Board*); // Установка начальных координат при первой постановке
+void InitPrimaryCoordinates(int curr_y, ship* ship, const Board* const); // Установка начальных координат при первой постановке
 bool checkPlace(int x, int y, int size, const Board *Board); // Проверка места под корабль
 
 void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board); // Рисует tmpShip в окне SHIP
@@ -94,3 +94,8 @@ bool checkBorderBot(ship* ship, const Board*);
 
 // Функции для обработки стрельбы
 bool isShipHit(const ship* ship, int coord_x, int coord_y);
+
+
+// Функции для дебажного вывода состояния
+void outputShip(FILE* out, const ship* const ship);
+void outputBoard(FILE* out, const Board* const ship);

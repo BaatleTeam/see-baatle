@@ -2,6 +2,8 @@
 
 // подключён через arrange.h
 
+extern FILE* db_out;
+
 void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
@@ -12,7 +14,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 
     DrawMainWindow(WMain);
     DrawTableWindow(WShip);
-    DrawDefaltArrangeWindow(WArrange, ShipsPlayer);
+    DrawDefaultArrangeWindow(WArrange, ShipsPlayer);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
     int currShipSize = 0; 
@@ -28,8 +30,9 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
 
-    bool isAllShipsStanding = FALSE; // todo проверка постановки кораблей
+    bool isAllShipsStanding = FALSE;
     int key;
+
     while((key = getch()) != KEY_F(2) && isAllShipsStanding != TRUE){
 		EraseErrorMessage_InArrangeWindow(WArrange->ptrWin);
         switch(key){
@@ -49,7 +52,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
 	                    reDrawStandingShips(WShip->ptrWin, BoardPlayer);
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
-	                break;            
+	                	break;            
 	            }
 	            break;
 	        case 9: // tab
@@ -82,12 +85,14 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 
 	                case SHIP:
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
-	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
+	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE){
 	                        DrawMessage_InArrangeWindow(WArrange->ptrWin, "Ships can`t stand near which other!");
+						}
 	                    else {
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+
 							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
 							if (isAllShipsStanding == TRUE)
 								DrawMessage_InArrangeWindow(WArrange->ptrWin,
@@ -122,6 +127,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     free(WMain);
     free(WHelp);
     free(WShip);
+	fprintf(db_out, "exit from arraging!\n");
 }
 
 
@@ -152,7 +158,7 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 		else
 			index--;
 	}
-
+	// TODO delete this before release
 	FILE* f = fopen("compBoard.txt", "w");
 	for (int y = 0; y < BoardComputer->Height; y++){
 		for (int x = 0; x < BoardComputer->Width; x++)
