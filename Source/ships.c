@@ -176,10 +176,11 @@ bool checkShipBorders_left_right_vertical(const ship* ship, const Board *Board){
             if (Board->field[ship->y+i][ship->x-1] == TRUE)
                 return FALSE;
         return TRUE;
-        }
+    }
 }
+
 bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board){
-    if (ship->y + ship->size == Board->Height){
+    if (ship->y + ship->size == Board->Height){ // Упёрлись в нижний край.
         if (ship->x == 0)
             if (Board->field[ship->y-1][ship->x] == TRUE || Board->field[ship->y-1][ship->x+1] == TRUE)
                 return FALSE;
@@ -190,8 +191,10 @@ bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board){
             for (int i = ship->x-1; i <= ship->x+1; i++)
                 if (Board->field[ship->y-1][i] == TRUE)
                     return FALSE;
-    } else 
-    if (ship->y == 0){
+        return TRUE;
+    }
+
+    if (ship->y == 0){ // Упёрлись в верхний край.
         if (ship->x == 0)
             if (Board->field[ship->size][ship->x] == TRUE || Board->field[ship->size][ship->x+1] == TRUE)
                 return FALSE;
@@ -202,10 +205,25 @@ bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board){
             for (int i = ship->x-1; i <= ship->x+1; i++)
                 if (Board->field[ship->size][i] == TRUE)
                     return FALSE;
-    } else 
-    for (int i = ship->x-1; i <= ship->x+1; i++)
-        if (Board->field[ship->y-1][i] == TRUE || Board->field[ship->y+ship->size][i] == TRUE)
+        return TRUE;
+    } 
+
+    if (ship->x == 0){ // Уперлись в левый край.
+        if (Board->field[ship->y-1][ship->x] == TRUE || Board->field[ship->y-1][ship->x+1] == TRUE)
             return FALSE;
+        if (Board->field[ship->y+ship->size][ship->x] == TRUE || Board->field[ship->y+ship->size][ship->x+1] == TRUE)
+            return FALSE;
+    } else
+    if (ship->x == Board->Width-1){ // Уперлись в правый край.
+        if (Board->field[ship->y-1][ship->x] == TRUE || Board->field[ship->y-1][ship->x-1] == TRUE)
+            return FALSE;
+        if (Board->field[ship->y+ship->size][ship->x] == TRUE || Board->field[ship->y+ship->size][ship->x-1] == TRUE)
+            return FALSE;
+    } else // Посередине
+    if (ship->x != 0 && ship->x != Board->Width-1)
+        for (int i = ship->x-1; i <= ship->x+1; i++)
+            if (Board->field[ship->y-1][i] == TRUE || Board->field[ship->y+ship->size][i] == TRUE)
+                return FALSE;
     return TRUE;
 }
 
@@ -269,7 +287,7 @@ bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlaye
     return TRUE;
 }
 
-void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
+void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board* const Board){
     int x = 0;
     int y = 0;
     while (checkPlace(x, y, ShipSize, Board) != TRUE){
@@ -283,7 +301,7 @@ void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board *Board){
     ship->x = x;
     ship->y = y;
     ship->size = ShipSize;
-    ship->stand = TRUE;
+    ship->stand = FALSE;
     ship->type = FALSE;
 }
 
@@ -385,7 +403,7 @@ void addShip(ship* newShip, ship* TmpShip){
     newShip->y = TmpShip->y;
     newShip->size = TmpShip->size;
     newShip->type = TmpShip->type;
-    newShip->stand = TmpShip->stand;
+    newShip->stand = TRUE;
 }
 
 void makeShipTmp(ship* oldShip, ship* TmpShip){
@@ -429,4 +447,27 @@ bool isShipHit(const ship* ship, int coord_x, int coord_y){
             break;
     }
     return FALSE;
+}
+
+
+// -------------------------------------------------------------------------------
+
+void outputShip(FILE* out, const ship* const ship){
+    fprintf(out,\
+        "Info about ship:\n\t\
+        x: %d\n\t\
+        y: %d\n\t\
+        size: %d\n\t\
+        type: %d\n\t\
+        stand: %d\n",\
+        ship->x, ship->y, ship->size, ship->type, ship->stand);
+}
+
+void outputBoard(FILE* out, const Board* const board){
+    for (size_t i = 0; i < board->Height; i++){
+        for (size_t j = 0; j < board->Width; j++){
+            fprintf(out, "%d ", board->field[i][j]);
+        }
+        fprintf(out, "\n");
+    }
 }

@@ -2,6 +2,8 @@
 
 // подключён через arrange.h
 
+extern FILE* db_out;
+
 void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     // Объявление параметров создаваемых окон.
     WindowParametres *WMain = malloc(sizeof(WindowParametres));
@@ -28,8 +30,9 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     ship* TmpShip = malloc(sizeof(ship));
     clearTmpShip(TmpShip);
 
-    bool isAllShipsStanding = FALSE; // todo проверка постановки кораблей
+    bool isAllShipsStanding = FALSE;
     int key;
+
     while((key = getch()) != KEY_F(2) && isAllShipsStanding != TRUE){
 		EraseErrorMessage_InArrangeWindow(WArrange->ptrWin);
         switch(key){
@@ -37,6 +40,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
+				fprintf(db_out, "Arrow\n");
 	            switch (active_window){
 	                case ARRANGE:
                         DrawShips_InArangeWindow(WArrange, ShipsPlayer);
@@ -49,10 +53,11 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
 	                    reDrawStandingShips(WShip->ptrWin, BoardPlayer);
 	                    DrawTmpShip(WShip->ptrWin, TmpShip, BoardPlayer);
-	                break;            
+	                	break;            
 	            }
 	            break;
 	        case 9: // tab
+				fprintf(db_out, "Tab\n");
 	            switch(active_window){
 	                case SHIP:
 	                    changeTypeOfShip(TmpShip, BoardPlayer);
@@ -64,6 +69,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	        	}
     		    break;
 	        case '\n':
+				fprintf(db_out, "Enter\n");
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
@@ -82,12 +88,15 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 
 	                case SHIP:
 	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
-	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE)
+	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE){
 	                        DrawMessage_InArrangeWindow(WArrange->ptrWin, "Ships can`t stand near which other!");
+						}
 	                    else {
+							fprintf(db_out, "Yes!! %d\n", index);
 	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip->ptrWin, BoardPlayer);
+
 							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
 							if (isAllShipsStanding == TRUE)
 								DrawMessage_InArrangeWindow(WArrange->ptrWin,
@@ -98,6 +107,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
         		}
                 break;
             case 27: // Esc
+				fprintf(db_out, "Esc\n");
                 switch (active_window){
                     case SHIP:
                         reDrawStandingShips(WShip->ptrWin, BoardPlayer);
@@ -109,6 +119,8 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
                 }
                 break;
     	}
+		outputShip(db_out, TmpShip);
+		outputBoard(db_out, BoardPlayer);
 	}
     free(TmpShip);
 
@@ -122,6 +134,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     free(WMain);
     free(WHelp);
     free(WShip);
+	fprintf(db_out, "exit from arraging!\n");
 }
 
 
@@ -152,7 +165,7 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 		else
 			index--;
 	}
-
+	// TODO delete this before release
 	FILE* f = fopen("compBoard.txt", "w");
 	for (int y = 0; y < BoardComputer->Height; y++){
 		for (int x = 0; x < BoardComputer->Width; x++)

@@ -1,7 +1,12 @@
 #include "header.h"
 #include "menu.h"
 
+FILE* db_out = NULL;
+
 int main(){	
+    // FOR DEBUG 
+    db_out = fopen("debug.txt", "w");
+    // 
     srand(time(NULL));
     initscr();
 	cbreak();
@@ -161,6 +166,7 @@ int main(){
         free(BoardComputer.field[i]);
     free(BoardComputer.field);
 
+    fclose(db_out);
     resetty();
 	endwin();
 	return 0;
