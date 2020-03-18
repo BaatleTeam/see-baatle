@@ -309,36 +309,38 @@ bool isValidBoardCell(ShotBoard board, Coordinate point){
 // ---------------------------------------------------------------
 
 Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot){
-    Coordinate coord = {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
-    if (prevShot.x == -1 && prevShot.y == -1) // первый выстрел рандомится
-        return coord;
+    // TODO norm alogrithm
+    return (Coordinate) {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
+    // Coordinate coord = {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
+    // if (prevShot.x == -1 && prevShot.y == -1) // первый выстрел рандомится
+    //     return coord;
     
-    if (boardData.board[prevShot.y][prevShot.x] == TRUE){
-        bool dir = rand() % 2; // напоавление
-        bool num = rand() % 2; // лево-право / верх-низ
-        if (dir) {
-            if (num) { // право
-                if (prevShot.x + 1 < boardData.Width)
-                    return (Coordinate) {.x = prevShot.x + 1, .y = prevShot.y}; }
-            else // лево
-                if (prevShot.x >= 0) 
-                    return (Coordinate) {.x = prevShot.x - 1, .y = prevShot.y};
-        }
-        else {
-            if (num) { // низ
-                if (prevShot.y + 1 < boardData.Height)
-                    return (Coordinate) {.x = prevShot.x, .y = prevShot.y + 1}; }
-            else // вверх
-                if (prevShot.y >= 0)
-                    return (Coordinate) {.x = prevShot.x, .y = prevShot.y - 1};
-        }
-    }
+    // if (boardData.board[prevShot.y][prevShot.x] == TRUE){
+    //     bool dir = rand() % 2; // напоавление
+    //     bool num = rand() % 2; // лево-право / верх-низ
+    //     if (dir) {
+    //         if (num) { // право
+    //             if (prevShot.x + 1 < boardData.Width)
+    //                 return (Coordinate) {.x = prevShot.x + 1, .y = prevShot.y}; }
+    //         else // лево
+    //             if (prevShot.x >= 0) 
+    //                 return (Coordinate) {.x = prevShot.x - 1, .y = prevShot.y};
+    //     }
+    //     else {
+    //         if (num) { // низ
+    //             if (prevShot.y + 1 < boardData.Height)
+    //                 return (Coordinate) {.x = prevShot.x, .y = prevShot.y + 1}; }
+    //         else // вверх
+    //             if (prevShot.y >= 0)
+    //                 return (Coordinate) {.x = prevShot.x, .y = prevShot.y - 1};
+    //     }
+    // }
 
-    if (boardData.board[prevShot.y][prevShot.x] == FALSE){ // или если прошлый неудчный
-        while (boardData.board[coord.y][coord.x] != FALSE){
-            coord.x = rand() % boardData.Width;
-            coord.y = rand() % boardData.Height;
-        }
-    }
-    return coord;
+    // if (boardData.board[prevShot.y][prevShot.x] == FALSE){ // или если прошлый неудчный
+    //     while (boardData.board[coord.y][coord.x] != FALSE){
+    //         coord.x = rand() % boardData.Width;
+    //         coord.y = rand() % boardData.Height;
+    //     }
+    // }
+    // return coord;
 }
