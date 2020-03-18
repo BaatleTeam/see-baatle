@@ -308,12 +308,36 @@ bool isValidBoardCell(ShotBoard board, Coordinate point){
 
 // ---------------------------------------------------------------
 
-Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot){
-    // TODO norm alogrithm
-    return (Coordinate) {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
-    // Coordinate coord = {.x = rand() % boardData.Width, .y = rand() % boardData.Height };
-    // if (prevShot.x == -1 && prevShot.y == -1) // первый выстрел рандомится
-    //     return coord;
+Coordinate generateShotCoordinate(const ShotBoard* const boardData, const Coordinate* const prevShot, const PlayerStats* const newStats){
+    static unsigned destroyedShipsOnPrevShot = 0;
+    static Coordinate coordOfFirstHit = {0};
+    bool isPrevShotWasLast = FALSE;
+    if (newStats->shipsDestroyed - destroyedShipsOnPrevShot > 0)
+        isPrevShotWasLast = TRUE;
+    
+    static enum PrevShootStatus {PAST, HIT_NO_DIRECT, HIT_NO_LEFT, HIT_NO_RIGHT, HIT_NO_UP, HIT_NO_DOWN, HIT_LAST} prevShotStatus = PAST;
+    enum {UP = 0, RIGHT, DOWN, LEFT};
+    static bool perspecriveDirs[4] = {FALSE};
+
+    
+    if (prevShot->x == -1 && prevShot->y == -1) // первый выстрел рандомится
+        return getRandomCoordinate(boardData);
+    
+    // Если предыдущий промах и нет перспективных направлений - рандомим (учитыавая уже простреленные)
+    // Если предыдущий промах и есть перспективные направления - проверяем направления
+    // Если предыдущий попадание , то:
+            // если первое попадание и последнее для найденного корабля (единичный) - рандомим
+            // если первое попадание и не последнее для найденного корабля
+            //      - то выставляем флаг, что все направления перспективны
+            // если не первое попадание, то выборочно выбираем и проверяем перспективное направление для стрельбы.
+            // Пока не будут учтены все направления или корабль не будет уничтожен
+    if (prevShot == PAST && numberOfPerspectiveDirs(perspecriveDirs) == 0){
+        return getRandomCoordinate(boardData);
+    }
+    
+    if (prevShot == PAST && numberOfPerspectiveDirs(perspecriveDirs) != 0){
+        
+    }
     
     // if (boardData.board[prevShot.y][prevShot.x] == TRUE){
     //     bool dir = rand() % 2; // напоавление
@@ -342,5 +366,23 @@ Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot
     //         coord.y = rand() % boardData.Height;
     //     }
     // }
+    destroyedShipsOnPrevShot = newStats->shipsDestroyed;
     // return coord;
+}
+
+Coordinate getRandomCoordinate(const ShotBoard* const boardData){
+    while (TRUE) {
+        int x = rand() % boardData->Width;
+        int y = rand() % boardData->Height;
+        if (boardData->board[x][y] == EMPTY)
+            return (Coordinate){x,y};
+    }
+}
+
+int numberOfPerspectiveDirs(bool dirs[]){
+    int number = 0;
+    for (int i = 0; i < 4; i++)
+        if (dirs[i] == TRUE)
+            number++;
+    return number;
 }

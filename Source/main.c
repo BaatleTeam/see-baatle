@@ -96,7 +96,6 @@ int main(){
     int key;
     Coordinate cursorPostion = {0};
     Coordinate computerShot = {-1};
-    // bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
@@ -130,7 +129,7 @@ int main(){
                     break; // Если игрок попал, то он ходит снова.
                 ShotResult shotResultComputer = {0};
                 do {
-                    computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
+                    computerShot = generateShotCoordinate(&shotBoardComputer, &computerShot, &statisticsComputer);
                     shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
                     DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);

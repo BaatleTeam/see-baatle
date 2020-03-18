@@ -34,4 +34,6 @@ bool isValidBoardCell(ShotBoard board, Coordinate checkPos);
 
 
 // ai
-Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot);
+// enum PrevShootStatus {PAST, HIT_NO_DIRECT, HIT_HORIZ, HIT_VERT, HIT_LAST} sas;
+Coordinate generateShotCoordinate(const ShotBoard* const, const Coordinate* const, const PlayerStats* const);
+Coordinate getRandomCoordinate(const ShotBoard* const boardData);
