@@ -96,13 +96,12 @@ int main(){
     int key;
     Coordinate cursorPostion = {0};
     Coordinate computerShot = {-1};
-    bool isShotAvailable = TRUE;
+    // bool isShotAvailable = TRUE;
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
     DrawWBoard_Shoting_Default(*WBoardPlayer);
-    DrawWBoard_Shoting(*WBoardComputer, shotBoardPlayer);
-    DrawCursor_Shoting(*WBoardComputer, cursorPostion, isShotAvailable);
+    updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
 
     while((key = getch()) != KEY_F(5)){
         switch(key){
@@ -115,15 +114,20 @@ int main(){
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
-                if (isShotAvailable) // do shot
+                if (checkShotPos(shotBoardPlayer, cursorPostion)){
                     shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
+                    updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
+                }
+                else {
+                    // Some msg to player
+                    break;
+                }
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
-                updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
 
                 if (shotResultPlayer.isHit)
-                    break; // если игрок попал, то он ходит снова
+                    break; // Если игрок попал, то он ходит снова.
                 ShotResult shotResultComputer = {0};
                 do {
                     computerShot = generateShotCoordinate(shotBoardComputer, computerShot);
@@ -132,7 +136,7 @@ int main(){
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
                     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
-                } while (shotResultComputer.isHit);
+                } while (shotResultComputer.isHit); // Если попал компьютер, то он ходит снова.
                 break;
     	}
 	}
