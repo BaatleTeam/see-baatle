@@ -35,6 +35,8 @@ typedef struct Coordinate {
 	int y;
 } Coordinate;
 
+typedef enum DIR {NO_DIR = -1, UP = 0, RIGHT, DOWN, LEFT} DIR;
+
 extern void DrawMainWindow(WindowParametres *Wmain);
 extern void DrawTableWindow(WindowParametres *Wship);
 void initCoordiante(Coordinate *coord, int x, int y);

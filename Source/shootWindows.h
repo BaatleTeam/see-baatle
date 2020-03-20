@@ -35,5 +35,10 @@ bool isValidBoardCell(ShotBoard board, Coordinate checkPos);
 
 // ai
 // enum PrevShootStatus {PAST, HIT_NO_DIRECT, HIT_HORIZ, HIT_VERT, HIT_LAST} sas;
-Coordinate generateShotCoordinate(const ShotBoard* const, const Coordinate* const, const PlayerStats* const);
+Coordinate generateShotCoordinate(const ShotBoard* const, Coordinate, const PlayerStats* const);
 Coordinate getRandomCoordinate(const ShotBoard* const boardData);
+Coordinate getDirPerspectiveCoordinate(const ShotBoard* const boardData, Coordinate prevShot, Coordinate firstHit, bool dirs[], DIR priorityDIR, DIR* prevDIR);
+
+int numberOfPerspectiveDirs(const bool dirs[]);
+DIR getRandomDirect(const bool dirs[]);
+Coordinate getCoordinateOfDir(DIR dir, const ShotBoard* const boardData, Coordinate prevShot);

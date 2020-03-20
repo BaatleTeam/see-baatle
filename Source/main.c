@@ -94,8 +94,8 @@ int main(){
                                  .board = boardArrayComputer };
 
     int key;
-    Coordinate cursorPostion = {0};
-    Coordinate computerShot = {-1};
+    Coordinate cursorPostion = (Coordinate){0, 0};
+    Coordinate computerShot =  (Coordinate){-1, -1};
 
     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
@@ -129,7 +129,7 @@ int main(){
                     break; // Если игрок попал, то он ходит снова.
                 ShotResult shotResultComputer = {0};
                 do {
-                    computerShot = generateShotCoordinate(&shotBoardComputer, &computerShot, &statisticsComputer);
+                    computerShot = generateShotCoordinate(&shotBoardComputer, computerShot, &statisticsComputer);
                     shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
                     DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
