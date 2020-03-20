@@ -163,7 +163,7 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordina
 
 // TODO change vars 
 void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
-    Coordinate pointToCheck = {0};
+    Coordinate pointToCheck = {0, 0};
     switch (ship.type) {
         case FALSE:
             for (int i = 0; i < ship.size; i++){

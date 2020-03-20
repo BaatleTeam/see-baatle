@@ -113,29 +113,42 @@ int main(){
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
-                // if (checkShotPos(shotBoardPlayer, cursorPostion)){
+                if (checkShotPos(shotBoardPlayer, cursorPostion)){
                     shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
                     updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
-                // }
-                // else {
+                }
+                else {
                     // Some msg to player
-                    // break;
-                // }
+                    break;
+                }
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
 
-                if (shotResultPlayer.isHit)
-                    break; // Если игрок попал, то он ходит снова.
+                if (shotResultPlayer.isHit){
+                    if (isPlayerWins(&statisticsPlayer)){
+                        fprintf(db_out, "PLAYER WINS!\n");
+                        // TODO window with msg
+                        exit(0);
+                    }
+                    else 
+                        break; // Если игрок попал, то он ходит снова.
+                }
                 ShotResult shotResultComputer = {0};
                 do {
                     computerShot = generateShotCoordinate(&shotBoardComputer, computerShot, &statisticsComputer);
-                    fprintf(db_out, "Coord: (%d, %d)\n", computerShot.x, computerShot.y);
+                    // fprintf(db_out, "Coord: (%d, %d)\n", computerShot.x, computerShot.y);
                     shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
-                    DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
+
+                    DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
                     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                    if (isPlayerWins(&statisticsComputer)){
+                        fprintf(db_out, "COMPUHTER WINS!\n");
+                        // TODO window with msg
+                        exit(0);
+                    }
                 } while (shotResultComputer.isHit); // Если попал компьютер, то он ходит снова.
                 break;
     	}

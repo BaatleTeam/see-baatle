@@ -41,3 +41,4 @@ extern void DrawMainWindow(WindowParametres *Wmain);
 extern void DrawTableWindow(WindowParametres *Wship);
 void initCoordiante(Coordinate *coord, int x, int y);
 void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents);
+bool isPlayerWins(const PlayerStats* const statisticsPlayer);
