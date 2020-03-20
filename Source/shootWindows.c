@@ -309,10 +309,18 @@ bool isValidBoardCell(ShotBoard board, Coordinate point){
 // ---------------------------------------------------------------
 
 Coordinate generateShotCoordinate(const ShotBoard* const boardData, Coordinate prevShot, const PlayerStats* const newStats){
+    static Coordinate coordOfFirstHit = (Coordinate) {-1, -1};
     static unsigned destroyedShipsOnPrevShot = 0;
+    static bool perspectiveDirs[4] = {FALSE, FALSE, FALSE, FALSE};
+    static DIR PrevDir = NO_DIR;
     bool isPrevShotWasLast = FALSE;
-    if (newStats->shipsDestroyed - destroyedShipsOnPrevShot > 0)
+    if (newStats->shipsDestroyed - destroyedShipsOnPrevShot > 0){
         isPrevShotWasLast = TRUE;
+        coordOfFirstHit = (Coordinate) {-1, -1};
+        for (int i = 0; i < 4; i++)
+            perspectiveDirs[i] = FALSE;
+        PrevDir = NO_DIR;
+    }
     destroyedShipsOnPrevShot = newStats->shipsDestroyed;
     
     static enum PrevShotStatus {PAST, HIT} prevShotStatus = PAST;
@@ -323,39 +331,58 @@ Coordinate generateShotCoordinate(const ShotBoard* const boardData, Coordinate p
     else if (boardData->board[prevShot.y][prevShot.x] == KILLED)
         prevShotStatus = HIT;
 
-    static bool perspectiveDirs[4] = {FALSE};
-    static DIR PrevDir = NO_DIR;
-    static Coordinate coordOfFirstHit = (Coordinate) {-1, -1};
-    if (prevShotStatus == HIT && PrevDir == NO_DIR && !isPrevShotWasLast){
+    if (prevShotStatus == HIT && PrevDir == NO_DIR && !isPrevShotWasLast)
         coordOfFirstHit = prevShot;
-    }
-
+    // fprintf(db_out, "Data operating:\n");
+    // fprintf(db_out, "PrevShot: (%d, %d)\n", prevShot.x, prevShot.y);
+    // fprintf(db_out, "PrevShotStatus: %d\n", prevShotStatus);
+    // fprintf(db_out, "coordOfFirstHit: (%d, %d)\n", coordOfFirstHit.x, coordOfFirstHit.y);
+    // fprintf(db_out, "PrevDir: %d\n", PrevDir);
+    // fprintf(db_out, "destroyedShipsOnPrevShot: %d\n", destroyedShipsOnPrevShot);
+    // fprintf(db_out, "PerspectiveDirs: ");
+    // for (int i = 0; i < 4; i++)
+    //     fprintf(db_out, "%d ", perspectiveDirs[i]);
+    // fprintf(db_out, "\n");
 
     if (prevShot.x == -1 && prevShot.y == -1){ 
+        // fprintf(db_out, "Random_1\n\n");
         return getRandomCoordinate(boardData);
     }
     else
     if (prevShotStatus == PAST && numberOfPerspectiveDirs(perspectiveDirs) == 0){
+        // fprintf(db_out, "Random_2\n\n");
+        PrevDir = NO_DIR;
         return getRandomCoordinate(boardData);
     }
     else
     if (prevShotStatus == PAST && numberOfPerspectiveDirs(perspectiveDirs) != 0){
-        return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, perspectiveDirs, NO_DIR, &PrevDir);
+        perspectiveDirs[PrevDir] = FALSE;
+        // fprintf(db_out, "Persp_1\n\n");
+        return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, &perspectiveDirs, NO_DIR, &PrevDir);
     }
     else
     if (prevShotStatus == HIT && PrevDir != NO_DIR){
-        perspectiveDirs[PrevDir] = TRUE;
-        return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, perspectiveDirs, PrevDir, &PrevDir);
+        if (isPrevShotWasLast){ // если попали и добили
+            // fprintf(db_out, "Random_3\n\n");
+            return getRandomCoordinate(boardData);
+        }
+        else {
+            perspectiveDirs[PrevDir] = TRUE;
+            // fprintf(db_out, "Persp_2\n\n");
+            return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, &perspectiveDirs, PrevDir, &PrevDir);
+        }
     }
     else
     if (prevShotStatus == HIT && PrevDir == NO_DIR){
         if (isPrevShotWasLast){ // если попали в единичку (сразу убили)
+            // fprintf(db_out, "Random_4\n\n");
             return getRandomCoordinate(boardData);
         }
         else { // Попали случайно в первый раз в большой корабль
             for (int i = 0; i < 4; i++)
                 perspectiveDirs[i] = TRUE;
-            return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, perspectiveDirs, NO_DIR, &PrevDir);
+            // fprintf(db_out, "Persp_3\n\n");
+            return getDirPerspectiveCoordinate(boardData, prevShot, coordOfFirstHit, &perspectiveDirs, NO_DIR, &PrevDir);
         }
     }
     return (Coordinate){-1, -1}; // Non-reached block
@@ -365,22 +392,24 @@ Coordinate getRandomCoordinate(const ShotBoard* const boardData){
     while (TRUE) {
         int x = rand() % boardData->Width;
         int y = rand() % boardData->Height;
-        if (boardData->board[x][y] == EMPTY)
+        if (boardData->board[y][x] == EMPTY)
             return (Coordinate){x,y};
     }
 }
 
-Coordinate getDirPerspectiveCoordinate(const ShotBoard* const boardData, Coordinate prevShot, Coordinate firstHit, bool dirs[], DIR priorityDIR, DIR* prevDIR){
+Coordinate getDirPerspectiveCoordinate(const ShotBoard* const boardData, Coordinate prevShot, Coordinate firstHit, bool (*dirs)[4], DIR priorityDIR, DIR* prevDIR){
     // Если есть приоритет, стреляем по приоритету, иначе выбираем случайное возможное направление.
     // Может получиться, что приоритетное направление невозможно. Тогда также выбираем случайное возможное.
     Coordinate nextHitCoord = (Coordinate){-1, -1};
     do {
-        assert(numberOfPerspectiveDirs(dirs) != 0);
+        assert(numberOfPerspectiveDirs(*dirs) != 0);
         if (priorityDIR != NO_DIR)
             *prevDIR = priorityDIR;
-        else
-            *prevDIR = getRandomDirect(dirs);
-        dirs[*prevDIR] = FALSE;
+        else {
+            *prevDIR = getRandomDirect(*dirs);
+            prevShot = firstHit;
+        }
+        (*dirs)[*prevDIR] = FALSE;
         nextHitCoord = getCoordinateOfDir(*prevDIR, boardData, prevShot);
 
         if (nextHitCoord.x == -1){
@@ -391,16 +420,16 @@ Coordinate getDirPerspectiveCoordinate(const ShotBoard* const boardData, Coordin
                     priorityDIR = UP;
                 else
                     priorityDIR = DOWN;
-                dirs[LEFT] = FALSE;
-                dirs[RIGHT] = FALSE;
+                (*dirs)[LEFT] = FALSE;
+                (*dirs)[RIGHT] = FALSE;
             } else
             if (priorityDIR == LEFT || priorityDIR == RIGHT){
                 if (priorityDIR == LEFT)
                     priorityDIR = RIGHT;
                 else
                     priorityDIR = LEFT;
-                dirs[UP] = FALSE;
-                dirs[DOWN] = FALSE;
+                (*dirs)[UP] = FALSE;
+                (*dirs)[DOWN] = FALSE;
             }
         }
     }
@@ -418,7 +447,8 @@ int numberOfPerspectiveDirs(const bool dirs[]){
 
 DIR getRandomDirect(const bool dirs[]){
     int number = numberOfPerspectiveDirs(dirs);
-    bool activeDirs[number];
+    assert(number != 0);
+    int activeDirs[number];
     int j = 0;
     for (int i = 0; i < 4; i++){
         if (dirs[i] == TRUE){
@@ -427,9 +457,8 @@ DIR getRandomDirect(const bool dirs[]){
         }
     }
     int randInt = rand() % number;
-    return dirs[activeDirs[randInt]];
+    return activeDirs[randInt];
 }
-
 
 
 Coordinate getCoordinateOfDir(DIR dir, const ShotBoard* const boardData, Coordinate prevShot){

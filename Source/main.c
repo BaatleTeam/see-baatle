@@ -113,14 +113,14 @@ int main(){
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
-                if (checkShotPos(shotBoardPlayer, cursorPostion)){
+                // if (checkShotPos(shotBoardPlayer, cursorPostion)){
                     shotResultPlayer = makeShot(ShipsComputer, shotBoardPlayer, cursorPostion);
                     updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
-                }
-                else {
+                // }
+                // else {
                     // Some msg to player
-                    break;
-                }
+                    // break;
+                // }
                 updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
                 DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                 DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
@@ -130,6 +130,7 @@ int main(){
                 ShotResult shotResultComputer = {0};
                 do {
                     computerShot = generateShotCoordinate(&shotBoardComputer, computerShot, &statisticsComputer);
+                    fprintf(db_out, "Coord: (%d, %d)\n", computerShot.x, computerShot.y);
                     shotResultComputer = makeShot(ShipsPlayer, shotBoardComputer, computerShot);
                     DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
