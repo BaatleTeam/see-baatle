@@ -1,5 +1,5 @@
 #pragma once
-#include <curses.h>
+#include "includeCurses.h"
 #include "ships.h"
 
 extern int calculateArrangeHeight(const ShipsInfo *Ships);
