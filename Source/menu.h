@@ -14,12 +14,18 @@ void initBoard(Board *board, int height, int width);
 
 void DrawHelloWindow(WINDOW* win_hello, int h, int w);
 void drawSeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.
-void drawSeeBattle_S(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
-void drawSeeBattle_E(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
-void drawSeeBattle_B(WINDOW*, int smbl, int  word_width, int begin_y, int begin_x, int color);
-void drawSeeBattle_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
-void drawSeeBattle_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
-void drawSeeBattle_L(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawEndGameScreen(WINDOW* WIN, int height, int width); // Рисует концовку.
+
+void drawHugeWord_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_B(WINDOW*, int smbl, int  word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_E(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_L(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_S(WINDOW*, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+
+void drawHugeWord_Y(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_O(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_U(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void testAnimation(WINDOW* win_hello); // Обеспечивает моргание надписи.
 
 void initGameDataCases(GameDataCase *array); // Инициализирует 4 варианта параметров игры.

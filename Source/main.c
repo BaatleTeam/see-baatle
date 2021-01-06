@@ -128,6 +128,7 @@ int main(){
                 if (shotResultPlayer.isHit){
                     if (isPlayerWins(&statisticsPlayer)){
                         fprintf(db_out, "PLAYER WINS!\n");
+                        drawEndGameScreen(WBackGround->ptrWin, 96, 8);
                         // TODO window with msg
                         exit(0);
                     }
