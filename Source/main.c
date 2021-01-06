@@ -3,8 +3,6 @@
 
 FILE* db_out = NULL;
 
-void initDataForTestEndGame(ShotBoard *shotBoardPlayer, ShotBoard* shotBoardComputer); // TODO remove
-
 int main(){	
     // FOR DEBUG 
     db_out = fopen("debug.txt", "w");
@@ -56,32 +54,13 @@ int main(){
     arrangingShips_player(&ShipsPlayer, &BoardPlayer);
     arrangingShips_computer(&ShipsComputer, &BoardComputer);
 
-
-    shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+    // Процесс перестрелки игрока и компьютера
+    GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
     
-
-    free(ShipsPlayer.Ships);
-    free(ShipsComputer.Ships);
-
-    for (int i = 0; i < BoardPlayer.Height; i++)
-        free(BoardPlayer.field[i]);
-    free(BoardPlayer.field);
-    for (int i = 0; i < BoardComputer.Height; i++)
-        free(BoardComputer.field[i]);
-    free(BoardComputer.field);
+    freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
 
     fclose(db_out);
     resetty();
 	endwin();
 	return 0;
-}
-
-
-void initDataForTestEndGame(ShotBoard *shotBoardPlayer, ShotBoard* shotBoardComputer) {
-    for (int i = 0; i < shotBoardPlayer->Height; i++) {
-        for (int j = 0; j < shotBoardPlayer->Width; j++) {
-            shotBoardPlayer->board[i][j] = KILLED;
-        }
-    }
-
 }

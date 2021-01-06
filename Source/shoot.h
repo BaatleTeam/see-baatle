@@ -44,11 +44,11 @@ void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowPa
 
 
 // PlayerStats methods
-int countDestryedShips(const PlayerStats* const stats);
-void initPlayerStats(PlayerStats *stats, const ShipsInfo* const shipsInfo);
-bool isPlayerWins(const PlayerStats* const stats);
+int countDestryedShips(const PlayerStats* stats);
+void initPlayerStats(PlayerStats *stats, const ShipsInfo* shipsInfo);
+bool isPlayerWins(const PlayerStats* stats);
 
 
 // ShotBoard methods
-void initShotBoard(ShotBoard* shotBoard, const Board const *board);
+void initShotBoard(ShotBoard* shotBoard, const Board *board);
 

@@ -24,7 +24,7 @@ void initCoordiante(Coordinate *coord, int x, int y){
 }
 
 
-void initPlayerStats(PlayerStats *stats, const ShipsInfo* const shipsInfo) {
+void initPlayerStats(PlayerStats *stats, const ShipsInfo* shipsInfo) {
     stats->shipCount[3][1] = shipsInfo->Number_4_Size;
     stats->shipCount[3][0] = shipsInfo->Number_4_Size;
     stats->shipCount[2][1] = shipsInfo->Number_3_Size;
@@ -35,7 +35,7 @@ void initPlayerStats(PlayerStats *stats, const ShipsInfo* const shipsInfo) {
     stats->shipCount[0][0] = shipsInfo->Number_1_Size;
 }
 
-int countDestryedShips(const PlayerStats* const stats) {
+int countDestryedShips(const PlayerStats* stats) {
     return stats->shipCount[0][1] + stats->shipCount[1][1] + stats->shipCount[2][1] + stats->shipCount[3][1];
 }
 
@@ -49,7 +49,7 @@ bool isPlayerWins(const PlayerStats* const stats){
 
 
 
-void initShotBoard(ShotBoard* shotBoard, const Board const *board) {
+void initShotBoard(ShotBoard* shotBoard, const Board *board) {
     enum ShootBoardState **boardArrayPlayer = malloc(board->Height * sizeof(enum ShootBoardState*));
     for (int i = 0; i < board->Height; i++)
         boardArrayPlayer[i] = calloc(board->Width, sizeof(enum ShootBoardState));
