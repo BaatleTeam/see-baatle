@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "arrange.h"
+#include "shootingGameLoop.h"
 #include "shoot.h"
 
 #include "table.h"
