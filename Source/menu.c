@@ -277,6 +277,7 @@ void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameSta
 	if (status == PLAYER_WINS) { 
 		int win_width = 6*5+5 + 4 + 2*2;
 		win_title_result = newwin(9, win_width, 5, 30);
+		doSingleLineBorder(win_title_result);
 		drawTitle_YouWin(win_title_result, 176);
 	}
 	else {
@@ -284,20 +285,7 @@ void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameSta
 		win_title_result = newwin(9, win_width, 5, 30);
 		drawTitle_YouLose(win_title_result, 176);
 	}
-	
-    // mvwprintw(win_title_result, 20, 0,"%c", '#');
-    // mvwprintw(win_title_result, 0, width-1,"%c", 187);
-    // mvwprintw(win_title_result, height-1, 0,"%c", 200);
-    // mvwprintw(win_title_result, height-1, width-1 ,"%c", 188);
-    // for (int i = 1; i < width-1; i++) {
-    // 	mvwprintw(win_title_result, 0, i, "%c", 205);
-    // 	mvwprintw(win_title_result, height-1, i, "%c", 205);
-    // }
-    // for (int i = 1; i < height-1; i++) {
-    // 	mvwprintw(win_title_result, i, 0, "%c", 186);
-    // 	mvwprintw(win_title_result, i, width-1, "%c", 186);
-    // }
-    // drawTitle_SeeBattle(win_title_result, 176);
+
     wrefresh(win_title_result);
 	delwin(win_title_result);
 }

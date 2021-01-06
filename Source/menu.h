@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include "ships.h"
 
+// from table.h
+extern void doDoubleLineBorder(WINDOW* win_ptr);
+extern void doSingleLineBorder(WINDOW* win_ptr);
+
 enum chooseMode { choosingShips, choosingSize };
 enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 };
 enum playerEndGameStatus {PLAYER_WINS = 0, PLAYER_LOSE = 1};
