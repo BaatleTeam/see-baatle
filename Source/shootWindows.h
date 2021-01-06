@@ -3,6 +3,8 @@
 #include "shoot.h"
 # define _XOPEN_SOURCE_EXTENDED 1
 
+extern FILE* db_out;
+
 void initWindowsShooting(const ShipsInfo *Ships, const Board *board, 
                         WindowParametres *WBackGround, 
                         WindowParametres *WInfoPlayer, 
@@ -34,4 +36,11 @@ bool isValidBoardCell(ShotBoard board, Coordinate checkPos);
 
 
 // ai
-Coordinate generateShotCoordinate(const ShotBoard boardData, Coordinate prevShot);
+// enum PrevShootStatus {PAST, HIT_NO_DIRECT, HIT_HORIZ, HIT_VERT, HIT_LAST} sas;
+Coordinate generateShotCoordinate(const ShotBoard* const, Coordinate, const PlayerStats* const);
+Coordinate getRandomCoordinate(const ShotBoard* const boardData);
+Coordinate getDirPerspectiveCoordinate(const ShotBoard* const boardData, Coordinate prevShot, Coordinate firstHit, bool (*dirs)[4], DIR priorityDIR, DIR* prevDIR);
+
+int numberOfPerspectiveDirs(const bool dirs[]);
+DIR getRandomDirect(const bool dirs[]);
+Coordinate getCoordinateOfDir(DIR dir, const ShotBoard* const boardData, Coordinate prevShot);

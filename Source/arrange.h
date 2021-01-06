@@ -1,6 +1,6 @@
 #pragma once
 // #include <ncurses.h>
-#include "curses.h"
+#include "includeCurses.h"
 #include <stdlib.h>
 #include "ships.h"
 #include "table.h"

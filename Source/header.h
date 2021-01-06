@@ -1,7 +1,7 @@
 #pragma once
 // #include <ncurses.h>
 #include <stdio.h>
-#include "curses.h"
+// #include "includeCurses.h"
 #include <stdlib.h>
 #include <time.h>
 #include "arrange.h"

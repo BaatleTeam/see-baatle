@@ -1,5 +1,5 @@
 #pragma once
-#include <curses.h>
+#include "includeCurses.h"
 #include <stdlib.h>
 #include "ships.h"
 

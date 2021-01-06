@@ -1,5 +1,6 @@
 #pragma once
-#include <curses.h>
+#include "includeCurses.h"
+#include <assert.h>
 
 typedef struct Board {
 	int Height;
