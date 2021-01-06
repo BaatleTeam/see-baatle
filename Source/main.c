@@ -3,6 +3,8 @@
 
 FILE* db_out = NULL;
 
+void initDataForTestEndGame(ShotBoard *shotBoardPlayer, ShotBoard* shotBoardComputer); // TODO remove
+
 int main(){	
     // FOR DEBUG 
     db_out = fopen("debug.txt", "w");
@@ -90,8 +92,10 @@ int main(){
     for (int i = 0; i < BoardPlayer.Height; i++)
         boardArrayComputer[i] = calloc(BoardPlayer.Width, sizeof(enum ShootBoardState));
     ShotBoard shotBoardComputer = {.Height = BoardPlayer.Height,
-                                 .Width = BoardPlayer.Width,
-                                 .board = boardArrayComputer };
+                                   .Width = BoardPlayer.Width,
+                                   .board = boardArrayComputer };
+    
+    // initDataForTestEndGame(&shotBoardPlayer, &shotBoardComputer);
 
     int key;
     Coordinate cursorPostion = (Coordinate){0, 0};
@@ -104,6 +108,9 @@ int main(){
 
     while((key = getch()) != KEY_F(5)){
         switch(key){
+            case 9:
+                drawEndGameScreen(WBackGround->ptrWin, 9, 61, PLAYER_WINS);
+                break;
         	case KEY_LEFT:
         	case KEY_RIGHT:
         	case KEY_UP:
@@ -128,7 +135,7 @@ int main(){
                 if (shotResultPlayer.isHit){
                     if (isPlayerWins(&statisticsPlayer)){
                         fprintf(db_out, "PLAYER WINS!\n");
-                        drawEndGameScreen(WBackGround->ptrWin, 96, 8);
+                        // drawEndGameScreen(WBackGround->ptrWin, 96, 8);
                         // TODO window with msg
                         exit(0);
                     }
@@ -188,4 +195,14 @@ int main(){
     resetty();
 	endwin();
 	return 0;
+}
+
+
+void initDataForTestEndGame(ShotBoard *shotBoardPlayer, ShotBoard* shotBoardComputer) {
+    for (int i = 0; i < shotBoardPlayer->Height; i++) {
+        for (int j = 0; j < shotBoardPlayer->Width; j++) {
+            shotBoardPlayer->board[i][j] = KILLED;
+        }
+    }
+
 }

@@ -269,29 +269,43 @@ void DrawHelloWindow(WINDOW* WIN, int height, int width){
     wrefresh(WIN);
 }
 
-void drawEndGameScreen(WINDOW* WIN, int height, int width) {
+void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameStatus status) {
+	WINDOW* win_title_result = NULL;
     wbkgdset(WIN, COLOR_PAIR(100));
     wclear(WIN);
-    mvwprintw(WIN, 0, 0,"%c", '#');
-    mvwprintw(WIN, 0, width-1,"%c", 187);
-    mvwprintw(WIN, height-1, 0,"%c", 200);
-    mvwprintw(WIN, height-1, width-1 ,"%c", 188);
-    for (int i = 1; i < width-1; i++) {
-    	mvwprintw(WIN, 0, i, "%c", 205);
-    	mvwprintw(WIN, height-1, i, "%c", 205);
-    }
-    for (int i = 1; i < height-1; i++) {
-    	mvwprintw(WIN, i, 0, "%c", 186);
-    	mvwprintw(WIN, i, width-1, "%c", 186);
-    }
-    drawSeeBattle(WIN, 176);
-    wrefresh(WIN);
+
+	if (status == PLAYER_WINS) { 
+		int win_width = 6*5+5 + 4 + 2*2;
+		win_title_result = newwin(9, win_width, 5, 30);
+		drawTitle_YouWin(win_title_result, 176);
+	}
+	else {
+		int win_width = 6*6+5 + 4 + 2*2;
+		win_title_result = newwin(9, win_width, 5, 30);
+		drawTitle_YouLose(win_title_result, 176);
+	}
+	
+    // mvwprintw(win_title_result, 20, 0,"%c", '#');
+    // mvwprintw(win_title_result, 0, width-1,"%c", 187);
+    // mvwprintw(win_title_result, height-1, 0,"%c", 200);
+    // mvwprintw(win_title_result, height-1, width-1 ,"%c", 188);
+    // for (int i = 1; i < width-1; i++) {
+    // 	mvwprintw(win_title_result, 0, i, "%c", 205);
+    // 	mvwprintw(win_title_result, height-1, i, "%c", 205);
+    // }
+    // for (int i = 1; i < height-1; i++) {
+    // 	mvwprintw(win_title_result, i, 0, "%c", 186);
+    // 	mvwprintw(win_title_result, i, width-1, "%c", 186);
+    // }
+    // drawTitle_SeeBattle(win_title_result, 176);
+    wrefresh(win_title_result);
+	delwin(win_title_result);
 }
 
 void testAnimation(WINDOW* win_hello){
 	napms(500);
 	for (int i = 0; i < 3; i++){
-		drawSeeBattle(win_hello, 176+(i%3));
+		drawTitle_SeeBattle(win_hello, 176+(i%3));
 		wrefresh(win_hello);
 		napms(100);
 	}
@@ -381,31 +395,78 @@ void DrawActiveCaseWindow(WindowParametres* WIN, const GameDataCase* gdc, int nu
 
 
 
-void drawSeeBattle(WINDOW* win_hello, int smbl){
+void drawTitle_SeeBattle(WINDOW* win_ptr, int smbl){
 	int indent = 1;
 	int word_width = 5;
 	int begin_x = 2;
 	int begin_y = 2;
-	wrefresh(win_hello);
-	drawHugeWord_S(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	wrefresh(win_ptr);
+	drawHugeWord_S(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_E(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_E(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 
 	begin_x += (word_width+5);
 
-	drawHugeWord_B(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_B(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_A(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_A(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_T(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_T(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_T(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_T(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_L(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_L(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 	begin_x += indent + word_width;
-	drawHugeWord_E(win_hello, smbl, word_width, begin_y, begin_x, 200);
+	drawHugeWord_E(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+}
+
+void drawTitle_YouWin(WINDOW* win_ptr, int smbl) {
+	wattron(win_ptr, COLOR_PAIR(2));
+	int indent = 1;
+	int word_width = 5;
+	int begin_x = 2;
+	int begin_y = 2;
+	wrefresh(win_ptr);
+	drawHugeWord_Y(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_O(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_U(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+
+	begin_x += (word_width+4);
+
+	// wattron(win_ptr, COLOR_PAIR(200));
+	drawHugeWord_W(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	// wattron(win_ptr, COLOR_PAIR(2));
+	begin_x += indent + word_width;
+	drawHugeWord_I(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_N(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+}
+
+void drawTitle_YouLose(WINDOW* win_ptr, int smbl) {
+	int indent = 1;
+	int word_width = 5;
+	int begin_x = 2;
+	int begin_y = 2;
+	wrefresh(win_ptr);
+	drawHugeWord_Y(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_O(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_U(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+
+	begin_x += (word_width+4);
+
+	drawHugeWord_L(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_O(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_S(win_ptr, smbl, word_width, begin_y, begin_x, 200);
+	begin_x += indent + word_width;
+	drawHugeWord_E(win_ptr, smbl, word_width, begin_y, begin_x, 200);
 }
 
 void drawHugeWord_S(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color){
@@ -480,13 +541,63 @@ void drawHugeWord_L(WINDOW* WIN, int smbl, int word_width, int begin_y, int begi
 }
 
 void drawHugeWord_Y(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
-	wattron(WIN, COLOR_PAIR(color));	
+	wattron(WIN, COLOR_PAIR(color));
+	mvwprintw(WIN, begin_y, begin_x, "%c", smbl);
+	mvwprintw(WIN, begin_y+1, begin_x+1, "%c", smbl);
+	mvwprintw(WIN, begin_y, begin_x+word_width-1, "%c", smbl);
+	mvwprintw(WIN, begin_y+1, begin_x+word_width-2, "%c", smbl);
+	for (int i = 2; i < 2+3; i++) {
+		mvwprintw(WIN, begin_y+i, begin_x+2, "%c", smbl);
+	}
 }
 
 void drawHugeWord_O(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
 	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++) {
+		mvwprintw(WIN, begin_y, begin_x+i, "%c", smbl);
+		mvwprintw(WIN, begin_y+word_width-1, begin_x+i, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x+word_width-1, "%c", smbl);
+	}
 }
 
 void drawHugeWord_U(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
 	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width; i++) {
+		mvwprintw(WIN, begin_y+word_width-1, begin_x+i, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x+word_width-1, "%c", smbl);
+	}
+}
+
+void drawHugeWord_W(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
+	wattron(WIN, COLOR_PAIR(color));
+	for (int i = 0; i < word_width-1; i++) {
+		mvwprintw(WIN, begin_y+i, begin_x, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x+word_width-1, "%c", smbl);
+	}
+	for (int i = 1; i < word_width-1; i++) {
+		mvwprintw(WIN, begin_y+i, begin_x+2, "%c", smbl);
+	}
+	mvwprintw(WIN, begin_y+word_width-1, begin_x+1, "%c", smbl);
+	mvwprintw(WIN, begin_y+word_width-1, begin_x+3, "%c", smbl);
+}
+
+void drawHugeWord_I(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
+	for (int i = 0; i < word_width; i++) {
+		mvwprintw(WIN, begin_y, begin_x+i, "%c", smbl);
+		mvwprintw(WIN, begin_y+word_width-1, begin_x+i, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x+2, "%c", smbl);
+	}
+}
+
+void drawHugeWord_N(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color) {
+	for (int i = 1; i < word_width; i++) {
+		mvwprintw(WIN, begin_y+i, begin_x, "%c", smbl);
+		mvwprintw(WIN, begin_y+i, begin_x+word_width, "%c", smbl);
+	}
+	for (int i = 1; i < word_width; i++) {
+		mvwprintw(WIN, begin_y, begin_x+i, "%c", smbl);
+	}
+
 }

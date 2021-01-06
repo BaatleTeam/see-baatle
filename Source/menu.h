@@ -5,6 +5,7 @@
 
 enum chooseMode { choosingShips, choosingSize };
 enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 };
+enum playerEndGameStatus {PLAYER_WINS = 0, PLAYER_LOSE = 1};
 
 #define GAME_CASES_NUMBER 4
 
@@ -13,8 +14,10 @@ void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info);
 void initBoard(Board *board, int height, int width);
 
 void DrawHelloWindow(WINDOW* win_hello, int h, int w);
-void drawSeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.
-void drawEndGameScreen(WINDOW* WIN, int height, int width); // Рисует концовку.
+void drawTitle_SeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.
+void drawTitle_YouWin(WINDOW* win_hello, int smbl); // Рисует приветствие.
+void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приветствие.
+void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameStatus status); // Рисует концовку.
 
 void drawHugeWord_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void drawHugeWord_B(WINDOW*, int smbl, int  word_width, int begin_y, int begin_x, int color);
@@ -26,6 +29,9 @@ void drawHugeWord_T(WINDOW* WIN, int smbl, int word_width, int begin_y, int begi
 void drawHugeWord_Y(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void drawHugeWord_O(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void drawHugeWord_U(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_W(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_I(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
+void drawHugeWord_N(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void testAnimation(WINDOW* win_hello); // Обеспечивает моргание надписи.
 
 void initGameDataCases(GameDataCase *array); // Инициализирует 4 варианта параметров игры.
