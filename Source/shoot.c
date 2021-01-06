@@ -23,10 +23,38 @@ void initCoordiante(Coordinate *coord, int x, int y){
     coord->y = y;
 }
 
-bool isPlayerWins(const PlayerStats* const statisticsPlayer){
-    int shipsNum = statisticsPlayer->shipCount[0][1] + statisticsPlayer->shipCount[1][1] + statisticsPlayer->shipCount[2][1] + statisticsPlayer->shipCount[3][1];
-    if (shipsNum == statisticsPlayer->shipsDestroyed)
+
+void initPlayerStats(PlayerStats *stats, const ShipsInfo* const shipsInfo) {
+    stats->shipCount[3][1] = shipsInfo->Number_4_Size;
+    stats->shipCount[3][0] = shipsInfo->Number_4_Size;
+    stats->shipCount[2][1] = shipsInfo->Number_3_Size;
+    stats->shipCount[2][0] = shipsInfo->Number_3_Size;
+    stats->shipCount[1][1] = shipsInfo->Number_2_Size;
+    stats->shipCount[1][0] = shipsInfo->Number_2_Size;
+    stats->shipCount[0][1] = shipsInfo->Number_1_Size;
+    stats->shipCount[0][0] = shipsInfo->Number_1_Size;
+}
+
+int countDestryedShips(const PlayerStats* const stats) {
+    return stats->shipCount[0][1] + stats->shipCount[1][1] + stats->shipCount[2][1] + stats->shipCount[3][1];
+}
+
+bool isPlayerWins(const PlayerStats* const stats){
+    int shipsNum = countDestryedShips(stats);
+    if (shipsNum == stats->shipsDestroyed)
         return TRUE;
     else
         return FALSE;
+}
+
+
+
+void initShotBoard(ShotBoard* shotBoard, const Board const *board) {
+    enum ShootBoardState **boardArrayPlayer = malloc(board->Height * sizeof(enum ShootBoardState*));
+    for (int i = 0; i < board->Height; i++)
+        boardArrayPlayer[i] = calloc(board->Width, sizeof(enum ShootBoardState));
+    
+    shotBoard->Height = board->Height;
+    shotBoard->Width = board->Width;
+    shotBoard->board = boardArrayPlayer;
 }

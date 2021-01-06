@@ -16,33 +16,18 @@ void shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *B
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
 
-    PlayerStats statisticsPlayer = {.shipCount[3][1] = ShipsPlayer->Number_4_Size, .shipCount[3][0] = ShipsPlayer->Number_4_Size,
-                                    .shipCount[2][1] = ShipsPlayer->Number_3_Size, .shipCount[2][0] = ShipsPlayer->Number_3_Size,
-                                    .shipCount[1][1] = ShipsPlayer->Number_2_Size, .shipCount[1][0] = ShipsPlayer->Number_2_Size,
-                                    .shipCount[0][1] = ShipsPlayer->Number_1_Size, .shipCount[0][0] = ShipsPlayer->Number_1_Size,};
-    PlayerStats statisticsComputer = {.shipCount[3][1] = ShipsComputer->Number_4_Size, .shipCount[3][0] = ShipsComputer->Number_4_Size,
-                                      .shipCount[2][1] = ShipsComputer->Number_3_Size, .shipCount[2][0] = ShipsComputer->Number_3_Size,
-                                      .shipCount[1][1] = ShipsComputer->Number_2_Size, .shipCount[1][0] = ShipsComputer->Number_2_Size,
-                                      .shipCount[0][1] = ShipsComputer->Number_1_Size, .shipCount[0][0] = ShipsComputer->Number_1_Size,};
+    PlayerStats statisticsPlayer;
+    initPlayerStats(&statisticsPlayer, ShipsPlayer);
+    PlayerStats statisticsComputer;
+    initPlayerStats(&statisticsComputer, ShipsComputer);
 
-    // поле для стрельбы человека по компьюеру                                      
-    enum ShootBoardState **boardArrayPlayer = malloc(BoardComputer->Height * sizeof(enum ShootBoardState*));
-    for (int i = 0; i < BoardComputer->Height; i++)
-        boardArrayPlayer[i] = calloc(BoardComputer->Width, sizeof(enum ShootBoardState));
-    ShotBoard shotBoardPlayer = {.Height = BoardComputer->Height,
-                                 .Width = BoardComputer->Width,
-                                 .board = boardArrayPlayer };
+    // поле для стрельбы человека по компьютеру                                      
+    ShotBoard shotBoardPlayer;
+    initShotBoard(&shotBoardPlayer, BoardPlayer);
     // поле для стрельбы компьютера по человеку
-    enum ShootBoardState **boardArrayComputer = malloc(BoardPlayer->Height * sizeof(enum ShootBoardState*));
-    for (int i = 0; i < BoardPlayer->Height; i++)
-        boardArrayComputer[i] = calloc(BoardPlayer->Width, sizeof(enum ShootBoardState));
-    ShotBoard shotBoardComputer = {.Height = BoardPlayer->Height,
-                                   .Width = BoardPlayer->Width,
-                                   .board = boardArrayComputer };
-    
-    // initDataForTestEndGame(&shotBoardPlayer, &shotBoardComputer);
+    ShotBoard shotBoardComputer;
+    initShotBoard(&shotBoardComputer, BoardComputer);
 
-    int key;
     Coordinate cursorPostion = (Coordinate){0, 0};
     Coordinate computerShot = (Coordinate){-1, -1};
 
@@ -51,6 +36,7 @@ void shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *B
     DrawWBoard_Shoting_Default(*WBoardPlayer);
     updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
 
+    int key;
     while((key = getch()) != KEY_F(5)){
         switch(key){
             // case 9:
