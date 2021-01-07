@@ -273,6 +273,7 @@ void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameSta
 	WINDOW* win_title_result = NULL;
     wbkgdset(WIN, COLOR_PAIR(100));
     wclear(WIN);
+	wrefresh(WIN);
 
 	if (status == PLAYER_WINS) { 
 		int win_width = 6*5+5 + 4 + 2*2;

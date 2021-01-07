@@ -25,6 +25,9 @@ void initCoordiante(Coordinate *coord, int x, int y){
 
 
 void initPlayerStats(PlayerStats *stats, const ShipsInfo* shipsInfo) {
+    stats->hits = 0;
+    stats->shots = 0;
+    stats->shipsDestroyed = 0;
     stats->shipCount[3][1] = shipsInfo->Number_4_Size;
     stats->shipCount[3][0] = shipsInfo->Number_4_Size;
     stats->shipCount[2][1] = shipsInfo->Number_3_Size;

@@ -12,7 +12,6 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
 
     wbkgdset(WBackGround->ptrWin, COLOR_PAIR(200));
     wclear(WBackGround->ptrWin);
-    wrefresh(WBackGround->ptrWin);
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
     wrefresh(WBackGround->ptrWin);
 
@@ -69,10 +68,8 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
 
                 if (shotResultPlayer.isHit){
                     if (isPlayerWins(&statisticsPlayer)){
-                        fprintf(db_out, "PLAYER WINS!\n");
                         results.playerStatus = PLAYER_WINS;
-                        // drawEndGameScreen(WBackGround->ptrWin, 96, 8);
-                        exit(0);
+                        isAnyBodyWins = true;
                     }
                     else 
                         break; // Если игрок попал, то он ходит снова.
@@ -88,9 +85,8 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
                     DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
                     DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
                     if (isPlayerWins(&statisticsComputer)){
-                        fprintf(db_out, "COMPUHTER WINS!\n");
                         results.playerStatus = PLAYER_LOSE;
-                        exit(0);
+                        isAnyBodyWins = true;
                     }
                 } while (shotResultComputer.isHit); // Если попал компьютер, то он ходит снова.
                 break;
@@ -103,6 +99,12 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     free(WBoardComputer);
     free(WBoardPlayer);
     // free(WHelp);
+
+    // TODO
+    // DEDUG MODE ONLY 
+    if (results.playerStatus == UNKONOWN) {
+        results.playerStatus = PLAYER_WINS;
+    }
 
     return results;
 }

@@ -29,35 +29,68 @@ int main(){
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
-    GameDataCase* GDCases;
-    GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
-    initGameDataCases(GDCases);
+    bool gameIsGoing = true;
+    while (gameIsGoing) {
+        GameDataCase* GDCases;
+        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
+        initGameDataCases(GDCases);
 
-    int caseShips; // тип кол-ва кораблйей
-    int caseBoard; // тип размера поля
-    choosingGDCase(GDCases, &caseShips, &caseBoard);
+        int caseShips; // тип кол-ва кораблйей
+        int caseBoard; // тип размера поля
+        choosingGDCase(GDCases, &caseShips, &caseBoard);
 
-    // Создание и инициализация данных о кораблях игрока и компьютера.
-    ShipsInfo ShipsPlayer;
-    ShipsInfo ShipsComputer;
-    initShipsInfo(&GDCases[caseShips], &ShipsPlayer);
-    initShipsInfo(&GDCases[caseShips], &ShipsComputer);
-    
-    // Создание и инициализация размеров игорового поля.
-    Board BoardPlayer;
-    Board BoardComputer;
-    initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-    initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-    
-    // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-    free(GDCases);
-    arrangingShips_player(&ShipsPlayer, &BoardPlayer);
-    arrangingShips_computer(&ShipsComputer, &BoardComputer);
+        // Создание и инициализация данных о кораблях игрока и компьютера.
+        ShipsInfo ShipsPlayer;
+        ShipsInfo ShipsComputer;
+        initShipsInfo(&GDCases[caseShips], &ShipsPlayer);
+        initShipsInfo(&GDCases[caseShips], &ShipsComputer);
+        
+        // Создание и инициализация размеров игорового поля.
+        Board BoardPlayer;
+        Board BoardComputer;
+        initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
+        initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
+        
+        // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
+        free(GDCases);
+        arrangingShips_player(&ShipsPlayer, &BoardPlayer);
+        arrangingShips_computer(&ShipsComputer, &BoardComputer);
 
-    // Процесс перестрелки игрока и компьютера
-    GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
-    
-    freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+        // Процесс перестрелки игрока и компьютера
+        GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+        freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+
+
+        // Окно заднего фона.
+        WINDOW* win_bg = newwin(LINES, COLS, 0, 0);
+        wbkgdset(win_bg, COLOR_PAIR(200));
+        wclear(win_bg);
+        wrefresh(win_bg);
+
+        Stopif(gameResults.playerStatus == UNKONOWN, "Error: Game result has unknown status.");
+        if (gameResults.playerStatus == PLAYER_WINS) {
+            drawEndGameScreen(win_bg, 30, 20, PLAYER_WINS);
+        } else {
+            drawEndGameScreen(win_bg, 30, 20, PLAYER_LOSE);
+        }
+
+        wattron(win_bg, COLOR_PAIR(2));
+        mvwprintw(win_bg, 0, 0, "Press ENTER to restart. Press ESC to end.");
+        wrefresh(win_bg);
+
+        int key;
+        key = getch();
+        gameIsGoing = false;
+        switch (key) {
+            case 27: // ESC
+                gameIsGoing = false;
+                break;
+            case '\n':
+                gameIsGoing = true;
+                break;
+        }
+    }
+
 
     fclose(db_out);
     resetty();
