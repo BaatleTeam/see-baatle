@@ -157,7 +157,7 @@ void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_shi
 
 void DrawMessage_InArrangeWindow(WINDOW* WIN, const char* msg){
     wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, 12 , 1, msg);
+    mvwprintw(WIN, 12 , 1, msg); // TODO from size of board
     wattron(WIN, COLOR_PAIR(2));
     box(WIN, 0, 0);
     wrefresh(WIN);

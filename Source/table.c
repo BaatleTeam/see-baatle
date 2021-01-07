@@ -136,3 +136,11 @@ void str_bottom(WINDOW *WIN, int width, int height){
     ugol = 217;
     mvwprintw(WIN, height-1, width-1, "%c", ugol);
 }
+
+void doDoubleLineBorder(WINDOW* win_ptr) {
+    wborder(win_ptr, 186, 186, 205, 205, 201, 187, 200, 188);   
+}
+
+void doSingleLineBorder(WINDOW* win_ptr) {
+    wborder(win_ptr, 179, 179, 196, 196, 218, 191, 192, 217);   
+}
