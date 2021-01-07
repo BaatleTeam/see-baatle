@@ -51,4 +51,5 @@ bool isPlayerWins(const PlayerStats* stats);
 
 // ShotBoard methods
 void initShotBoard(ShotBoard* shotBoard, const Board *board);
+void clearShotBoard(ShotBoard* shotBoard);
 

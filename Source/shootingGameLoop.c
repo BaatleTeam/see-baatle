@@ -93,12 +93,22 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     	}
 	}
     
+
+    delwin(WBackGround->ptrWin);
+    delwin(WInfoComputer->ptrWin);
+    delwin(WInfoPlayer->ptrWin);
+    delwin(WBoardComputer->ptrWin);
+    delwin(WBoardPlayer->ptrWin);
+    
     free(WBackGround);
     free(WInfoComputer);
     free(WInfoPlayer);
     free(WBoardComputer);
     free(WBoardPlayer);
     // free(WHelp);
+
+    clearShotBoard(&shotBoardPlayer);
+    clearShotBoard(&shotBoardComputer);
 
     // TODO
     // DEDUG MODE ONLY 

@@ -89,6 +89,7 @@ int main(){
                 gameIsGoing = true;
                 break;
         }
+        delwin(win_bg);
     }
 
 

@@ -61,3 +61,11 @@ void initShotBoard(ShotBoard* shotBoard, const Board *board) {
     shotBoard->Width = board->Width;
     shotBoard->board = boardArrayPlayer;
 }
+
+
+void clearShotBoard(ShotBoard* shotBoard) {
+    for (int i = 0; i < shotBoard->Height; i++)
+        free(shotBoard->board[i]);
+    free(shotBoard->board);
+    shotBoard->board = NULL;
+}
