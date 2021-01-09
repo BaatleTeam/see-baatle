@@ -9,15 +9,17 @@ bool isAllShipsStanding(ShipsInfo ships){
 }
 
 void deleteShipFromField(ship* ship, const Board *Board){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
                 Board->field[ship->y][i+ship->x] = FALSE;
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship->size; i++)
                 Board->field[i+ship->y][ship->x] = FALSE;
             break;
+        default:
+            Stopif(true, "deleteShipFromField(): unexpeced switch value.")
     }
 }
 
@@ -44,15 +46,17 @@ void refresh_ship_player_array(const ShipsInfo *Ships, const Board *Board){
 }
 
 void standing_ship(ship* ship, const Board *Board){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
                 Board->field[ship->y][i+ship->x] = TRUE;
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship->size; i++)
                 Board->field[i+ship->y][ship->x] = TRUE;
             break;
+        default:
+            Stopif(true, "standing_ship(): unexpeced switch value.")
     }
 }
 
@@ -63,8 +67,8 @@ int getShipsNumber(const ShipsInfo* info){
 // -------------------------------------------------------------------------------
 // Секция функций проверки свободы границ корабля
 bool checkShipBorders(const ship* ship, const Board *Board){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
                 if (checkShipBorders_top_bottom_horizontal(ship, Board) == FALSE ||
                     checkShipBorders_left_right_horizontal(ship, Board) == FALSE ||
                     checkItself(ship, Board) == FALSE)
@@ -72,7 +76,7 @@ bool checkShipBorders(const ship* ship, const Board *Board){
                 else 
                     return TRUE;
                 break;
-        case TRUE:
+        case VERTICAL:
                 if (checkShipBorders_top_bottom_vertical(ship, Board) == FALSE ||
                     checkShipBorders_left_right_vertical(ship, Board) == FALSE ||
                     checkItself(ship, Board) == FALSE)
@@ -228,17 +232,19 @@ bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board){
 }
 
 bool checkItself(const ship* ship, const Board *Board){
-    switch(ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
                 if (Board->field[ship->y][ship->x+i] == TRUE)
                     return FALSE;
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship->size; i++)
                 if (Board->field[ship->y+i][ship->x] == TRUE)
                     return FALSE;
             break;
+        default:
+            Stopif(true, "checkItself(): unexpected switch case.");
     }
     return TRUE;
 }
@@ -249,7 +255,7 @@ void clearTmpShip(ship* ship){
     ship->x = -1;
     ship->y = -1;
     ship->size = 0;
-    ship->type = TRUE;
+    ship->type = VERTICAL;
     ship->stand = FALSE;
 }
 
@@ -262,17 +268,19 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board){
     char rect = 254;
     int i = TmpShip->y;
     int j = TmpShip->x;
-    switch(TmpShip->type){
-        case TRUE:
-            for (; i < TmpShip->size + TmpShip->y; i++){
+    switch(TmpShip->type) {
+        case VERTICAL:
+            for (; i < TmpShip->size + TmpShip->y; i++) {
                 mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
             }
             break;
-        case FALSE:
-            for (; j < TmpShip->size + TmpShip->x; j++){
+        case HORIZONTAL:
+            for (; j < TmpShip->size + TmpShip->x; j++) {
                 mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
             }
             break;
+        default:
+            Stopif(true, "DrawTmpShip(): unexpected switch case.");
     }
     wrefresh(WIN);
 }
@@ -302,7 +310,7 @@ void InitPrimaryCoordinates(int ShipSize, ship* ship, const Board* const Board){
     ship->y = y;
     ship->size = ShipSize;
     ship->stand = FALSE;
-    ship->type = FALSE;
+    ship->type = HORIZONTAL;
 }
 
 bool checkPlace(int x, int y, int size, const Board *Board){
@@ -321,7 +329,7 @@ void changeShipCoordinates(ship* TmpShip, const Board *Board, const int key){
             if (checkBorderLeft(TmpShip, Board))
                 TmpShip->x -= 1;
             else 
-                if (TmpShip->type == FALSE) 
+                if (TmpShip->type == HORIZONTAL) 
                     TmpShip->x = Board->Width - TmpShip->size;
                 else 
                     TmpShip->x = Board->Width-1;
@@ -336,7 +344,7 @@ void changeShipCoordinates(ship* TmpShip, const Board *Board, const int key){
             if (checkBorderTop(TmpShip, Board))
                 TmpShip->y -= 1;
             else
-                if (TmpShip->type == TRUE)
+                if (TmpShip->type == VERTICAL)
                     TmpShip->y = Board->Height - TmpShip->size;
                 else
                     TmpShip->y = Board->Height-1;
@@ -347,6 +355,8 @@ void changeShipCoordinates(ship* TmpShip, const Board *Board, const int key){
             else
                 TmpShip->y = 0;;
             break;
+        default: // it is ok
+            return;
     }
 }
 
@@ -358,13 +368,13 @@ bool checkBorderLeft(ship* ship, const Board *Board){
 }
 
 bool checkBorderRight(ship* ship, const Board *Board){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             if (ship->x + ship->size == Board->Width)
                 return FALSE;
             else 
                 return TRUE;
-        case TRUE:
+        case VERTICAL:
             if (ship->x == Board->Width-1)
                 return FALSE;
             else 
@@ -381,19 +391,20 @@ bool checkBorderTop(ship* ship, const Board *Board){
 }
 
 bool checkBorderBot(ship* ship, const Board *Board){
-    switch (ship->type){
-        case TRUE:
+    switch (ship->type) {
+        case VERTICAL:
             if (ship->y + ship->size == Board->Height)
                 return FALSE;
             else 
                 return TRUE;
-        case FALSE:
+        case HORIZONTAL:
             if (ship->y == Board->Height-1)
                 return FALSE;
             else 
                 return TRUE;
+        default:
+            return TRUE; // control should not be reached
     }
-    return TRUE; // control should not be reached
 }
 
 // -------------------------------------------------------------------------------
@@ -411,22 +422,24 @@ void makeShipTmp(ship* oldShip, ship* TmpShip){
     TmpShip->y = oldShip->y;
     TmpShip->size = oldShip->size;
     TmpShip->type = oldShip->type;
-    oldShip->stand = FALSE;
+    oldShip->stand = HORIZONTAL;
     TmpShip->stand = TRUE;
 }
 
 void changeTypeOfShip(ship* ship, const Board *Board){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             if (ship->y + ship->size > Board->Height)
                 ship->y = Board->Height - ship->size;
             ship->type = TRUE;
             break;
-        case TRUE:
+        case VERTICAL:
             if (ship->x + ship->size > Board->Width)
                 ship->x = Board->Width - ship->size;
             ship->type = FALSE;
             break;
+        default:
+            Stopif(true, "changeTypeOfShip(): unexpected case value.");
     }
 }
 
@@ -434,17 +447,19 @@ void changeTypeOfShip(ship* ship, const Board *Board){
 
 
 bool isShipHit(const ship* ship, int coord_x, int coord_y){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
                 if (ship->y == coord_y && ship->x+i == coord_x)
                     return TRUE;
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship->size; i++)
                 if (ship->x == coord_x && ship->y+i == coord_y)
                     return TRUE;
             break;
+        default:
+            Stopif(true, "isShipHit(): unexpected case value.");
     }
     return FALSE;
 }

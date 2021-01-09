@@ -2,6 +2,11 @@
 #include "includeCurses.h"
 #include <assert.h>
 
+typedef enum shipOrientationType {
+	HORIZONTAL = false,
+	VERTICAL = true
+} shipOrientationType;
+
 typedef struct Board {
 	int Height;
 	int Width;
@@ -13,7 +18,7 @@ typedef struct ship_player
     int x;
     int y;
     int size;
-    bool type;
+    shipOrientationType type;
     bool stand;
 } ship;
 
@@ -54,8 +59,6 @@ typedef struct Indents {
 #define initWindow(wp){ \
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x); \
 }
-
-enum shipOrientation { HORIZONTAL = FALSE, VERTICAL = TRUE } currOrientation; // На будущее
 
 // Функции для работы с полями-массивами и их отрисовкой
 bool isAllShipsStanding(ShipsInfo ships);
