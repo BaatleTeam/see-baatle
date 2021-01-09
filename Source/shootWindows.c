@@ -165,7 +165,7 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordina
 void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
     Coordinate pointToCheck = {0, 0};
     switch (ship.type) {
-        case FALSE:
+        case HORIZONTAL:
             for (int i = 0; i < ship.size; i++){
                 // ряд выше
                 initCoordiante(&pointToCheck, ship.x+i, ship.y-1);
@@ -188,7 +188,7 @@ void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
                     markSHOTED(boardData, pointToCheck);                
             }
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship.size; i++){
                 // ряд левее
                 initCoordiante(&pointToCheck, ship.x-1, ship.y+i);
@@ -211,17 +211,19 @@ void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
                     markSHOTED(boardData, pointToCheck);                
             }
             break;
+        default:
+            Stopif(true, "fillBoardNearKilledShip(): switch value unexpected.");
     }
 }
 
 bool isShipKilled(ship* ship, const ShotBoard boardData){
-    switch (ship->type){
-        case FALSE:
+    switch (ship->type) {
+        case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
                 if (boardData.board[ship->y][ship->x+i] == EMPTY)
                     return FALSE;
             break;
-        case TRUE:
+        case VERTICAL:
             for (int i = 0; i < ship->size; i++)
                 if (boardData.board[ship->y+i][ship->x] == EMPTY)
                     return FALSE;
@@ -243,9 +245,9 @@ void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActiv
 
 void updateStats(PlayerStats *stats_shots, PlayerStats *stats_shooted, ShotResult shotResult){
     stats_shots->shots++;
-    if (shotResult.isHit){
+    if (shotResult.isHit) {
         stats_shots->hits++;
-        if (shotResult.shipSize){
+        if (shotResult.shipSize) {
             stats_shots->shipsDestroyed++;
             stats_shooted->shipCount[shotResult.shipSize-1][0]--;
         }
@@ -255,7 +257,7 @@ void updateStats(PlayerStats *stats_shots, PlayerStats *stats_shooted, ShotResul
 // ------------------------------------------------------------
 
 void moveCursor_Shooting(Board board, Coordinate *curPos, int key){
-    switch (key){
+    switch (key) {
         case KEY_LEFT:
             if (curPos->x > 0)
                 (curPos->x)--;
@@ -286,19 +288,19 @@ void moveCursor_Shooting(Board board, Coordinate *curPos, int key){
     }
 }
 
-void markEMPTY(ShotBoard board, Coordinate curPos){
+void markEMPTY(ShotBoard board, Coordinate curPos) {
     board.board[curPos.y][curPos.x] = EMPTY;
 }
 
-void markSHOTED(ShotBoard board, Coordinate curPos){
+void markSHOTED(ShotBoard board, Coordinate curPos) {
     board.board[curPos.y][curPos.x] = SHOTED;
 }
 
-void markKILLED(ShotBoard board, Coordinate curPos){
+void markKILLED(ShotBoard board, Coordinate curPos) {
     board.board[curPos.y][curPos.x] = KILLED;
 }
 
-bool isValidBoardCell(ShotBoard board, Coordinate point){
+bool isValidBoardCell(ShotBoard board, Coordinate point) {
     if (point.x < 0 || point.y < 0)
         return FALSE;
     if (point.x >= board.Width || point.y >= board.Height)
