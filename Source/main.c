@@ -51,10 +51,12 @@ int main(){
         initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
         initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
         
+        
         // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
         free(GDCases);
         arrangingShips_player(&ShipsPlayer, &BoardPlayer);
         arrangingShips_computer(&ShipsComputer, &BoardComputer);
+
 
         // Процесс перестрелки игрока и компьютера
         GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
