@@ -1,7 +1,7 @@
 #include "endGame.h"
 
-static const char* enterText = "Press ENTER to restart.";
-static const char* anykeyText = "Press ANY KEY to end.";
+static const char* enterText  = "  --> Play more! <--  ";
+static const char* anykeyText = "     --> Quit:( <--   ";
 
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     WindowParametres win_bg, win_title;
@@ -9,21 +9,37 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     iniEndGameWindows(&win_bg, &win_title, &winEnter, &winAnyKey, gameResults.playerStatus);
 
     drawEndGameBgWindows(&win_bg, &win_title, gameResults.playerStatus);
-    drawEndGameDynamicWindows(&winEnter, &winAnyKey, CONTINUE_GAME);
-    
-    int key;
-    key = getch();
-    switch (key) {
-        case 27: // ESC
-            *isGameWillBeContinued = false;
-            break;
-        case '\n':
-            *isGameWillBeContinued = true;
-            break;
-        default:
-            *isGameWillBeContinued = false;
+
+    userChoice_EndGame finalChoice = CHOICE_ENDGAME_UNKNOWN;
+    userChoice_EndGame currChoice = END_GAME;
+    int key = 0;
+
+    do {
+        drawEndGameDynamicWindows(&winEnter, &winAnyKey, currChoice);
+        key = getch();
+        switch (key) {
+            case '\n':
+                finalChoice = currChoice;
+                if (finalChoice == CONTINUE_GAME) {
+                    *isGameWillBeContinued = true;
+                }
+                if (finalChoice == END_GAME) {
+                    *isGameWillBeContinued = false;
+                }
+                break;
+            case KEY_LEFT:
+                currChoice = END_GAME;
+                break;
+            case KEY_RIGHT:
+                currChoice = CONTINUE_GAME;
+                break;
+            default: 
+                // nothing
+                break;
+
+        }   
     }
-    
+    while(finalChoice == CHOICE_ENDGAME_UNKNOWN);
 }
 
 
@@ -48,10 +64,10 @@ void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, Wi
             Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
     }
     
-    *win_enter = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, enterText, -1, -1);
+    *win_anykey = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, anykeyText, -1, -1);
+    *win_enter = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, enterText, -1, -1);
 
 
-    *win_anykey = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, anykeyText, -1, -1);
 }
 
 void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status) {
@@ -73,7 +89,7 @@ void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres
     wrefresh(win_title->ptrWin);
 }
 
-void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userActiveChoice_EndGame choice) {
+void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userChoice_EndGame choice) {
     switch (choice) {
         case CONTINUE_GAME:
             drawWindowString(win_anykey, 2);

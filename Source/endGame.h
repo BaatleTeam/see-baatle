@@ -12,9 +12,9 @@ typedef struct WindowString {
     const char* string;
 } WindowString;
 
-typedef enum userActiveChoice_EndGame {
-    END_GAME, CONTINUE_GAME
-} userActiveChoice_EndGame;
+typedef enum userChoice_EndGame {
+    END_GAME, CONTINUE_GAME, CHOICE_ENDGAME_UNKNOWN
+} userChoice_EndGame;
 
 void drawTitle_YouWin(WINDOW* win_hello, int smbl); // Рисует приветствие.
 void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приветствие.
@@ -24,7 +24,7 @@ void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приве�
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued);
 void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status);
 void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status);
-void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userActiveChoice_EndGame choice);
+void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userChoice_EndGame choice);
 
 
 // --------------  WindowString methods ----------------------------
