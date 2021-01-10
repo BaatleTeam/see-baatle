@@ -1,5 +1,8 @@
 #include "endGame.h"
 
+static const char* enterText = "Press ENTER to restart.";
+static const char* anykeyText = "Press ANY KEY to end.";
+
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     drawStaticEndGameWindow(gameResults.playerStatus);
 
@@ -31,7 +34,7 @@ void drawStaticEndGameWindow(enum playerEndGameStatus status) {
     WindowParametres trParams = {.Width = 0, .Height = 9, .Begin_y = 5, .Begin_x = 30};
     int charsNum = 0;
     switch (status) {
-        case PLAYER_WINS: ;
+        case PLAYER_WINS:
             charsNum = 5;
             trParams.Width = 6*charsNum+5 + 4 + 2*2;
             createWindowWithParameters(&trParams);
@@ -50,31 +53,49 @@ void drawStaticEndGameWindow(enum playerEndGameStatus status) {
     wrefresh(trParams.ptrWin);
 
     
-    WindowParametres enterWindow = {.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0};
-    const char* enterText = "Press ENTER to restart.";
-    createWindowWithText(&enterWindow, enterText, 2);
+    
+    WindowString enterWindow = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, enterText, -1, -1);
+    drawWindowString(enterWindow, 2);
 
-    WindowParametres anykeyWindow = {.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0};
-    const char* anykeyText = "Press ANY KEY to end.";
-    createWindowWithText(&anykeyWindow, anykeyText, 2);
+    WindowString anykeyWindow = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, anykeyText, -1, -1);
+    drawWindowString(anykeyWindow, 2);
 
 	// delwin(trParams.ptrWin);
     // delwin(win_bg);
 }
 
-void createWindowWithText(WindowParametres *wp, const char* text, short colorPair) {
-    Stopif(wp->ptrWin != NULL, "drawWindowWithText(): win should be empty");
+WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y) {
     int textLength = strlen(text);
-    int indent = 2;
+    int textHeight = 1;
+    int indent_x = 2;
+    int indent_y = 2;
 
-    wp->Width = textLength + indent*2;
-    wp->Height = 1 + indent*2;
-    createWindowWithParameters(wp);
+    if (wp.Width == 0) {
+        wp.Width = textLength + indent_x*2;
+    }
+    if (wp.Height == 0) {
+        wp.Height = textHeight + indent_y*2;
+    }
+    if (begin_x == -1) {
+        begin_x = (wp.Width - textLength) / 2;
+    }
+    if (begin_y == -1) {
+        begin_y = (wp.Height - textHeight) / 2;
+    }
+    createWindowWithParameters(&wp);
 
-    wattron(wp->ptrWin, COLOR_PAIR(colorPair));
-    wbkgdset(wp->ptrWin, COLOR_PAIR(colorPair));
-    wclear(wp->ptrWin);
-    doDoubleLineBorder(wp->ptrWin);
-    mvwprintw(wp->ptrWin, indent, indent, text);
-    wrefresh(wp->ptrWin);
+    WindowString newWindow = {.wp = wp, .string_begin_x = begin_x, .string_begin_y = begin_y, .string = text};
+    return newWindow;
+}
+
+
+void drawWindowString(WindowString win, short colorPair) {
+    WINDOW* curWinPtr = win.wp.ptrWin;
+
+    wattron(curWinPtr, COLOR_PAIR(colorPair));
+    wbkgdset(curWinPtr, COLOR_PAIR(colorPair));
+    wclear(curWinPtr);
+    doDoubleLineBorder(curWinPtr);
+    mvwprintw(curWinPtr, win.string_begin_y, win.string_begin_x, win.string);
+    wrefresh(curWinPtr);
 }

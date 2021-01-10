@@ -5,6 +5,14 @@
 #include "shootWindows.h"
 #include "menu.h"
 
+typedef struct WindowString {
+    WindowParametres wp;
+    int string_begin_y;
+    int string_begin_x;
+    const char* string;
+} WindowString;
+
+
 void drawTitle_YouWin(WINDOW* win_hello, int smbl); // Рисует приветствие.
 void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приветствие.
 // doSingleLineBorder
@@ -13,4 +21,5 @@ void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приве�
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued);
 
 void drawStaticEndGameWindow(enum playerEndGameStatus status);
-void createWindowWithText(WindowParametres *wp, const char* text, short colorPair);
+WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y);
+void drawWindowString(WindowString win, short colorPair);

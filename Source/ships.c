@@ -2,6 +2,7 @@
 
 // TODO move this func to window-magaer module ----------------------------------
 void createWindowWithParameters(WindowParametres *wp) {
+    Stopif(wp->ptrWin != NULL, "createWindowWithParameters(): winptr should be NULL");
     Stopif(wp->Height == 0, "createWindowWithParameters(): height of new window is 0!");
     Stopif(wp->Height > LINES, "createWindowWithParameters(): height of new window more than LINES!");
     Stopif(wp->Width == 0, "createWindowWithParameters(): width of new window is 0!");
