@@ -1,5 +1,14 @@
 #include "arrange.h"
 
+static int getMaxNumOfShips(const ShipsInfo *ships);
+static void changeActiveShip_LeftKey(const ShipsInfo *Ships, int* currNumber, int* currType);
+static void changeActiveShip_RightKey(const ShipsInfo *Ships, int* currNumber, int* currType);
+static void changeActiveShip_DownKey(int maxNumber, int* currNumber);
+static void changeActiveShip_UpKey(int maxNumber, int* currNumber);
+
+static int getNumberOfShipsFromSize(const ShipsInfo *Ships, int size);
+
+
 void DrawDefaultArrangeWindow(WindowParametres *Warr, const ShipsInfo *Ships){
     wbkgdset(Warr->ptrWin, COLOR_PAIR(2));
     wclear(Warr->ptrWin);
@@ -28,9 +37,8 @@ void DrawDefaultArrangeWindow(WindowParametres *Warr, const ShipsInfo *Ships){
 }
 
 int calculateArrangeHeight(const ShipsInfo *Ships) {
-    int Height = 0;
-    Height = getMaxNumOfShips(Ships) * 2 + 6 + 4;
-    return Height;
+    // TODO 
+    return getMaxNumOfShips(Ships) * 2 + 6 + 4;
 }
 
 int getMaxNumOfShips(const ShipsInfo *ships) {
@@ -120,58 +128,6 @@ void changeActiveShip_LeftKey(const ShipsInfo *Ships, int* currNumber, int* curr
         *currNumber = maxNumber - 1;
 }
 
-void DrawNewNumberOfStandingShips(WINDOW *WIN, ship* ship, int *number_stand_ships) {
-    int number_4 = 0;
-    int number_3 = 0;
-    int number_2 = 0;
-    int number_1 = 0;
-
-    for (int i = 0; i < 2; i++)
-        if (ship[i].stand == TRUE)
-            number_4++;
-    for (int i = 2; i < 5; i++)
-        if (ship[i].stand == TRUE)
-            number_3++;
-    for (int i = 5; i < 9; i++)
-        if (ship[i].stand == TRUE)
-            number_2++;
-    for (int i = 9; i < 15; i++)
-        if (ship[i].stand == TRUE)
-            number_1++;
-            
-    wattron(WIN, COLOR_PAIR(2));
-    mvwprintw(WIN, 5 , 25, "%d / 2", number_4);
-    mvwprintw(WIN, 7 , 25, "%d / 3", number_3);
-    mvwprintw(WIN, 9 , 25, "%d / 4", number_2);
-    mvwprintw(WIN, 11 , 25, "%d / 6", number_1);
-    *number_stand_ships = number_1 + number_2 + number_3 + number_4;
-    mvwprintw(WIN, 13 , 6, "You have %d ships standing", *number_stand_ships);
-    if (*number_stand_ships == 15){
-        wattron(WIN, COLOR_PAIR(100));
-        mvwprintw(WIN, 15 , 4, "You have arranged all your ships");
-        mvwprintw(WIN, 17 , 7, "YOU CAN START THE BATTLE");
-        mvwprintw(WIN, 19 , 9, "Press F2 to continue!");
-    }
-    wrefresh(WIN);
-}
-
-void DrawMessage_InArrangeWindow(WINDOW* WIN, const char* msg) {
-    wattron(WIN, COLOR_PAIR(100));
-    mvwprintw(WIN, 12 , 1, msg); // TODO from size of board
-    wattron(WIN, COLOR_PAIR(2));
-    box(WIN, 0, 0);
-    wrefresh(WIN);
-}
-
-void EraseErrorMessage_InArrangeWindow(WINDOW* WIN) {
-    wattron(WIN, COLOR_PAIR(100));
-    for (int i = 0; i < WIN->_maxx; i++)
-        mvwprintw(WIN, 12 , i, " ");
-    wattron(WIN, COLOR_PAIR(2));
-    box(WIN, 0, 0);
-    wrefresh(WIN);
-}
-
 void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
     char ch = 219;
     int type = 0;
@@ -223,23 +179,6 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
 
 }
 
-void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size) {
-    char ch = 219;
-    int y = 6 + number*2;
-    int x = 0;
-    switch (size){
-        case 4: x =  3; break;
-        case 3: x = 12; break;
-        case 2: x = 21; break;
-        case 1: x = 30; break;
-        default: x = 0;
-    }
-    wattron(warr->ptrWin, COLOR_PAIR(100));
-    for (int i = 0; i < size+1; i++)
-        mvwprintw(warr->ptrWin, y, x+i,"%c", ch);
-    wrefresh(warr->ptrWin);
-}
-
 int getIndex(const ShipsInfo *Ships, int number, int shipSize) {
     switch(shipSize) {
         case 4: return number;
@@ -247,30 +186,5 @@ int getIndex(const ShipsInfo *Ships, int number, int shipSize) {
         case 2: return Ships->Number_4_Size + Ships->Number_3_Size + number;
         case 1: return Ships->Number_4_Size + Ships->Number_3_Size + Ships->Number_2_Size + number;
         default: return -1;
-    }
-}
-
-void colorizeCurrShip(WINDOW* WIN, ship Ship) {
-    if (Ship.stand == TRUE) {
-        wattron(WIN, COLOR_PAIR(2));
-        char rect = 254;
-        int i = Ship.y;
-        int j = Ship.x;
-
-        switch(Ship.type) {
-            case VERTICAL:
-                for (; i < Ship.size + Ship.y; i++) {
-                    mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
-                }
-                break;
-            case HORIZONTAL:
-                for (; j < Ship.size + Ship.x; j++) {
-                    mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
-                }
-                break;
-            default:
-                Stopif(true, "colorizeCurrShip(): swithc-case unexpected value");
-        }
-        wrefresh(WIN);
     }
 }

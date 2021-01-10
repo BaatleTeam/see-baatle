@@ -33,7 +33,7 @@ int main(){
     bool gameIsGoing = true;
     while (gameIsGoing) {
         GameDataCase* GDCases;
-        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
+        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase)); // TODO
         initGameDataCases(GDCases);
 
         int caseShips; // тип кол-ва кораблйей
