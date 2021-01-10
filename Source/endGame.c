@@ -40,6 +40,11 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
         }   
     }
     while(finalChoice == CHOICE_ENDGAME_UNKNOWN);
+
+    cleanWindowString(&winEnter);
+    cleanWindowString(&winAnyKey);
+    clearWindowParametres(&win_bg);
+    clearWindowParametres(&win_title);
 }
 
 
@@ -66,8 +71,6 @@ void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, Wi
     
     *win_anykey = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, anykeyText, -1, -1);
     *win_enter = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, enterText, -1, -1);
-
-
 }
 
 void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status) {
@@ -107,13 +110,13 @@ void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString
 WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y) {
     int textLength = strlen(text);
     int textHeight = 1;
-    int indent_x = 2;
-    int indent_y = 2;
 
     if (wp.Width == 0) {
+        int indent_x = 2;
         wp.Width = textLength + indent_x*2;
     }
     if (wp.Height == 0) {
+        int indent_y = 2;
         wp.Height = textHeight + indent_y*2;
     }
     if (begin_x == -1) {

@@ -13,6 +13,11 @@ void createWindowWithParameters(WindowParametres *wp) {
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x);
 }
 
+void clearWindowParametres(WindowParametres *wp) {
+    delwin(wp->ptrWin);
+    *wp = (WindowParametres){};
+}
+
 
 // -------------------------------------------------
 

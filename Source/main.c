@@ -63,6 +63,7 @@ int main(){
         GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
         freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
 
+        // Выбор игрока продолжать или нет
         endGameWindowLoop(gameResults, &gameIsGoing);
     }
 

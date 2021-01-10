@@ -62,6 +62,7 @@ typedef struct Indents {
 }
 
 void createWindowWithParameters(WindowParametres *wp);
+void clearWindowParametres(WindowParametres *wp);
 
 // Функции для работы с полями-массивами и их отрисовкой
 bool isAllShipsStanding(ShipsInfo ships);
