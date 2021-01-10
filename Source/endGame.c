@@ -4,9 +4,13 @@ static const char* enterText = "Press ENTER to restart.";
 static const char* anykeyText = "Press ANY KEY to end.";
 
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
-    drawStaticEndGameWindow(gameResults.playerStatus);
+    WindowParametres win_bg, win_title;
+    WindowString winEnter, winAnyKey;
+    iniEndGameWindows(&win_bg, &win_title, &winEnter, &winAnyKey, gameResults.playerStatus);
 
-
+    drawEndGameBgWindows(&win_bg, &win_title, gameResults.playerStatus);
+    drawEndGameDynamicWindows(&winEnter, &winAnyKey, CONTINUE_GAME);
+    
     int key;
     key = getch();
     switch (key) {
@@ -23,45 +27,65 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
 }
 
 
-void drawStaticEndGameWindow(enum playerEndGameStatus status) {
-    // Expect: other windows have already been deleted.
-    WINDOW* win_bg = newwin(LINES, COLS, 0, 0);
-    wbkgdset(win_bg, COLOR_PAIR(200));
-    wclear(win_bg);
-    wrefresh(win_bg);
-
-    // Рисуем заставочку большими буквами
-    WindowParametres trParams = {.Width = 0, .Height = 9, .Begin_y = 5, .Begin_x = 30};
+void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status) {
+    *win_bg = (WindowParametres){.Begin_x = 0, .Begin_y = 0, .Width = COLS, .Height = LINES};
+    createWindowWithParameters(win_bg);
+    
+    *win_title = (WindowParametres){.Width = 0, .Height = 9, .Begin_y = 5, .Begin_x = 30};
     int charsNum = 0;
     switch (status) {
         case PLAYER_WINS:
             charsNum = 5;
-            trParams.Width = 6*charsNum+5 + 4 + 2*2;
-            createWindowWithParameters(&trParams);
-            drawTitle_YouWin(trParams.ptrWin, 176);
+            win_title->Width = 6*charsNum+5 + 4 + 2*2;
+            createWindowWithParameters(win_title);
             break;
         case PLAYER_LOSE:
             charsNum = 6;
-            trParams.Width = 6*charsNum+5 + 4 + 2*2;
-            createWindowWithParameters(&trParams);
-            drawTitle_YouLose(trParams.ptrWin, 176);
+            win_title->Width = 6*charsNum+5 + 4 + 2*2;
+            createWindowWithParameters(win_title);
             break;
         default:
             Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
     }
-    doSingleLineBorder(trParams.ptrWin);
-    wrefresh(trParams.ptrWin);
-
     
-    
-    WindowString enterWindow = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, enterText, -1, -1);
-    drawWindowString(enterWindow, 2);
+    *win_enter = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, enterText, -1, -1);
 
-    WindowString anykeyWindow = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, anykeyText, -1, -1);
-    drawWindowString(anykeyWindow, 2);
 
-	// delwin(trParams.ptrWin);
-    // delwin(win_bg);
+    *win_anykey = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 60, .Width = 0, .Height = 0}, anykeyText, -1, -1);
+}
+
+void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status) {
+    wbkgdset(win_bg->ptrWin, COLOR_PAIR(200));
+    wclear(win_bg->ptrWin);
+    wrefresh(win_bg->ptrWin);
+
+    switch (status) {
+        case PLAYER_WINS:
+            drawTitle_YouWin(win_title->ptrWin, 176);
+            break;
+        case PLAYER_LOSE:
+            drawTitle_YouLose(win_title->ptrWin, 176);
+            break;
+        default:
+            Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
+    }
+    doSingleLineBorder(win_title->ptrWin);
+    wrefresh(win_title->ptrWin);
+}
+
+void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userActiveChoice_EndGame choice) {
+    switch (choice) {
+        case CONTINUE_GAME:
+            drawWindowString(win_anykey, 2);
+            drawWindowString(win_enter, 3);
+            break;
+        case END_GAME:
+            drawWindowString(win_anykey, 3);
+            drawWindowString(win_enter, 2);
+            break;
+        default:
+            Stopif(true, "drawEndGameDynamicWindows(): switch enexpected case.")
+    }
 }
 
 WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y) {
@@ -88,14 +112,20 @@ WindowString createWindowString(WindowParametres wp, const char* text, int begin
     return newWindow;
 }
 
+void cleanWindowString(WindowString* win) {
+    delwin(win->wp.ptrWin); 
+    *win = (WindowString){};
+    // text is static, should't be deleted
+}
 
-void drawWindowString(WindowString win, short colorPair) {
-    WINDOW* curWinPtr = win.wp.ptrWin;
+
+void drawWindowString(const WindowString *win, short colorPair) {
+    WINDOW* curWinPtr = win->wp.ptrWin;
 
     wattron(curWinPtr, COLOR_PAIR(colorPair));
     wbkgdset(curWinPtr, COLOR_PAIR(colorPair));
     wclear(curWinPtr);
     doDoubleLineBorder(curWinPtr);
-    mvwprintw(curWinPtr, win.string_begin_y, win.string_begin_x, win.string);
+    mvwprintw(curWinPtr, win->string_begin_y, win->string_begin_x, win->string);
     wrefresh(curWinPtr);
 }
