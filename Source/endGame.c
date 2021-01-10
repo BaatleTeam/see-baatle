@@ -1,7 +1,15 @@
 #include "endGame.h"
 
+typedef enum userChoice_EndGame {
+    END_GAME, CONTINUE_GAME, CHOICE_ENDGAME_UNKNOWN
+} userChoice_EndGame;
+
 static const char* enterText  = "  --> Play more! <--  ";
 static const char* anykeyText = "     --> Quit:( <--   ";
+
+static void initEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status);
+static void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status);
+static void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userChoice_EndGame choice);
 
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     WindowParametres win_bg, win_title;
@@ -12,11 +20,10 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
 
     userChoice_EndGame finalChoice = CHOICE_ENDGAME_UNKNOWN;
     userChoice_EndGame currChoice = END_GAME;
-    int key = 0;
 
     do {
         drawEndGameDynamicWindows(&winEnter, &winAnyKey, currChoice);
-        key = getch();
+        int key = getch();
         switch (key) {
             case '\n':
                 finalChoice = currChoice;
@@ -106,6 +113,9 @@ void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString
             Stopif(true, "drawEndGameDynamicWindows(): switch enexpected case.")
     }
 }
+
+
+// -------------------- Window String methods -----------------------------------
 
 WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y) {
     int textLength = strlen(text);
