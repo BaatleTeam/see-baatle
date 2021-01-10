@@ -1,9 +1,9 @@
 #include "shoot.h"
 
-void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *Indents){
+void drawShootWindows(WindowParametres *WMain, WindowParametres *WShip, WindowParametres *WShoot, const Indents *indents){
     delwin(WMain->ptrWin);
-    WMain->Width = Indents->LeftIndent + 2*WShip->Width + Indents->BetweenIndent + Indents->RightIndent;
-    WMain->Height = Indents->TopIndent + WShip->Height + Indents->BottomIndent;
+    WMain->Width = indents->LeftIndent + 2*WShip->Width + indents->BetweenIndent + indents->RightIndent;
+    WMain->Height = indents->TopIndent + WShip->Height + indents->BottomIndent;
     WMain->ptrWin = newwin(WMain->Height, WMain->Width, WMain->Begin_y, WMain->Begin_x);
 
     resize_term(WMain->Height, WMain->Width);

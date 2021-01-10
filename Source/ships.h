@@ -80,7 +80,7 @@ bool checkShipBorders_left_right_vertical(const ship* ship, const Board *Board);
 bool checkShipBorders_top_bottom_vertical(const ship* ship, const Board *Board);
 bool checkItself(const ship* ship, const Board *Board);
 
-bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlayer); // Проверка постановки всех кораблей
+bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer); // Проверка постановки всех кораблей
 int getShipsNumber(const ShipsInfo* info); // Возврат общего количества кораблей игрока
 void InitPrimaryCoordinates(int curr_y, ship* ship, const Board* const); // Установка начальных координат при первой постановке
 bool checkPlace(int x, int y, int size, const Board *Board); // Проверка места под корабль

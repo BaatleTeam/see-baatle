@@ -15,7 +15,7 @@ void initWindowWithParameters(WindowParametres *wp) {
 
 void clearWindowParametres(WindowParametres *wp) {
     delwin(wp->ptrWin);
-    *wp = (WindowParametres){};
+    *wp = (WindowParametres){0};
 }
 
 
@@ -287,7 +287,7 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board){
     else 
         wattron(WIN, COLOR_PAIR(10));
 
-    char rect = 254;
+    int rect = 254;
     int i = TmpShip->y;
     int j = TmpShip->x;
     switch(TmpShip->type) {
@@ -309,7 +309,7 @@ void DrawTmpShip(WINDOW* WIN, ship* TmpShip, const Board *Board){
 
 // -------------------------------------------------------------------------------
 
-bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer, const Board *BoardPlayer){
+bool checkAllShipsStanding(const ShipsInfo *ShipsPlayer){
     for (int i = 0; i < getShipsNumber(ShipsPlayer); i++){
         if (ShipsPlayer->Ships[i].stand == FALSE)
             return FALSE;
@@ -501,8 +501,8 @@ void outputShip(FILE* out, const ship* const ship){
 }
 
 void outputBoard(FILE* out, const Board* const board){
-    for (size_t i = 0; i < board->Height; i++){
-        for (size_t j = 0; j < board->Width; j++){
+    for (int i = 0; i < board->Height; i++){
+        for (int j = 0; j < board->Width; j++){
             fprintf(out, "%d ", board->field[i][j]);
         }
         fprintf(out, "\n");

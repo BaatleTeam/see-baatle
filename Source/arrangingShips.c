@@ -105,7 +105,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip.ptrWin, BoardPlayer);
 
-							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
+							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer);
 							if (isAllShipsStanding == TRUE)
 								DrawMessage_InArrangeWindow(WArrange.ptrWin,
 								"All ships arranged!\n Press any key to start the baatle!\n");
@@ -228,7 +228,7 @@ void swapBorders(Pair* a, Pair* b){
 }
 
 void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size) {
-    char ch = 219;
+    int ch = 219;
     int y = 6 + number*2;
     int x = 0;
     switch (size){
@@ -264,7 +264,7 @@ void EraseErrorMessage_InArrangeWindow(WINDOW* WIN) {
 void colorizeCurrShip(WINDOW* WIN, ship Ship) {
     if (Ship.stand == TRUE) {
         wattron(WIN, COLOR_PAIR(2));
-        char rect = 254;
+        int rect = 254;
         int i = Ship.y;
         int j = Ship.x;
 

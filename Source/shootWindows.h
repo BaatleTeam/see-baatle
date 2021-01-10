@@ -5,12 +5,12 @@
 
 extern FILE* db_out;
 
-void initWindowsShooting(const ShipsInfo *Ships, const Board *board, 
-                        WindowParametres *WBackGround, 
-                        WindowParametres *WInfoPlayer, 
-                        WindowParametres *WInfoComputer, 
-                        WindowParametres *WBoardPlayer,
-                        WindowParametres *WBoardComputer);
+void initWindowsShooting(const Board *board, 
+                         WindowParametres *WBackGround, 
+                         WindowParametres *WInfoPlayer, 
+                         WindowParametres *WInfoComputer, 
+                         WindowParametres *WBoardPlayer,
+                         WindowParametres *WBoardComputer);
 
 void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard board, Coordinate curPos);
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats *stats);

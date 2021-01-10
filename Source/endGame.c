@@ -143,7 +143,7 @@ WindowString createWindowString(WindowParametres wp, const char* text, int begin
 
 void cleanWindowString(WindowString* win) {
     delwin(win->wp.ptrWin); 
-    *win = (WindowString){};
+    *win = (WindowString){0};
     // text is static, should't be deleted
 }
 

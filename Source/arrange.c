@@ -129,14 +129,14 @@ void changeActiveShip_LeftKey(const ShipsInfo *Ships, int* currNumber, int* curr
 }
 
 void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
-    char ch = 219;
+    int ch = 219;
     int type = 0;
     int x = 0;
     wattron(Warr->ptrWin, COLOR_PAIR(2));
 
     type = 4;
     x = 3;
-    for (size_t number = 0, y = 6; number < Ships->Number_4_Size; number++, y+=2) {
+    for (int number = 0, y = 6; number < Ships->Number_4_Size; number++, y+=2) {
         if (Ships->Ships[getIndex(Ships, number, type)].stand == TRUE)
             wattron(Warr->ptrWin, COLOR_PAIR(55));
         else
@@ -147,7 +147,7 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
     
     type = 3;
     x += 9;
-    for (size_t number = 0, y = 6; number < Ships->Number_3_Size; number++, y+=2) {
+    for (int number = 0, y = 6; number < Ships->Number_3_Size; number++, y+=2) {
         if (Ships->Ships[getIndex(Ships, number, type)].stand == TRUE)
             wattron(Warr->ptrWin, COLOR_PAIR(55));
         else
@@ -158,7 +158,7 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
     
     type = 2;
     x += 9;
-    for (size_t number = 0, y = 6; number < Ships->Number_2_Size; number++, y+=2) {
+    for (int number = 0, y = 6; number < Ships->Number_2_Size; number++, y+=2) {
         if (Ships->Ships[getIndex(Ships, number, type)].stand == TRUE)
             wattron(Warr->ptrWin, COLOR_PAIR(55));
         else
@@ -169,7 +169,7 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
     
     type = 1;
     x += 9;
-    for (size_t number = 0, y = 6; number < Ships->Number_1_Size; number++, y+=2) {
+    for (int number = 0, y = 6; number < Ships->Number_1_Size; number++, y+=2) {
         if (Ships->Ships[getIndex(Ships, number, type)].stand == TRUE)
             wattron(Warr->ptrWin, COLOR_PAIR(55));
         else

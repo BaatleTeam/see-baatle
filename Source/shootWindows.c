@@ -1,12 +1,11 @@
 #include "shootWindows.h"
 
-void initWindowsShooting(const ShipsInfo *Ships,
-                        const Board *board, 
-                        WindowParametres *WBackGround, 
-                        WindowParametres *WInfoPlayer, 
-                        WindowParametres *WInfoComputer, 
-                        WindowParametres *WBoardPlayer,
-                        WindowParametres *WBoardComputer) 
+void initWindowsShooting(const Board *board, 
+                         WindowParametres *WBackGround, 
+                         WindowParametres *WInfoPlayer, 
+                         WindowParametres *WInfoComputer, 
+                         WindowParametres *WBoardPlayer,
+                         WindowParametres *WBoardComputer) 
 {
     Indents Indents = {
                     .LeftIndent = 3,
@@ -102,8 +101,8 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo) {
 void DrawWBoard_Shoting(WindowParametres WBoard, ShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
-    for (int i = 0; i < boardData.Height; i++){
-        for (int j = 0; j < boardData.Width; j++){
+    for (unsigned i = 0; i < boardData.Height; i++){
+        for (unsigned j = 0; j < boardData.Width; j++){
             switch (boardData.board[i][j]) {
                 case EMPTY:
                     wattron(WBoard.ptrWin, COLOR_PAIR(3));
