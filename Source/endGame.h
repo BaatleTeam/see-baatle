@@ -22,7 +22,7 @@ void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приве�
 
 
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued);
-void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status);
+void initEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status);
 void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres *win_title, enum playerEndGameStatus status);
 void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString *win_anykey, userChoice_EndGame choice);
 

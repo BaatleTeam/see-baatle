@@ -1,11 +1,12 @@
 #include "shootWindows.h"
 
-void initWindowsShooting(const ShipsInfo *Ships, const Board *board, 
+void initWindowsShooting(const ShipsInfo *Ships,
+                        const Board *board, 
                         WindowParametres *WBackGround, 
                         WindowParametres *WInfoPlayer, 
                         WindowParametres *WInfoComputer, 
                         WindowParametres *WBoardPlayer,
-                        WindowParametres *WBoardComputer)
+                        WindowParametres *WBoardComputer) 
 {
     Indents Indents = {
                     .LeftIndent = 3,
@@ -49,21 +50,21 @@ void initWindowsShooting(const ShipsInfo *Ships, const Board *board,
     WBackGround->Height = LINES;
     WBackGround->Begin_x = 0;
     WBackGround->Begin_y = 0;
+    initWindow(WBackGround);
     
+    initWindow(WInfoPlayer);
     initWindow(WBoardPlayer);
     initWindow(WBoardComputer);
-    initWindow(WInfoPlayer);
     initWindow(WInfoComputer);
-    initWindow(WBackGround);
 }
 
-void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard boardData, Coordinate curPos){
+void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard boardData, Coordinate curPos) {
     DrawWBoard_Shoting(WBoard, boardData);
     bool isShotAvailable = checkShotPos(boardData, curPos);
     DrawCursor_Shoting(WBoard, curPos, isShotAvailable);
 }
 
-void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
+void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats) {
     DrawWInfo_Shoting_Default(WInfo);
 
     mvwprintw(WInfo->ptrWin, 3, 2, "4-size: %d/%d", stats->shipCount[3][0], stats->shipCount[3][1]);
@@ -81,7 +82,7 @@ void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats* stats){
     wrefresh(WInfo->ptrWin);
 }
 
-void DrawWInfo_Shoting_Default(WindowParametres *WInfo){
+void DrawWInfo_Shoting_Default(WindowParametres *WInfo) {
     wattron(WInfo->ptrWin, COLOR_PAIR(2));
     wbkgdset(WInfo->ptrWin, COLOR_PAIR(2));
     wclear(WInfo->ptrWin);
@@ -216,7 +217,7 @@ void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
     }
 }
 
-bool isShipKilled(ship* ship, const ShotBoard boardData){
+bool isShipKilled(ship* ship, const ShotBoard boardData) {
     switch (ship->type) {
         case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
@@ -232,7 +233,7 @@ bool isShipKilled(ship* ship, const ShotBoard boardData){
     return TRUE;
 }
 
-void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActive){
+void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActive) {
     if (isActive)
         wattron(WBoard.ptrWin, COLOR_PAIR(33));
     else

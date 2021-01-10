@@ -6,7 +6,7 @@ static const char* anykeyText = "     --> Quit:( <--   ";
 void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     WindowParametres win_bg, win_title;
     WindowString winEnter, winAnyKey;
-    iniEndGameWindows(&win_bg, &win_title, &winEnter, &winAnyKey, gameResults.playerStatus);
+    initEndGameWindows(&win_bg, &win_title, &winEnter, &winAnyKey, gameResults.playerStatus);
 
     drawEndGameBgWindows(&win_bg, &win_title, gameResults.playerStatus);
 
@@ -39,7 +39,7 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
 
         }   
     }
-    while(finalChoice == CHOICE_ENDGAME_UNKNOWN);
+    while (finalChoice == CHOICE_ENDGAME_UNKNOWN);
 
     cleanWindowString(&winEnter);
     cleanWindowString(&winAnyKey);
@@ -48,9 +48,9 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
 }
 
 
-void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status) {
+void initEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, WindowString *win_enter, WindowString *win_anykey, enum playerEndGameStatus status) {
     *win_bg = (WindowParametres){.Begin_x = 0, .Begin_y = 0, .Width = COLS, .Height = LINES};
-    createWindowWithParameters(win_bg);
+    initWindowWithParameters(win_bg);
     
     *win_title = (WindowParametres){.Width = 0, .Height = 9, .Begin_y = 5, .Begin_x = 30};
     int charsNum = 0;
@@ -58,12 +58,12 @@ void iniEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, Wi
         case PLAYER_WINS:
             charsNum = 5;
             win_title->Width = 6*charsNum+5 + 4 + 2*2;
-            createWindowWithParameters(win_title);
+            initWindowWithParameters(win_title);
             break;
         case PLAYER_LOSE:
             charsNum = 6;
             win_title->Width = 6*charsNum+5 + 4 + 2*2;
-            createWindowWithParameters(win_title);
+            initWindowWithParameters(win_title);
             break;
         default:
             Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
@@ -125,7 +125,7 @@ WindowString createWindowString(WindowParametres wp, const char* text, int begin
     if (begin_y == -1) {
         begin_y = (wp.Height - textHeight) / 2;
     }
-    createWindowWithParameters(&wp);
+    initWindowWithParameters(&wp);
 
     WindowString newWindow = {.wp = wp, .string_begin_x = begin_x, .string_begin_y = begin_y, .string = text};
     return newWindow;

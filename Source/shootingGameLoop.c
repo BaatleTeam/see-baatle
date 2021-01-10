@@ -1,19 +1,19 @@
 #include "shootingGameLoop.h"
 
 GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *BoardPlayer, Board *BoardComputer) {
-    WindowParametres *WBackGround = malloc(sizeof(WindowParametres));
-    WindowParametres *WInfoPlayer = malloc(sizeof(WindowParametres));
-    WindowParametres *WInfoComputer = malloc(sizeof(WindowParametres));
-    WindowParametres *WBoardPlayer = malloc(sizeof(WindowParametres));
-    WindowParametres *WBoardComputer = malloc(sizeof(WindowParametres));
-    // WindowParametres *WHelp = malloc(sizeof(WindowParametres));
-    initWindowsShooting(ShipsPlayer, BoardPlayer, WBackGround, WInfoPlayer, WInfoComputer, WBoardPlayer, WBoardComputer);
+    WindowParametres WBackGround;
+    WindowParametres WInfoPlayer;
+    WindowParametres WInfoComputer;
+    WindowParametres WBoardPlayer;
+    WindowParametres WBoardComputer;
+    // WindowParametres WHelp;
+    initWindowsShooting(ShipsPlayer, BoardPlayer, &WBackGround, &WInfoPlayer, &WInfoComputer, &WBoardPlayer, &WBoardComputer);
 
 
-    wbkgdset(WBackGround->ptrWin, COLOR_PAIR(200));
-    wclear(WBackGround->ptrWin);
+    wbkgdset(WBackGround.ptrWin, COLOR_PAIR(200));
+    wclear(WBackGround.ptrWin);
     // mvprintw(0, 0, "Lines: %d, cols: %d", LINES, COLS);
-    wrefresh(WBackGround->ptrWin);
+    wrefresh(WBackGround.ptrWin);
 
     PlayerStats statisticsPlayer;
     initPlayerStats(&statisticsPlayer, ShipsPlayer);
@@ -30,10 +30,10 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     Coordinate cursorPostion = (Coordinate){0, 0};
     Coordinate computerShot = (Coordinate){-1, -1};
 
-    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
-    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
-    DrawWBoard_Shoting_Default(*WBoardPlayer);
-    updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
+    DrawWInfo_Shoting(&WInfoPlayer, &statisticsPlayer);
+    DrawWInfo_Shoting(&WInfoComputer, &statisticsComputer);
+    DrawWBoard_Shoting_Default(WBoardPlayer);
+    updateGraphics_Shoting(WBoardComputer, shotBoardPlayer, cursorPostion);
 
     GameResults results = {.playerStatus = UNKONOWN};
 
@@ -43,14 +43,14 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     while((key = getch()) != KEY_F(5) && isAnyBodyWins != TRUE) {
         switch(key){
             // case 9:
-                // drawEndGameScreen(WBackGround->ptrWin, 9, 61, PLAYER_WINS);
+                // drawEndGameScreen(WBackGround.ptrWin, 9, 61, PLAYER_WINS);
             //     break;
         	case KEY_LEFT:
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
                 moveCursor_Shooting(*BoardPlayer, &cursorPostion, key);
-                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
+                updateGraphics_Shoting(WBoardComputer, shotBoardPlayer, cursorPostion);
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
@@ -62,9 +62,9 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
                     // Some msg to player
                     break;
                 }
-                updateGraphics_Shoting(*WBoardComputer, shotBoardPlayer, cursorPostion);
-                DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
-                DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                updateGraphics_Shoting(WBoardComputer, shotBoardPlayer, cursorPostion);
+                DrawWInfo_Shoting(&WInfoPlayer, &statisticsPlayer);
+                DrawWInfo_Shoting(&WInfoComputer, &statisticsComputer);
 
                 if (shotResultPlayer.isHit){
                     if (isPlayerWins(&statisticsPlayer)){
@@ -81,9 +81,9 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
                     shotResultComputer = makeShot(*ShipsPlayer, shotBoardComputer, computerShot);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
 
-                    DrawWBoard_Shoting(*WBoardPlayer, shotBoardComputer);
-                    DrawWInfo_Shoting(WInfoPlayer, &statisticsPlayer);
-                    DrawWInfo_Shoting(WInfoComputer, &statisticsComputer);
+                    DrawWBoard_Shoting(WBoardPlayer, shotBoardComputer);
+                    DrawWInfo_Shoting(&WInfoPlayer, &statisticsPlayer);
+                    DrawWInfo_Shoting(&WInfoComputer, &statisticsComputer);
                     if (isPlayerWins(&statisticsComputer)){
                         results.playerStatus = PLAYER_LOSE;
                         isAnyBodyWins = true;
@@ -94,18 +94,12 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
 	}
     
 
-    delwin(WBackGround->ptrWin);
-    delwin(WInfoComputer->ptrWin);
-    delwin(WInfoPlayer->ptrWin);
-    delwin(WBoardComputer->ptrWin);
-    delwin(WBoardPlayer->ptrWin);
-    
-    free(WBackGround);
-    free(WInfoComputer);
-    free(WInfoPlayer);
-    free(WBoardComputer);
-    free(WBoardPlayer);
-    // free(WHelp);
+    clearWindowParametres(&WBackGround);
+    clearWindowParametres(&WInfoComputer);
+    clearWindowParametres(&WInfoPlayer);
+    clearWindowParametres(&WBoardComputer);
+    clearWindowParametres(&WBoardPlayer);
+
 
     clearShotBoard(&shotBoardPlayer);
     clearShotBoard(&shotBoardComputer);
