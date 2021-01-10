@@ -33,7 +33,7 @@ int main(){
     bool gameIsGoing = true;
     while (gameIsGoing) {
         GameDataCase* GDCases;
-        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
+        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase)); // TODO
         initGameDataCases(GDCases);
 
         int caseShips; // тип кол-ва кораблйей
@@ -63,6 +63,7 @@ int main(){
         GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
         freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
 
+        // Выбор игрока продолжать или нет
         endGameWindowLoop(gameResults, &gameIsGoing);
     }
 

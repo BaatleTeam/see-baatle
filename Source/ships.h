@@ -61,7 +61,8 @@ typedef struct Indents {
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x); \
 }
 
-void createWindowWithParameters(WindowParametres *wp);
+void initWindowWithParameters(WindowParametres *wp);
+void clearWindowParametres(WindowParametres *wp);
 
 // Функции для работы с полями-массивами и их отрисовкой
 bool isAllShipsStanding(ShipsInfo ships);

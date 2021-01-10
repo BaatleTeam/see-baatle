@@ -15,8 +15,7 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
     WINDOW* win_hello = newwin(9, 61, 1, 14);
     DrawHelloWindow(win_hello, 9, 61);
 
-	WindowParametres *WCaseParametres;
-	WCaseParametres = malloc(GAME_CASES_NUMBER * sizeof(WindowParametres));
+	WindowParametres *WCaseParametres = malloc(GAME_CASES_NUMBER * sizeof(WindowParametres));
 	initCaseWindowData(WCaseParametres);
 	for (int i = 0; i < GAME_CASES_NUMBER; i++)
 		DrawCaseWindow(&WCaseParametres[i], GDCases, i, 2);
@@ -99,8 +98,7 @@ void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
 }
 
 void initBoard(Board *board, int height, int width){
-	Board tmp = { height, width, NULL } ;
-	*board = tmp;
+	*board = (Board){.Height = height, .Width = width, .field = NULL};
 
 	board->field = malloc(board->Height * sizeof(bool*));
     for (int i = 0; i < board->Height; i++)
