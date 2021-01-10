@@ -56,9 +56,12 @@ typedef struct Indents {
 // void calculateAndRezizeWindow(Indents Indents, struct Board BoardPlayer);
 
 // Инициализирует окно в соответствии с параметрами.
+// TODO change for function createWindowWithParameters
 #define initWindow(wp){ \
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x); \
 }
+
+void createWindowWithParameters(WindowParametres *wp);
 
 // Функции для работы с полями-массивами и их отрисовкой
 bool isAllShipsStanding(ShipsInfo ships);

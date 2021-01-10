@@ -1,5 +1,21 @@
 #include "ships.h"
 
+// TODO move this func to window-magaer module ----------------------------------
+void createWindowWithParameters(WindowParametres *wp) {
+    Stopif(wp->Height == 0, "createWindowWithParameters(): height of new window is 0!");
+    Stopif(wp->Height > LINES, "createWindowWithParameters(): height of new window more than LINES!");
+    Stopif(wp->Width == 0, "createWindowWithParameters(): width of new window is 0!");
+    Stopif(wp->Width > COLS, "createWindowWithParameters(): width of new window more than COLS!");
+    Stopif(wp->Begin_x >= COLS, "createWindowWithParameters(): Begin_x of new window more than COLS!");
+    Stopif(wp->Begin_y >= LINES, "createWindowWithParameters(): Begin_y of new window more than LINES!");
+
+    wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x);
+}
+
+
+// -------------------------------------------------
+
+
 bool isAllShipsStanding(ShipsInfo ships){
     int shipsNum = ships.Number_1_Size + ships.Number_2_Size + ships.Number_3_Size + ships.Number_4_Size;
     for (int i = 0; i < shipsNum; i++)

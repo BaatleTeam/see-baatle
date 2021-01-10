@@ -1,5 +1,6 @@
 #include "header.h"
 #include "menu.h"
+#include "endGame.h"
 
 FILE* db_out = NULL;
 
@@ -62,36 +63,7 @@ int main(){
         GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
         freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
 
-
-        // Окно заднего фона.
-        WINDOW* win_bg = newwin(LINES, COLS, 0, 0);
-        wbkgdset(win_bg, COLOR_PAIR(200));
-        wclear(win_bg);
-        wrefresh(win_bg);
-
-        Stopif(gameResults.playerStatus == UNKONOWN, "Error: Game result has unknown status.");
-        if (gameResults.playerStatus == PLAYER_WINS) {
-            drawEndGameScreen(win_bg, 30, 20, PLAYER_WINS);
-        } else {
-            drawEndGameScreen(win_bg, 30, 20, PLAYER_LOSE);
-        }
-
-        wattron(win_bg, COLOR_PAIR(2));
-        mvwprintw(win_bg, 0, 0, "Press ENTER to restart. Press ESC to end.");
-        wrefresh(win_bg);
-
-        int key;
-        key = getch();
-        gameIsGoing = false;
-        switch (key) {
-            case 27: // ESC
-                gameIsGoing = false;
-                break;
-            case '\n':
-                gameIsGoing = true;
-                break;
-        }
-        delwin(win_bg);
+        endGameWindowLoop(gameResults, &gameIsGoing);
     }
 
 

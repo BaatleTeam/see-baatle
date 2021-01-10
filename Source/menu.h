@@ -1,6 +1,7 @@
 #pragma once
 #include "includeCurses.h"
 #include <stdlib.h>
+#include <string.h>
 #include "ships.h"
 
 enum playerEndGameStatus {
@@ -31,7 +32,6 @@ void DrawHelloWindow(WINDOW* win_hello, int h, int w);
 void drawTitle_SeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.
 void drawTitle_YouWin(WINDOW* win_hello, int smbl); // Рисует приветствие.
 void drawTitle_YouLose(WINDOW* win_hello, int smbl); // Рисует приветствие.
-void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameStatus status); // Рисует концовку.
 
 void drawHugeWord_A(WINDOW* WIN, int smbl, int word_width, int begin_y, int begin_x, int color);
 void drawHugeWord_B(WINDOW*, int smbl, int  word_width, int begin_y, int begin_x, int color);

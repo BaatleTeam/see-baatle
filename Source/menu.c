@@ -269,28 +269,6 @@ void DrawHelloWindow(WINDOW* WIN, int height, int width){
     wrefresh(WIN);
 }
 
-void drawEndGameScreen(WINDOW* WIN, int height, int width, enum playerEndGameStatus status) {
-	WINDOW* win_title_result = NULL;
-    wbkgdset(WIN, COLOR_PAIR(100));
-    wclear(WIN);
-	wrefresh(WIN);
-
-	if (status == PLAYER_WINS) { 
-		int win_width = 6*5+5 + 4 + 2*2;
-		win_title_result = newwin(9, win_width, 5, 30);
-		doSingleLineBorder(win_title_result);
-		drawTitle_YouWin(win_title_result, 176);
-	}
-	else {
-		int win_width = 6*6+5 + 4 + 2*2;
-		win_title_result = newwin(9, win_width, 5, 30);
-		drawTitle_YouLose(win_title_result, 176);
-	}
-
-    wrefresh(win_title_result);
-	delwin(win_title_result);
-}
-
 void testAnimation(WINDOW* win_hello){
 	napms(500);
 	for (int i = 0; i < 3; i++){
