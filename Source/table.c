@@ -2,27 +2,27 @@
 
 void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres* help){
     // Объявление размеров отступов.
-    Indents Indents = {.LeftIndent    = 4,
+    Indents indents = {.LeftIndent    = 4,
                        .BetweenIndent = 5,
                        .RightIndent   = 4,
                        .TopIndent     = 3,
                        .BottomIndent  = 4 };
 
     // Зависимости от размера отступов.
-	ship->Begin_y = Indents.TopIndent;
-	ship->Begin_x = Indents.LeftIndent;
+	ship->Begin_y = indents.TopIndent;
+	ship->Begin_x = indents.LeftIndent;
     ship->Height = getTableHeight(board);
 	ship->Width  = getTableWidth(board);
 
     // Окно arrange на одном уровне с ship.
-    arrange->Begin_y = Indents.TopIndent;
-    arrange->Begin_x = Indents.LeftIndent + ship->Width + Indents.BetweenIndent;
+    arrange->Begin_y = indents.TopIndent;
+    arrange->Begin_x = indents.LeftIndent + ship->Width + indents.BetweenIndent;
     arrange->Height = calculateArrangeHeight(Ships);
     arrange->Width = 38; // min
 
     // Новое главное окно // - ?
-    mainW->Width = arrange->Begin_x + arrange->Width + Indents.RightIndent;
-    mainW->Height = Indents.TopIndent + ship->Height + Indents.BottomIndent;
+    mainW->Width = arrange->Begin_x + arrange->Width + indents.RightIndent;
+    mainW->Height = indents.TopIndent + ship->Height + indents.BottomIndent;
     mainW->Begin_y = 0;
     mainW->Begin_x = 0;
 

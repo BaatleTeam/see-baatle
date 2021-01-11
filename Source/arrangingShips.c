@@ -6,14 +6,14 @@ extern FILE* db_out;
 
 // -------------- AI -------------------------------
 static void chooseFilling(Border borders[4], int width, int height); // выбирает стратегию порядка проверки
-static bool tryToStandShip(ship* ship, Board* board, int start_x, int end_x, int start_y, int end_y);
+static bool tryToStandShip(Ship* ship, Board* board, int start_x, int end_x, int start_y, int end_y);
 static void swapBorders(Pair* a, Pair* b);
 
 // 
 static void DrawActiveShip_InArrangeWindow(WindowParametres *warr, int number, int size);
 static void DrawMessage_InArrangeWindow(WINDOW* WIN, const char* msg);
 static void EraseErrorMessage_InArrangeWindow(WINDOW*); // clear hardcoded line 12
-static void colorizeCurrShip(WINDOW* WIN, ship Ship);
+static void colorizeCurrShip(WINDOW* WIN, Ship Ship);
 
 
 void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
@@ -39,7 +39,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
     int index; // Индекс выбранного корабля в массиве кораблей
 
     // Вспомогательный корабль для работы с полем ship.
-    ship* TmpShip = malloc(sizeof(ship));
+    Ship* TmpShip = malloc(sizeof(Ship));
     clearTmpShip(TmpShip);
 
     bool isAllShipsStanding = FALSE;
@@ -105,7 +105,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
 	                    	reDrawStandingShips(WShip.ptrWin, BoardPlayer);
 
-							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer, BoardPlayer);
+							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer);
 							if (isAllShipsStanding == TRUE)
 								DrawMessage_InArrangeWindow(WArrange.ptrWin,
 								"All ships arranged!\n Press any key to start the baatle!\n");
@@ -149,7 +149,7 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 		if (ShipsComputer->Ships[index].stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
 			deleteShipFromField(&ShipsComputer->Ships[index], BoardComputer);
 		for (int i = 0; i < 4; i++){
-			ship tmpShip;
+			Ship tmpShip;
 			makeShipTmp(&ShipsComputer->Ships[index], &tmpShip);
 			tmpShip.type = rand() % 2;
 			if (tryToStandShip(&tmpShip, BoardComputer,
@@ -178,7 +178,7 @@ void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
 }
 
 
-bool tryToStandShip(ship* thisShip, Board* board, int start_x, int end_x, int start_y, int end_y){
+bool tryToStandShip(Ship* thisShip, Board* board, int start_x, int end_x, int start_y, int end_y){
 	for (int y = start_y; y < end_y; y++){
 		for (int x = start_x; x < end_x; x++){
 			if ((thisShip->type == HORIZONTAL) && (x + thisShip->size > board->Width))
@@ -228,7 +228,7 @@ void swapBorders(Pair* a, Pair* b){
 }
 
 void DrawActiveShip_InArrangeWindow(WindowParametres* warr, int number, int size) {
-    char ch = 219;
+    int ch = 219;
     int y = 6 + number*2;
     int x = 0;
     switch (size){
@@ -261,21 +261,21 @@ void EraseErrorMessage_InArrangeWindow(WINDOW* WIN) {
     wrefresh(WIN);
 }
 
-void colorizeCurrShip(WINDOW* WIN, ship Ship) {
-    if (Ship.stand == TRUE) {
+void colorizeCurrShip(WINDOW* WIN, Ship ship) {
+    if (ship.stand == TRUE) {
         wattron(WIN, COLOR_PAIR(2));
-        char rect = 254;
-        int i = Ship.y;
-        int j = Ship.x;
+        int rect = 254;
+        int i = ship.y;
+        int j = ship.x;
 
-        switch(Ship.type) {
+        switch(ship.type) {
             case VERTICAL:
-                for (; i < Ship.size + Ship.y; i++) {
+                for (; i < ship.size + ship.y; i++) {
                     mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
                 }
                 break;
             case HORIZONTAL:
-                for (; j < Ship.size + Ship.x; j++) {
+                for (; j < ship.size + ship.x; j++) {
                     mvwprintw(WIN, i*2+3, j*2+4, "%c", rect);
                 }
                 break;

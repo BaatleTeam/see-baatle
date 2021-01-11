@@ -5,12 +5,12 @@
 
 extern FILE* db_out;
 
-void initWindowsShooting(const ShipsInfo *Ships, const Board *board, 
-                        WindowParametres *WBackGround, 
-                        WindowParametres *WInfoPlayer, 
-                        WindowParametres *WInfoComputer, 
-                        WindowParametres *WBoardPlayer,
-                        WindowParametres *WBoardComputer);
+void initWindowsShooting(const Board *board, 
+                         WindowParametres *WBackGround, 
+                         WindowParametres *WInfoPlayer, 
+                         WindowParametres *WInfoComputer, 
+                         WindowParametres *WBoardPlayer,
+                         WindowParametres *WBoardComputer);
 
 void updateGraphics_Shoting(WindowParametres WBoard, const ShotBoard board, Coordinate curPos);
 void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats *stats);
@@ -19,8 +19,8 @@ void DrawWBoard_Shoting(WindowParametres WBoard, const ShotBoard board);
 void DrawWBoard_Shoting_Default(WindowParametres WBoard);
 ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordinate curPos);
 bool checkShotPos(const ShotBoard shotBoard, Coordinate curPos);
-bool isShipKilled(ship* ship, const ShotBoard boardData);
-void fillBoardNearKilledShip(const ship ship, ShotBoard boardData);
+bool isShipKilled(Ship* ship, const ShotBoard boardData);
+void fillBoardNearKilledShip(const Ship ship, ShotBoard boardData);
 
 // stats and info-window
 void updateStats(PlayerStats *stats_1, PlayerStats *stats_2, ShotResult shotResult);

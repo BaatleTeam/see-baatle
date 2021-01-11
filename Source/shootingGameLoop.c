@@ -7,7 +7,7 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     WindowParametres WBoardPlayer;
     WindowParametres WBoardComputer;
     // WindowParametres WHelp;
-    initWindowsShooting(ShipsPlayer, BoardPlayer, &WBackGround, &WInfoPlayer, &WInfoComputer, &WBoardPlayer, &WBoardComputer);
+    initWindowsShooting(BoardPlayer, &WBackGround, &WInfoPlayer, &WInfoComputer, &WBoardPlayer, &WBoardComputer);
 
 
     wbkgdset(WBackGround.ptrWin, COLOR_PAIR(200));
