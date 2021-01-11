@@ -72,8 +72,10 @@ void initEndGameWindows(WindowParametres *win_bg, WindowParametres *win_title, W
             win_title->Width = 6*charsNum+5 + 4 + 2*2;
             initWindowWithParameters(win_title);
             break;
+        case UNKONOWN:
+            // fall through
         default:
-            Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
+            Stopif(true, "initEndGameWindows(): unexpected UNKONOWN switch case.");
     }
     
     *win_anykey = createWindowString((WindowParametres){.Begin_y = 20, .Begin_x = 30, .Width = 0, .Height = 0}, anykeyText, -1, -1);
@@ -92,6 +94,7 @@ void drawEndGameBgWindows(const WindowParametres *win_bg, const WindowParametres
         case PLAYER_LOSE:
             drawTitle_YouLose(win_title->ptrWin, 176);
             break;
+        case UNKONOWN:
         default:
             Stopif(true, "drawStaticEndGameWindow(): Error: Game result has unknown status.");
     }
@@ -109,6 +112,8 @@ void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString
             drawWindowString(win_anykey, 3);
             drawWindowString(win_enter, 2);
             break;
+        case CHOICE_ENDGAME_UNKNOWN:
+            // fall through
         default:
             Stopif(true, "drawEndGameDynamicWindows(): switch enexpected case.")
     }

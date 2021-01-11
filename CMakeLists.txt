@@ -8,7 +8,7 @@ file(GLOB src
 
 set(CMAKE_C_STANDARD 11)
 # set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic -finstrument-functions -ftrapv -Wundef -Wshadow -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code -O0 -g")
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wundef -O0 -g")
+set(CMAKE_C_FLAGS "-Wall -Wextra -Wshadow -Wundef -Wcast-qual -O0 -Wswitch-enum -Wunreachable-code -g")
 
 add_executable(see_baatle ${src})
 if(WIN32)
