@@ -382,51 +382,58 @@ void changeShipCoordinates(ship* TmpShip, const Board *Board, const int key){
     }
 }
 
-bool checkBorderLeft(ship* ship, const Board *Board){
+bool checkBorderLeft(ship* ship, const Board *board) {
+    Stopif(ship->x >= board->Width, "checkBorderLeft(): Ship Coordinate=x more than board width.");
     if (ship->x == 0)
         return FALSE;
     else 
         return TRUE;
 }
 
-bool checkBorderRight(ship* ship, const Board *Board){
+bool checkBorderRight(ship* ship, const Board *board) {
+    Stopif(ship->x >= board->Width, "checkBorderRight(): Ship Coordinate=x more than board width.");
     switch (ship->type) {
         case HORIZONTAL:
-            if (ship->x + ship->size == Board->Width)
+            if (ship->x + ship->size == board->Width)
                 return FALSE;
             else 
                 return TRUE;
         case VERTICAL:
-            if (ship->x == Board->Width-1)
+            if (ship->x == board->Width-1)
                 return FALSE;
             else 
                 return TRUE;
+        default:
+            Stopif(true, "checkBorderRight(): switch case unexpeted.");
     }
     return TRUE; // control should not be reached
 }
 
-bool checkBorderTop(ship* ship, const Board *Board){
+bool checkBorderTop(ship* ship, const Board *board) {
+    Stopif(ship->y >= board->Height, "checkBorderTop(): Ship Coordinate=y more than board height.");
     if (ship->y == 0)
         return FALSE;
     else 
         return TRUE;
 }
 
-bool checkBorderBot(ship* ship, const Board *Board){
+bool checkBorderBot(ship* ship, const Board *board) {
+    Stopif(ship->y >= board->Height, "checkBorderTop(): Ship Coordinate=y more than board height.");
     switch (ship->type) {
         case VERTICAL:
-            if (ship->y + ship->size == Board->Height)
+            if (ship->y + ship->size == board->Height)
                 return FALSE;
             else 
                 return TRUE;
         case HORIZONTAL:
-            if (ship->y == Board->Height-1)
+            if (ship->y == board->Height-1)
                 return FALSE;
             else 
                 return TRUE;
         default:
-            return TRUE; // control should not be reached
+            Stopif(true, "checkBorderRight(): switch case unexpeted.");
     }
+    return TRUE; // control should not be reached
 }
 
 // -------------------------------------------------------------------------------

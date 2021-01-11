@@ -11,17 +11,17 @@ enum ShootBoardState {
 
 typedef struct PlayerStats {
 	// [size][0] - на плаву, [size][1] - всего
-	unsigned shipCount[4][2];
+	int shipCount[4][2];
 
-	unsigned shots;
-	unsigned hits;
-    unsigned shipsDestroyed;
+	int shots;
+	int hits;
+    int shipsDestroyed;
 } PlayerStats;
 
 // Поле для храненя и отображения выстрелови и попаданий игрока
 typedef struct ShotBoard {
-	unsigned Height;
-	unsigned Width;
+	int Height;
+	int Width;
 	enum ShootBoardState **board;
 } ShotBoard;
 

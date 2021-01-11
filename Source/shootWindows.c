@@ -101,8 +101,8 @@ void DrawWInfo_Shoting_Default(WindowParametres *WInfo) {
 void DrawWBoard_Shoting(WindowParametres WBoard, ShotBoard boardData){
     DrawWBoard_Shoting_Default(WBoard);
     int charToDraw = 254;
-    for (unsigned i = 0; i < boardData.Height; i++){
-        for (unsigned j = 0; j < boardData.Width; j++){
+    for (int i = 0; i < boardData.Height; i++){
+        for (int j = 0; j < boardData.Width; j++){
             switch (boardData.board[i][j]) {
                 case EMPTY:
                     wattron(WBoard.ptrWin, COLOR_PAIR(3));
@@ -311,7 +311,7 @@ bool isValidBoardCell(ShotBoard board, Coordinate point) {
 // ---------------------------------------------------------------
 
 Coordinate generateShotCoordinate(const ShotBoard* const boardData, Coordinate prevShot, const PlayerStats* const newStats){
-    static Coordinate coordOfFirstHit = (Coordinate) {-1, -1};
+    static Coordinate coordOfFirstHit = (const Coordinate) {-1, -1};
     static unsigned destroyedShipsOnPrevShot = 0;
     static bool perspectiveDirs[4] = {FALSE, FALSE, FALSE, FALSE};
     static DIR PrevDir = NO_DIR;
