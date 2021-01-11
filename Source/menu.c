@@ -86,7 +86,7 @@ void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
 
     ShipsInfo tmp = { S_N_S(4), S_N_S(3), S_N_S(2), S_N_S(1), NULL };
 	*info = tmp;
-    info->Ships = calloc(S_N_S(1) + S_N_S(2) + S_N_S(3) + S_N_S(4), sizeof(ship));
+    info->Ships = calloc(S_N_S(1) + S_N_S(2) + S_N_S(3) + S_N_S(4), sizeof(Ship));
 	for (int i = 0; i < S_N_S(4); i++)
 		info->Ships[i].size = 4;
 	for (int i = S_N_S(4); i < S_N_S(4) + S_N_S(3); i++)

@@ -7,7 +7,7 @@ void initWindowsShooting(const Board *board,
                          WindowParametres *WBoardPlayer,
                          WindowParametres *WBoardComputer) 
 {
-    Indents Indents = {
+    Indents indents = {
                     .LeftIndent = 3,
                     .BetweenIndent = 2, 
                     .RightIndent = 2,
@@ -19,28 +19,28 @@ void initWindowsShooting(const Board *board,
 
     WInfoPlayer->Width = 28;
     WInfoPlayer->Height = 20;
-    WInfoPlayer->Begin_x = Indents.LeftIndent;
-    WInfoPlayer->Begin_y = Indents.TopIndent;
+    WInfoPlayer->Begin_x = indents.LeftIndent;
+    WInfoPlayer->Begin_y = indents.TopIndent;
     
     WBoardPlayer->Width = getTableWidth(board);
     WBoardPlayer->Height = getTableHeight(board);
-    WBoardPlayer->Begin_x = Indents.LeftIndent + WInfoPlayer->Width + Indents.BetweenIndent;
-    WBoardPlayer->Begin_y = Indents.TopIndent;
+    WBoardPlayer->Begin_x = indents.LeftIndent + WInfoPlayer->Width + indents.BetweenIndent;
+    WBoardPlayer->Begin_y = indents.TopIndent;
 
     WBoardComputer->Width = getTableWidth(board);
     WBoardComputer->Height = getTableHeight(board);
-    WBoardComputer->Begin_x = WBoardPlayer->Begin_x + WBoardComputer->Width + Indents.BetweenIndent + 1; 
-    WBoardComputer->Begin_y = Indents.TopIndent;
+    WBoardComputer->Begin_x = WBoardPlayer->Begin_x + WBoardComputer->Width + indents.BetweenIndent + 1; 
+    WBoardComputer->Begin_y = indents.TopIndent;
 
     WInfoComputer->Width = WInfoPlayer->Width;
     WInfoComputer->Height = WInfoPlayer->Height;
-    WInfoComputer->Begin_x = WBoardComputer->Begin_x + WBoardComputer->Width + Indents.BetweenIndent;
-    WInfoComputer->Begin_y = Indents.TopIndent;
+    WInfoComputer->Begin_x = WBoardComputer->Begin_x + WBoardComputer->Width + indents.BetweenIndent;
+    WInfoComputer->Begin_y = indents.TopIndent;
 
 
-    termainalWidth = WInfoComputer->Begin_x + WInfoComputer->Width + Indents.RightIndent;
+    termainalWidth = WInfoComputer->Begin_x + WInfoComputer->Width + indents.RightIndent;
     terminalHeight = (WBoardPlayer->Height > WInfoPlayer->Height) ? WBoardPlayer->Height : WInfoPlayer->Height;
-    terminalHeight += Indents.TopIndent + Indents.BottomIndent;
+    terminalHeight += indents.TopIndent + indents.BottomIndent;
 
     // terminalHeight = 30;
     // termainalWidth = 120;
@@ -162,7 +162,7 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordina
 }
 
 // TODO change vars 
-void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
+void fillBoardNearKilledShip(const Ship ship, ShotBoard boardData){
     Coordinate pointToCheck = {0, 0};
     switch (ship.type) {
         case HORIZONTAL:
@@ -216,7 +216,7 @@ void fillBoardNearKilledShip(const ship ship, ShotBoard boardData){
     }
 }
 
-bool isShipKilled(ship* ship, const ShotBoard boardData) {
+bool isShipKilled(Ship* ship, const ShotBoard boardData) {
     switch (ship->type) {
         case HORIZONTAL:
             for (int i = 0; i < ship->size; i++)
