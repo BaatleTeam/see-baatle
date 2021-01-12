@@ -15,8 +15,8 @@ typedef struct Border {
 } Border;
 
 
-void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer);
-void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer);
+void arrangingShips_player(CorePlayerGameData *playerGameData);
+void arrangingShips_computer(CorePlayerGameData *playerGameData);
 int calculateArrangeHeight(const ShipsInfo *Ships);
 
 

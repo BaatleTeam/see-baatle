@@ -29,6 +29,21 @@ typedef struct ShipsInfo {
 	Ship* Ships;
 } ShipsInfo;
 
+typedef enum PlayerIndex {
+	PLAYER_0 = 0,
+	PLAYER_1 = 1
+} PlayerIndex;
+
+typedef struct CorePlayerGameData {
+	ShipsInfo ships;
+	Board board;
+} CorePlayerGameData;
+
+typedef struct CoreGameData {
+	CorePlayerGameData gdArray[2];
+} CoreGameData;
+
+
 typedef struct WindowParametres {
 	int Begin_x;
 	int Begin_y;
@@ -43,6 +58,11 @@ typedef struct GameDataCase {
 	int BoardWidth[3];
 	int BoardHeight[3];
 } GameDataCase;
+
+typedef struct GameDataCaseChoice {
+	int caseShipsNumber;
+	int caseBoardSize;
+} GameDataCaseChoice;
 
 typedef struct Indents {
     size_t LeftIndent;

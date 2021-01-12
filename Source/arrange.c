@@ -180,7 +180,7 @@ void DrawShips_InArangeWindow(WindowParametres *Warr, const ShipsInfo *Ships) {
 }
 
 int getIndex(const ShipsInfo *Ships, int number, int shipSize) {
-    switch(shipSize) {
+    switch (shipSize) {
         case 4: return number;
         case 3: return Ships->Number_4_Size + number;
         case 2: return Ships->Number_4_Size + Ships->Number_3_Size + number;

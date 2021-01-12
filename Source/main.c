@@ -36,7 +36,8 @@ int main() {
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
-    GameDataCase* GDCases = NULL;
+    GameDataCase *GDCases = NULL;
+    CoreGameData *coreGameData = NULL;
     bool gameIsGoing = true;
     
     while (gameIsGoing) {
@@ -46,40 +47,30 @@ int main() {
         }
 
         GDCases = initGameDataCases(GDCases);
-        int caseShips; // тип кол-ва кораблйей
-        int caseBoard; // тип размера поля
-        gameIsGoing = ischoosingGDCase(GDCases, &caseShips, &caseBoard);
+        GameDataCaseChoice choice;
+        gameIsGoing = choosingGDCase(GDCases, &choice);
         if (!gameIsGoing) {
             break;
         }
 
         // Создание и инициализация данных о кораблях игрока и компьютера.
-        ShipsInfo ShipsPlayer;
-        ShipsInfo ShipsComputer;
-        initShipsInfo(&GDCases[caseShips], &ShipsPlayer);
-        initShipsInfo(&GDCases[caseShips], &ShipsComputer);
-        
-        // Создание и инициализация размеров игорового поля.
-        Board BoardPlayer;
-        Board BoardComputer;
-        initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-        initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-        
+        coreGameData = createCoreGameData(GDCases, choice);
+        clearGamaDataCasesArray(&GDCases);
         
         // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-        arrangingShips_player(&ShipsPlayer, &BoardPlayer);
-        arrangingShips_computer(&ShipsComputer, &BoardComputer);
-
+        arrangingShips_player(&coreGameData->gdArray[PLAYER_0]);
+        arrangingShips_computer(&coreGameData->gdArray[PLAYER_1]);
 
         // Процесс перестрелки игрока и компьютера
-        GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
-        freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+        GameResults gameResults = shootingGameLoop(coreGameData);
+        clearCoreGameData(&coreGameData);
 
         // Выбор игрока продолжать или нет
         endGameWindowLoop(gameResults, &gameIsGoing);
     }
 
-    free(GDCases);
+    clearGamaDataCasesArray(&GDCases);
+    clearCoreGameData(&coreGameData);
 
     fclose(db_out);
     resetty();

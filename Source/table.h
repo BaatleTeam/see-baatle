@@ -4,7 +4,7 @@
 
 extern int calculateArrangeHeight(const ShipsInfo *Ships);
 
-void initWindowsParametres(const ShipsInfo *ships, const Board *board, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*);
+void initWindowsParametres(const CorePlayerGameData *playerGameData, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres* help);
 void DrawTableWindow(WindowParametres *Wship);
 void DrawMainWindow(WindowParametres *Wmain);
 int getTableWidth(const Board *board);

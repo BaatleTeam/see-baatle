@@ -16,22 +16,24 @@ static void EraseErrorMessage_InArrangeWindow(WINDOW*); // clear hardcoded line 
 static void colorizeCurrShip(WINDOW* WIN, Ship Ship);
 
 
-void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
+void arrangingShips_player(CorePlayerGameData *playerGameData){
+	ShipsInfo *ships = &playerGameData->ships;
+	Board *board = &playerGameData->board;
     // Объявление параметров создаваемых окон.
     WindowParametres WMain;
     WindowParametres WArrange;
     WindowParametres WShip;
     WindowParametres WHelp;
-    initWindowsParametres(ShipsPlayer, BoardPlayer, &WMain, &WArrange, &WShip, &WHelp);
+    initWindowsParametres(playerGameData, &WMain, &WArrange, &WShip, &WHelp);
 
     DrawMainWindow(&WMain);
     DrawTableWindow(&WShip);
-    DrawDefaultArrangeWindow(&WArrange, ShipsPlayer);
+    DrawDefaultArrangeWindow(&WArrange, ships);
 
     // Координаты перемещения курсора в WArrange->ptrWin для выбора корабля.
     int currShipSize = 0; 
     int currShipNumber = 0; // 1..number
-    initCurrActiveShip_Arrange(ShipsPlayer, &currShipNumber, &currShipSize); // ?
+    initCurrActiveShip_Arrange(ships, &currShipNumber, &currShipSize); // ?
     DrawActiveShip_InArrangeWindow(&WArrange, currShipNumber, currShipSize);
 
     enum actWind { ARRANGE = 1, SHIP = 2 };
@@ -54,25 +56,25 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
         	case KEY_DOWN:
 	            switch (active_window){
 	                case ARRANGE:
-                        DrawShips_InArangeWindow(&WArrange, ShipsPlayer);
-						changeActiveShip(ShipsPlayer, &currShipNumber, &currShipSize, key);
+                        DrawShips_InArangeWindow(&WArrange, ships);
+						changeActiveShip(ships, &currShipNumber, &currShipSize, key);
 						DrawActiveShip_InArrangeWindow(&WArrange, currShipNumber, currShipSize);
-                        reDrawStandingShips(WShip.ptrWin, BoardPlayer);
-                        colorizeCurrShip(WShip.ptrWin, ShipsPlayer->Ships[getIndex(ShipsPlayer, currShipNumber, currShipSize)]);
+                        reDrawStandingShips(WShip.ptrWin, board);
+                        colorizeCurrShip(WShip.ptrWin, ships->Ships[getIndex(ships, currShipNumber, currShipSize)]);
 	                    break;
 	                case SHIP:
-	                    changeShipCoordinates(TmpShip, BoardPlayer, key);
-	                    reDrawStandingShips(WShip.ptrWin, BoardPlayer);
-	                    DrawTmpShip(WShip.ptrWin, TmpShip, BoardPlayer);
+	                    changeShipCoordinates(TmpShip, board, key);
+	                    reDrawStandingShips(WShip.ptrWin, board);
+	                    DrawTmpShip(WShip.ptrWin, TmpShip, board);
 	                	break;            
 	            }
 	            break;
 	        case 9: // tab
 	            switch(active_window){
 	                case SHIP:
-	                    changeTypeOfShip(TmpShip, BoardPlayer);
-	                    reDrawStandingShips(WShip.ptrWin, BoardPlayer);	
-	                    DrawTmpShip(WShip.ptrWin, TmpShip, BoardPlayer);
+	                    changeTypeOfShip(TmpShip, board);
+	                    reDrawStandingShips(WShip.ptrWin, board);	
+	                    DrawTmpShip(WShip.ptrWin, TmpShip, board);
 	                    break;
 	                case ARRANGE:
 	                	break;
@@ -82,30 +84,30 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 	            switch (active_window){
 	                case ARRANGE:
 	                    active_window = SHIP;
-	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
+	                    index = getIndex(ships, currShipNumber, currShipSize);
                     	clearTmpShip(TmpShip);
-	                    if (ShipsPlayer->Ships[index].stand == FALSE){
-	                        InitPrimaryCoordinates(currShipSize, TmpShip, BoardPlayer);
+	                    if (ships->Ships[index].stand == FALSE){
+	                        InitPrimaryCoordinates(currShipSize, TmpShip, board);
                         }
 	                    else {
-	                    	deleteShipFromField(&ShipsPlayer->Ships[index], BoardPlayer);
-	                    	makeShipTmp(&ShipsPlayer->Ships[index], TmpShip);
+	                    	deleteShipFromField(&ships->Ships[index], board);
+	                    	makeShipTmp(&ships->Ships[index], TmpShip);
 	                    }
-                        reDrawStandingShips(WShip.ptrWin, BoardPlayer);
-                        DrawTmpShip(WShip.ptrWin, TmpShip, BoardPlayer);
+                        reDrawStandingShips(WShip.ptrWin, board);
+                        DrawTmpShip(WShip.ptrWin, TmpShip, board);
 	                    break;
 
 	                case SHIP:
-	                    index = getIndex(ShipsPlayer, currShipNumber, currShipSize);
-	                    if (checkShipBorders(TmpShip, BoardPlayer) == FALSE){
+	                    index = getIndex(ships, currShipNumber, currShipSize);
+	                    if (checkShipBorders(TmpShip, board) == FALSE){
 	                        DrawMessage_InArrangeWindow(WArrange.ptrWin, "Ships can`t stand near which other!");
 						}
 	                    else {
-	                    	addShip(&ShipsPlayer->Ships[index], TmpShip);
-	                    	refresh_ship_player_array(ShipsPlayer, BoardPlayer);
-	                    	reDrawStandingShips(WShip.ptrWin, BoardPlayer);
+	                    	addShip(&ships->Ships[index], TmpShip);
+	                    	refresh_ship_player_array(ships, board);
+	                    	reDrawStandingShips(WShip.ptrWin, board);
 
-							isAllShipsStanding = checkAllShipsStanding(ShipsPlayer);
+							isAllShipsStanding = checkAllShipsStanding(ships);
 							if (isAllShipsStanding == TRUE)
 								DrawMessage_InArrangeWindow(WArrange.ptrWin,
 								"All ships arranged!\n Press any key to start the baatle!\n");
@@ -117,7 +119,7 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
             case 27: // Esc
                 switch (active_window){
                     case SHIP:
-                        reDrawStandingShips(WShip.ptrWin, BoardPlayer);
+                        reDrawStandingShips(WShip.ptrWin, board);
 	                    active_window = ARRANGE;
                         break;
                     case ARRANGE:
@@ -139,38 +141,41 @@ void arrangingShips_player(ShipsInfo *ShipsPlayer, Board *BoardPlayer){
 }
 
 
-void arrangingShips_computer(ShipsInfo *ShipsComputer, Board *BoardComputer){
+void arrangingShips_computer(CorePlayerGameData *playerGameData) {
+	ShipsInfo *ships = &playerGameData->ships;
+	Board *board = &playerGameData->board;
+
 	int index = 0;
 	Border borders[4]; // вляиет на очередь проверки участков на поле
 	// всего делится на 4 участка, разбивается одной точкой
-	while (index < getShipsNumber(ShipsComputer)){
-		chooseFilling(borders, BoardComputer->Width, BoardComputer->Height);
+	while (index < getShipsNumber(ships)) {
+		chooseFilling(borders, board->Width, board->Height);
 
-		if (ShipsComputer->Ships[index].stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
-			deleteShipFromField(&ShipsComputer->Ships[index], BoardComputer);
+		if (ships->Ships[index].stand == TRUE) // если предыдущий не был поставлен, то текущий ставим заново
+			deleteShipFromField(&ships->Ships[index], board);
 		for (int i = 0; i < 4; i++){
 			Ship tmpShip;
-			makeShipTmp(&ShipsComputer->Ships[index], &tmpShip);
+			makeShipTmp(&ships->Ships[index], &tmpShip);
 			tmpShip.type = rand() % 2;
-			if (tryToStandShip(&tmpShip, BoardComputer,
+			if (tryToStandShip(&tmpShip, board,
 								borders[i].pair_x.first, borders[i].pair_x.second,
 								borders[i].pair_y.first, borders[i].pair_y.second))
 			{
-				addShip(&ShipsComputer->Ships[index], &tmpShip);
+				addShip(&ships->Ships[index], &tmpShip);
 				break;
 			}
 		}
 
-		if (ShipsComputer->Ships[index].stand) // если смогли поставить
+		if (ships->Ships[index].stand) // если смогли поставить
 			index++;
 		else
 			index--;
 	}
 	// TODO delete this before release
 	FILE* f = fopen("compBoard.txt", "w");
-	for (int y = 0; y < BoardComputer->Height; y++){
-		for (int x = 0; x < BoardComputer->Width; x++)
-			fprintf(f, "%d ", BoardComputer->field[y][x]);
+	for (int y = 0; y < board->Height; y++){
+		for (int x = 0; x < board->Width; x++)
+			fprintf(f, "%d ", board->field[y][x]);
 		fprintf(f, "\n");
 	}
 	fflush(f);

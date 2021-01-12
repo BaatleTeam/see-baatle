@@ -1,6 +1,6 @@
 #include "table.h"
 
-void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres* help){
+void initWindowsParametres(const CorePlayerGameData *playerGameData, WindowParametres *mainW, WindowParametres *arrange, WindowParametres *ship, WindowParametres* help){
     // Объявление размеров отступов.
     Indents indents = {.LeftIndent    = 4,
                        .BetweenIndent = 5,
@@ -11,13 +11,13 @@ void initWindowsParametres(const ShipsInfo *Ships, const Board *board, WindowPar
     // Зависимости от размера отступов.
 	ship->Begin_y = indents.TopIndent;
 	ship->Begin_x = indents.LeftIndent;
-    ship->Height = getTableHeight(board);
-	ship->Width  = getTableWidth(board);
+    ship->Height = getTableHeight(&playerGameData->board);
+	ship->Width  = getTableWidth(&playerGameData->board);
 
     // Окно arrange на одном уровне с ship.
     arrange->Begin_y = indents.TopIndent;
     arrange->Begin_x = indents.LeftIndent + ship->Width + indents.BetweenIndent;
-    arrange->Height = calculateArrangeHeight(Ships);
+    arrange->Height = calculateArrangeHeight(&playerGameData->ships);
     arrange->Width = 38; // min
 
     // Новое главное окно // - ?

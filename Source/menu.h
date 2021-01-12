@@ -24,9 +24,13 @@ enum actCase { CASE_1 = 0, CASE_2, CASE_3, CASE_4 };
 
 #define GAME_CASES_NUMBER 4
 
-bool choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard);
+bool choosingGDCase(const GameDataCase *GDCases, GameDataCaseChoice *choice);
+CoreGameData* createCoreGameData(const GameDataCase *GDCases, GameDataCaseChoice choice);
+
+
 void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info);
 void initBoard(Board *board, int height, int width);
+void clearCoreGameData(CoreGameData **cgdata);
 
 void DrawHelloWindow(WINDOW* win_hello, int h, int w);
 void drawTitle_SeeBattle(WINDOW* win_hello, int smbl); // Рисует приветствие.
@@ -49,6 +53,7 @@ void drawHugeWord_N(WINDOW* WIN, int smbl, int word_width, int begin_y, int begi
 void testAnimation(WINDOW* win_hello); // Обеспечивает моргание надписи.
 
 GameDataCase* initGameDataCases(GameDataCase *array); // Инициализирует 4 варианта параметров игры.
+void clearGamaDataCasesArray(GameDataCase **GDCases);
 void initCaseWindowData(WindowParametres*); // Инициализирует параметры для окон выбора режим игры [1..4]
 void DrawCaseWindow(WindowParametres*, const GameDataCase*, int number, int color); // Рисует окно выбора согласно переданным парметрам, иниц-нным раннее.
 void DrawGameDataCasesShips(WINDOW* WIN, const GameDataCase *gdc);

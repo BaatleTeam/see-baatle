@@ -17,7 +17,7 @@ void DrawWInfo_Shoting(WindowParametres *WInfo, const PlayerStats *stats);
 void DrawWInfo_Shoting_Default(WindowParametres *WShipsPlayer);
 void DrawWBoard_Shoting(WindowParametres WBoard, const ShotBoard board);
 void DrawWBoard_Shoting_Default(WindowParametres WBoard);
-ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordinate curPos);
+ShotResult makeShot(const ShipsInfo *shipsComputer, const ShotBoard boardData, Coordinate curPos);
 bool checkShotPos(const ShotBoard shotBoard, Coordinate curPos);
 bool isShipKilled(Ship* ship, const ShotBoard boardData);
 void fillBoardNearKilledShip(const Ship ship, ShotBoard boardData);
@@ -25,7 +25,7 @@ void fillBoardNearKilledShip(const Ship ship, ShotBoard boardData);
 // stats and info-window
 void updateStats(PlayerStats *stats_1, PlayerStats *stats_2, ShotResult shotResult);
 
-void moveCursor_Shooting(Board board, Coordinate *curPos, int key);
+void moveCursor_Shooting(const Board *board, Coordinate *curPos, int key);
 void DrawCursor_Shoting(WindowParametres WBoard, Coordinate curPos, bool isActive);
 
 
