@@ -1,9 +1,9 @@
 #include "menu.h"
 
 void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard){
-	resize_term(38,89); // Beta
-    clear();
-    refresh();
+	// resize_term(38,89); // Beta
+    // clear();
+    // refresh();
 
     // Окно заднего фона.
     WINDOW* win_menu = newwin(LINES, COLS, 0, 0);

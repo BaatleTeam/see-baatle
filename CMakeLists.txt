@@ -23,9 +23,6 @@ else()
     target_link_libraries(see_baatle PRIVATE ${CURSES_LIBRARIES})
 endif()
 
-message(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
-message(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH})
-message(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 find_package(ZeroMQ REQUIRED)
 message(ZeroMQ_LIBRARY ${ZeroMQ_LIBRARY})
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "includeCurses.h"
-#include <stdlib.h>
 #include "menu.h"
 
 typedef struct WindowString {

@@ -1,10 +1,11 @@
 #include "header.h"
 #include "menu.h"
 #include "endGame.h"
+#include "mainMenu.h"
 
 FILE* db_out = NULL;
 
-int main(){	
+int main() {	
     // FOR DEBUG 
     db_out = fopen("debug.txt", "w");
     // 
@@ -13,6 +14,11 @@ int main(){
 	cbreak();
     noecho(); // Не отображает символы.
     curs_set(FALSE);
+
+    resize_term(38,89); // Beta
+    clear();
+    refresh();
+    
 	keypad(stdscr, TRUE);
     start_color();
     init_pair (2,   COLOR_BLUE+8,  COLOR_YELLOW+8); // Для окна aarange.
@@ -32,6 +38,13 @@ int main(){
     // Создание и инициализация возможных вариантов игры.
     bool gameIsGoing = true;
     while (gameIsGoing) {
+        GameNetworkType gameType = mainMenuWindowLoop();
+        if (gameType == GAME_N_TYPE_UNKNOWN) {
+            gameIsGoing = false;
+            break;
+        }
+
+
         GameDataCase* GDCases;
         GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase)); // TODO
         initGameDataCases(GDCases);
