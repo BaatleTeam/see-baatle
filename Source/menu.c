@@ -1,6 +1,6 @@
 #include "menu.h"
 
-void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard){
+bool choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard){
 	// resize_term(38,89); // Beta
     // clear();
     // refresh();
@@ -78,6 +78,8 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
     delwin(win_menu);
     delwin(win_hello);
     free(WCaseParametres);
+
+	return true; // TODO
 }
 
 void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
@@ -121,7 +123,10 @@ void initCaseWindowData(WindowParametres* array){
 	}
 }
 
-void initGameDataCases(GameDataCase *array){
+GameDataCase* initGameDataCases(GameDataCase *array) {
+	if (array != NULL)
+		return array;
+	GameDataCase *array = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
 	array[0].NumberOfShips[0] = 3;
 	array[0].NumberOfShips[1] = 3;
 	array[0].NumberOfShips[2] = 3;
@@ -166,6 +171,7 @@ void initGameDataCases(GameDataCase *array){
 	array[3].BoardWidth [2] = 15;
 	array[3].BoardHeight[2] = 15;
 
+	return array;
 }
 
 void DrawCaseWindow(WindowParametres* wp, const GameDataCase* gdc, int number, int color){

@@ -36,22 +36,22 @@ int main() {
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
+    GameDataCase* GDCases = NULL;
     bool gameIsGoing = true;
+    
     while (gameIsGoing) {
         GameNetworkType gameType = mainMenuWindowLoop();
         if (gameType == GAME_N_TYPE_UNKNOWN) {
-            gameIsGoing = false;
             break;
         }
 
-
-        GameDataCase* GDCases;
-        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase)); // TODO
-        initGameDataCases(GDCases);
-
+        GDCases = initGameDataCases(GDCases);
         int caseShips; // тип кол-ва кораблйей
         int caseBoard; // тип размера поля
-        choosingGDCase(GDCases, &caseShips, &caseBoard);
+        gameIsGoing = ischoosingGDCase(GDCases, &caseShips, &caseBoard);
+        if (!gameIsGoing) {
+            break;
+        }
 
         // Создание и инициализация данных о кораблях игрока и компьютера.
         ShipsInfo ShipsPlayer;
@@ -67,7 +67,6 @@ int main() {
         
         
         // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-        free(GDCases);
         arrangingShips_player(&ShipsPlayer, &BoardPlayer);
         arrangingShips_computer(&ShipsComputer, &BoardComputer);
 
@@ -80,6 +79,7 @@ int main() {
         endGameWindowLoop(gameResults, &gameIsGoing);
     }
 
+    free(GDCases);
 
     fclose(db_out);
     resetty();
