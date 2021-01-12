@@ -57,9 +57,12 @@ int main() {
         coreGameData = createCoreGameData(GDCases, choice);
         clearGamaDataCasesArray(&GDCases);
         
-        // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-        arrangingShips_player(&coreGameData->gdArray[PLAYER_0]);
-        arrangingShips_computer(&coreGameData->gdArray[PLAYER_1]);
+        // Закончили выбор режима игры, освободили данные, начинаем отрисовку окна расстановки.
+        arrangingShips_ByComputer(&coreGameData->gdArray[PLAYER_1]);
+        gameIsGoing = arrangingShips_ByPlayer(&coreGameData->gdArray[PLAYER_0]);
+        if (!gameIsGoing) {
+            break;
+        }
 
         // Процесс перестрелки игрока и компьютера
         GameResults gameResults = shootingGameLoop(coreGameData);

@@ -105,6 +105,7 @@ void clearCoreGameData(CoreGameData **cgdata) {
 			free((*cgdata)->gdArray[playerEnumValue].board.field[i]);
 		free((*cgdata)->gdArray[playerEnumValue].board.field);
 	}
+	free(*cgdata);
 	*cgdata = NULL;
 }
 

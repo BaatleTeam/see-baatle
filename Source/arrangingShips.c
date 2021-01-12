@@ -16,7 +16,7 @@ static void EraseErrorMessage_InArrangeWindow(WINDOW*); // clear hardcoded line 
 static void colorizeCurrShip(WINDOW* WIN, Ship Ship);
 
 
-void arrangingShips_player(CorePlayerGameData *playerGameData){
+bool arrangingShips_ByPlayer(CorePlayerGameData *playerGameData) {
 	ShipsInfo *ships = &playerGameData->ships;
 	Board *board = &playerGameData->board;
     // Объявление параметров создаваемых окон.
@@ -138,10 +138,12 @@ void arrangingShips_player(CorePlayerGameData *playerGameData){
     // delwin(WHelp->ptrWin); // WHelp не используется, поэтому и не удаляем
 
 	fprintf(db_out, "exit from arraging!\n");
+
+	return true; //TODO
 }
 
 
-void arrangingShips_computer(CorePlayerGameData *playerGameData) {
+void arrangingShips_ByComputer(CorePlayerGameData *playerGameData) {
 	ShipsInfo *ships = &playerGameData->ships;
 	Board *board = &playerGameData->board;
 
