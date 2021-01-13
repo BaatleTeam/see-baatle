@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "endGame.h"
 #include "mainMenu.h"
+#include "loginMenu.h"
 
 FILE* db_out = NULL;
 
@@ -45,6 +46,11 @@ int main() {
         if (gameType == GAME_N_TYPE_UNKNOWN) {
             break;
         }
+
+        if (gameType == SINGLE_ONLINE) {
+            loginMenuWindowLoop();
+        }
+        return 0;
 
         GDCases = initGameDataCases(GDCases);
         GameDataCaseChoice choice;

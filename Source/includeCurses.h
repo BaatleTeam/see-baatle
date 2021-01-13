@@ -1,6 +1,6 @@
 #pragma once 
-#include <curses.h>
 #include <stdlib.h>
+#include <curses.h>
 #include <zmq.h>
 
 /** To where should I write errors? If this is \c NULL, write to \c stderr. */
