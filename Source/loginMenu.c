@@ -11,10 +11,22 @@ static bool isLoginCorrect();
 static bool isPasswordCorrect();
 
 void loginMenuWindowLoop() {
+    initNetowrkContext();
     WindowParametres win_bg, win_menu, win_login, win_passwd;
     initLoginMenuWindows(&win_bg, &win_menu, &win_login, &win_passwd);
     drawStaticBgLoginMenu(&win_bg, &win_menu);
     
+    wattron(win_menu.ptrWin, COLOR_PAIR(49));
+    char *msg = {"Hello server! ..."};
+    mvwprintw(win_menu.ptrWin, 7, 3, msg);
+    napms(200);
+    char* answer = checkServerConnection(msg); // TODO async
+    if (answer != NULL)
+        mvwprintw(win_menu.ptrWin, 7, 21, answer);
+    else
+        mvwprintw(win_menu.ptrWin, 7, 21, "No answer:(");
+    wrefresh(win_menu.ptrWin);
+
     do {
         readStringInBufferFromWindow(&win_login, bufferLogin);
     }
@@ -24,6 +36,7 @@ void loginMenuWindowLoop() {
     }
     while (!isPasswordCorrect());
     noecho();
+    void closeNetwork();
 }
 
 static void initLoginMenuWindows(WindowParametres *win_bg, WindowParametres *win_menu, WindowParametres *win_login, WindowParametres *win_passwd) {

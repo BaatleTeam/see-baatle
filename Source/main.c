@@ -6,7 +6,7 @@
 
 FILE* db_out = NULL;
 
-int main() {	
+int main() {
     // FOR DEBUG 
     db_out = fopen("debug.txt", "w");
     // 
