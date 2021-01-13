@@ -1,19 +1,35 @@
 #include "network.h"
 
+static char *ft_strdup(const char *s1) { // TODO
+    char *str;
+    size_t size = strlen(s1) + 1;
+
+    str = malloc(size);
+    if (str) {
+        memcpy(str, s1, size);
+    }
+    return str;
+}
+
 void* context = NULL;
 void* reqSocket = NULL;
+char* serverAddress = {"tcp://localhost:5555"};
 
 void initNetowrkContext() {
-    if (context != NULL || context != NULL)
+    if (context != NULL || reqSocket != NULL)
         return;
     context = zmq_ctx_new();
     reqSocket = zmq_socket (context, ZMQ_REQ);
-    zmq_connect (reqSocket, "tcp://localhost:5555");
+    zmq_connect (reqSocket, serverAddress);
 }
 
 void closeNetwork() {
     zmq_close (reqSocket);
     zmq_ctx_destroy (context);
+}
+
+char* getCurrentServerAddres() {
+    return ft_strdup(serverAddress);
 }
 
 

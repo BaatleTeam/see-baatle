@@ -7,3 +7,4 @@
 void initNetowrkContext();
 char* checkServerConnection(char* msg);
 void closeNetwork();
+char* getCurrentServerAddres();

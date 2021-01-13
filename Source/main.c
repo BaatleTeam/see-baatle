@@ -34,6 +34,7 @@ int main() {
     init_pair (200, COLOR_BLUE+8,  COLOR_WHITE+8 ); // ??
     init_pair (49,  COLOR_BLACK,   COLOR_GREEN+8 ); // Для окна shot board
     init_pair (51,  COLOR_BLACK+8, COLOR_GREEN+8 ); // ??
+    init_pair (101, COLOR_BLACK,  COLOR_BLUE+8); 
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
