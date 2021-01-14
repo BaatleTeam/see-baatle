@@ -33,8 +33,9 @@ char* getCurrentServerAddres() {
 }
 
 
-char* checkServerConnection(char* msg) {
+bool checkServerConnection() {
     enum {cap = 32};
+    char *msg = {"Baatle-client."};
     zmq_send (reqSocket, msg, strlen(msg), 0);
 
 
@@ -51,18 +52,13 @@ char* checkServerConnection(char* msg) {
             if (zmq_errno() == EAGAIN)
                 continue;
             else 
-                return NULL;
+                return false;
         } else 
             break;
     } while (milliseconds_since <= end);
 
     if (size == -1)
-        return NULL;
+        return false;
 
-    buffer[size < cap ? size : cap - 1] = '\0';
-
-    char* returnedString = calloc(size+1, sizeof(char));
-    strncpy(returnedString, buffer, size);
-    returnedString[size] = '\0';
-    return returnedString;
+    return true;
 }

@@ -1,11 +1,12 @@
 #pragma once
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <zmq.h>
 #include <time.h>
+#include "includeCurses.h"
+#include <zmq.h>
 
 
 void initNetowrkContext();
-char* checkServerConnection(char* msg);
+bool checkServerConnection();
 void closeNetwork();
 char* getCurrentServerAddres();

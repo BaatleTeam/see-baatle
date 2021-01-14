@@ -46,10 +46,9 @@ void loginMenuWindowLoop() {
     do {
         updateDynamicMainMenu(&win_menu, &win_addres, &win_login, &win_passwd, activeMenuElement);
         if (isCheckNeeded) {
-            char *msg = {"Hello server! ..."};
             // blocks for 1 sec if no connect
-            char* answer = checkServerConnection(msg); // TODO async
-            if (answer != NULL) {
+            bool yes = checkServerConnection(); // TODO async
+            if (yes) {
                 isConnected = CONNECTION_OK;
                 isCheckNeeded = false;
             }
@@ -68,6 +67,7 @@ void loginMenuWindowLoop() {
                 updateConnectionStatus(&win_status, isConnected);
                 break;
             case '\n':
+                
                 break;
             case KEY_DOWN:
                 changeActiveMenuElement(&activeMenuElement, key);
