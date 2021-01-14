@@ -21,6 +21,7 @@ static void updateDynamicMainMenu(WindowParametres *win_menu,  WindowParametres 
 static void changeActiveMenuElement(ActiveMenuElement *activeMenuElement, int key);
 
 static void readStringInBufferFromWindow(WindowParametres *win, char *buffer);
+static void showWindowError(char *msg); // TODO
 static bool isLoginCorrect();
 static bool isPasswordCorrect();
 
@@ -67,7 +68,26 @@ void loginMenuWindowLoop() {
                 updateConnectionStatus(&win_status, isConnected);
                 break;
             case '\n':
-                
+                switch (activeMenuElement) {
+                    case ADDRESS:
+                        readStringInBufferFromWindow(&win_addres, bufferAddres);
+                        isCheckNeeded = true;
+                        isConnected = CONNECTION_WAIT;
+                        break;
+                    case LOGIN:
+                        readStringInBufferFromWindow(&win_login, bufferLogin);
+                        if (!isLoginCorrect()) {
+                            showWindowError("Login is not correct");
+                        }
+                        break;
+                    case PASSWD:
+                        readStringInBufferFromWindow(&win_passwd, bufferPassword);
+                        if (!isPasswordCorrect()) {
+                            showWindowError("Password is not correct");
+                        }
+                        break;
+                }
+                changeActiveMenuElement(&activeMenuElement, KEY_DOWN);
                 break;
             case KEY_DOWN:
                 changeActiveMenuElement(&activeMenuElement, key);
@@ -82,14 +102,6 @@ void loginMenuWindowLoop() {
     }
     while (!isExit && key != KEY_F(2));
 
-    do {
-        readStringInBufferFromWindow(&win_login, bufferLogin);
-    }
-    while (!isLoginCorrect());
-    do {
-        readStringInBufferFromWindow(&win_passwd, bufferPassword);
-    }
-    while (!isPasswordCorrect());
     noecho();
     void closeNetwork();
 }
@@ -97,7 +109,7 @@ void loginMenuWindowLoop() {
 static void initLoginMenuWindows(WindowParametres *win_bg, WindowParametres *win_menu, WindowParametres *win_status, WindowParametres *win_addres, WindowParametres *win_login, WindowParametres *win_passwd) {
     *win_bg = (WindowParametres){.Begin_y = 0, .Begin_x = 0, .Width = COLS, .Height = LINES};
     initWindowWithParameters(win_bg);
-    *win_menu = (WindowParametres){.Begin_x = 20, .Begin_y = 5, .Width = 55, .Height = 14};
+    *win_menu = (WindowParametres){.Begin_x = 20, .Begin_y = 5, .Width = 52, .Height = 14};
     initWindowWithParameters(win_menu);
 
     *win_status = (WindowParametres){.Begin_x = 12, .Begin_y = 1, .Width = BUFFSIZE-1, .Height = 1};
@@ -222,7 +234,7 @@ static void changeActiveMenuElement(ActiveMenuElement *activeMenuElement, int ke
 
 
 void readStringInBufferFromWindow(WindowParametres *win, char* buffer) {
-    wbkgdset(win->ptrWin, COLOR_PAIR(3));
+    wbkgdset(win->ptrWin, CLRS_INPUT_ACTIVE);
     wclear(win->ptrWin);
     echo();
     curs_set(2);
@@ -240,3 +252,6 @@ bool isPasswordCorrect() {
     return true; //TODO
 }
 
+void showWindowError(char *msg) {
+
+}
