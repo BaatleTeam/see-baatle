@@ -37,10 +37,28 @@ char* checkServerConnection(char* msg) {
     enum {cap = 32};
     zmq_send (reqSocket, msg, strlen(msg), 0);
 
+
     char buffer [cap];
-    int size = zmq_recv (reqSocket, buffer, 31, 0);
+    int size = 0;
+
+    int timeout = 1000;
+    int milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
+    int end = milliseconds_since + timeout;
+    do {
+        milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
+        size = zmq_recv (reqSocket, buffer, 31, ZMQ_DONTWAIT);
+        if (size == -1) {
+            if (zmq_errno() == EAGAIN)
+                continue;
+            else 
+                return NULL;
+        } else 
+            break;
+    } while (milliseconds_since <= end);
+
     if (size == -1)
         return NULL;
+
     buffer[size < cap ? size : cap - 1] = '\0';
 
     char* returnedString = calloc(size+1, sizeof(char));

@@ -4,6 +4,10 @@ typedef enum ActiveMenuElement {
     ADDRESS = 0, LOGIN, PASSWD
 } ActiveMenuElement;
 
+typedef enum ServerConnectionStatus {
+    CONNECTION_OK, CONNECTION_NO, CONNECTION_WAIT
+} ServerConnectionStatus;
+
 #define BUFFSIZE 32
 static char bufferLogin[BUFFSIZE] = {'\0'};
 static char bufferPassword[BUFFSIZE] = {'\0'};
@@ -12,7 +16,7 @@ static char *arraow = {"<---"};
 
 static void initLoginMenuWindows(WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*);
 static void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu, char* serverAddr);
-static void updateWindowStatus(WindowParametres* win, bool isConnected);
+static void updateConnectionStatus(WindowParametres* win, ServerConnectionStatus isConnected);
 static void updateDynamicMainMenu(WindowParametres *win_menu,  WindowParametres *win_addr, WindowParametres *win_login, WindowParametres *win_passwd, ActiveMenuElement activeMenuElement);
 static void changeActiveMenuElement(ActiveMenuElement *activeMenuElement, int key);
 
@@ -26,7 +30,7 @@ static bool isPasswordCorrect();
 
 void loginMenuWindowLoop() {
     ActiveMenuElement activeMenuElement = ADDRESS;
-    bool isConnected = false;
+    bool isCheckNeeded = true;
     initNetowrkContext();
     WindowParametres win_bg, win_menu, win_status, win_login, win_passwd, win_addres;
     initLoginMenuWindows(&win_bg, &win_menu, &win_status, &win_addres, &win_login, &win_passwd);
@@ -34,15 +38,35 @@ void loginMenuWindowLoop() {
     strncpy(bufferAddres, currentServerAddres, BUFFSIZE);
     drawStaticBgLoginMenu(&win_bg, &win_menu, currentServerAddres);
 
-    
+    ServerConnectionStatus isConnected = CONNECTION_WAIT;
+    updateConnectionStatus(&win_status, isConnected);
+   
     bool isExit = false;
     int key;
     do {
         updateDynamicMainMenu(&win_menu, &win_addres, &win_login, &win_passwd, activeMenuElement);
-        updateWindowStatus(&win_status, isConnected);
+        if (isCheckNeeded) {
+            char *msg = {"Hello server! ..."};
+            // blocks for 1 sec if no connect
+            char* answer = checkServerConnection(msg); // TODO async
+            if (answer != NULL) {
+                isConnected = CONNECTION_OK;
+                isCheckNeeded = false;
+            }
+            else {
+                isConnected = CONNECTION_NO;
+                isCheckNeeded = false;
+            }
+            updateConnectionStatus(&win_status, isConnected);
+        }
 
         key = getch();
         switch (key) {
+            case KEY_F(5):
+                isCheckNeeded = true;
+                isConnected = CONNECTION_WAIT;
+                updateConnectionStatus(&win_status, isConnected);
+                break;
             case '\n':
                 break;
             case KEY_DOWN:
@@ -54,21 +78,9 @@ void loginMenuWindowLoop() {
             default: 
                 // nothing
                 break;
-
         }   
     }
     while (!isExit && key != KEY_F(2));
-    
-    wattron(win_menu.ptrWin, COLOR_PAIR(49));
-    char *msg = {"Hello server! ..."};
-    mvwprintw(win_menu.ptrWin, 9, 3, msg);
-    napms(200);
-    char* answer = checkServerConnection(msg); // TODO async
-    if (answer != NULL)
-        mvwprintw(win_menu.ptrWin, 9, 21, answer);
-    else
-        mvwprintw(win_menu.ptrWin, 9, 21, "No answer:(");
-    wrefresh(win_menu.ptrWin);
 
     do {
         readStringInBufferFromWindow(&win_login, bufferLogin);
@@ -120,15 +132,17 @@ void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu,
     wrefresh(win_menu->ptrWin);
 }
 
-void updateWindowStatus(WindowParametres* win, bool isConnected) {
+void updateConnectionStatus(WindowParametres* win, ServerConnectionStatus conStatus) {
     wattron(win->ptrWin, CLRS_MENU);
     wbkgdset(win->ptrWin, CLRS_MENU);
     wclear(win->ptrWin);
-    if (isConnected) {
+    if (conStatus == CONNECTION_OK) {
         mvwprintw(win->ptrWin, 0, 0, "Connected!");
-    } else {
+    } else if (conStatus == CONNECTION_NO) {
         wattron(win->ptrWin, COLOR_PAIR(10));
         mvwprintw(win->ptrWin, 0, 0, "No connection :(");
+    } else {
+        mvwprintw(win->ptrWin, 0, 0, "Waiting...");
     }
     wrefresh(win->ptrWin);
 }
