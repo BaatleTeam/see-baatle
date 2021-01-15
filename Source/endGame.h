@@ -17,4 +17,4 @@ WindowString createWindowString(WindowParametres wp, const char* text, int begin
 WindowString createDerWindowString(WINDOW *parent, WindowParametres wp, const char* text, int begin_x, int begin_y);
 void cleanWindowString(WindowString* win);
 void drawWindowString(const WindowString* win, short colorPair);
-static void tuneWindowString(WindowParametres *wp, char *text, int begin_x, int begin_y) {
+void tuneWindowString(WindowParametres *wp, const char *text, int *begin_x, int *begin_y);
