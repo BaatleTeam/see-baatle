@@ -122,28 +122,40 @@ void drawEndGameDynamicWindows(const WindowString *win_enter, const WindowString
 
 // -------------------- Window String methods -----------------------------------
 
-WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y) {
-    int textLength = strlen(text);
-    int textHeight = 1;
-
-    if (wp.Width == 0) {
-        int indent_x = 2;
-        wp.Width = textLength + indent_x*2;
-    }
-    if (wp.Height == 0) {
-        int indent_y = 2;
-        wp.Height = textHeight + indent_y*2;
-    }
-    if (begin_x == -1) {
-        begin_x = (wp.Width - textLength) / 2;
-    }
-    if (begin_y == -1) {
-        begin_y = (wp.Height - textHeight) / 2;
-    }
+WindowString createWindowString(WindowParametres wp, const char *text, int begin_x, int begin_y) {
+    tuneWindowString(&wp, text, begin_x, begin_y);
     initWindowWithParameters(&wp);
 
     WindowString newWindow = {.wp = wp, .string_begin_x = begin_x, .string_begin_y = begin_y, .string = text};
     return newWindow;
+}
+
+WindowString createDerWindowString(WINDOW *parent, WindowParametres wp, const char* text, int begin_x, int begin_y) {
+    tuneWindowString(&wp, text, begin_x, begin_y);
+    initDerWindowWithParameters(parent, &wp);
+
+    WindowString newWindow = {.wp = wp, .string_begin_x = begin_x, .string_begin_y = begin_y, .string = text};
+    return newWindow;
+}
+
+void tuneWindowString(WindowParametres *wp, char *text, int begin_x, int begin_y) {
+    int textLength = strlen(text);
+    int textHeight = 1;
+
+    if (wp->Width == 0) {
+        int indent_x = 2;
+        wp->Width = textLength + indent_x*2;
+    }
+    if (wp->Height == 0) {
+        int indent_y = 2;
+        wp->Height = textHeight + indent_y*2;
+    }
+    if (begin_x == -1) {
+        begin_x = (wp->Width - textLength) / 2;
+    }
+    if (begin_y == -1) {
+        begin_y = (wp->Height - textHeight) / 2;
+    }
 }
 
 void cleanWindowString(WindowString* win) {

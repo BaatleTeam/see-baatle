@@ -12,7 +12,7 @@ typedef enum ServerConnectionStatus {
 static char bufferLogin[BUFFSIZE] = {'\0'};
 static char bufferPassword[BUFFSIZE] = {'\0'};
 static char bufferAddres[BUFFSIZE] = {'\0'};
-static char *arraow = {"<---"};
+static char *arrow = {"<---"};
 
 static void initLoginMenuWindows(WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*);
 static void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu, char* serverAddr);
@@ -35,6 +35,10 @@ void loginMenuWindowLoop() {
     initNetowrkContext();
     WindowParametres win_bg, win_menu, win_status, win_login, win_passwd, win_addres;
     initLoginMenuWindows(&win_bg, &win_menu, &win_status, &win_addres, &win_login, &win_passwd);
+    WindowString ws_button_ok = createDerWindowString(win_menu.ptrWin, (WindowParametres){.Width = 10}, "Login", -1, -1);
+    WindowString ws_button_back = createDerWindowString(win_menu.ptrWin, (WindowParametres){.Width = 10}, "Back", -1, -1);
+    
+    
     char* currentServerAddres = getCurrentServerAddres();
     strncpy(bufferAddres, currentServerAddres, BUFFSIZE);
     drawStaticBgLoginMenu(&win_bg, &win_menu, currentServerAddres);
@@ -144,7 +148,7 @@ void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu,
     wrefresh(win_menu->ptrWin);
 }
 
-void updateConnectionStatus(WindowParametres* win, ServerConnectionStatus conStatus) {
+void updateConnectionStatus(WindowParametres *win, ServerConnectionStatus conStatus) {
     wattron(win->ptrWin, CLRS_MENU);
     wbkgdset(win->ptrWin, CLRS_MENU);
     wclear(win->ptrWin);
@@ -181,21 +185,21 @@ void updateDynamicMainMenu(WindowParametres *win_menu, WindowParametres *win_add
     mvwprintw(win_passwd->ptrWin, 0, 0, bufferPassword);
 
     if (activeMenuElement == ADDRESS) {
-        mvwprintw(win_menu->ptrWin, 3, 44, arraow);
+        mvwprintw(win_menu->ptrWin, 3, 44, arrow);
         wattron(win_addr->ptrWin, CLRS_INPUT_ACTIVE);
         wbkgdset(win_addr->ptrWin, CLRS_INPUT_ACTIVE);
         wclear(win_addr->ptrWin);
         mvwprintw(win_addr->ptrWin, 0, 0, bufferAddres);
     }
     if (activeMenuElement == LOGIN) {
-        mvwprintw(win_menu->ptrWin, 5, 44, arraow);
+        mvwprintw(win_menu->ptrWin, 5, 44, arrow);
         wattron(win_login->ptrWin, CLRS_INPUT_ACTIVE);
         wbkgdset(win_login->ptrWin, CLRS_INPUT_ACTIVE);
         wclear(win_login->ptrWin);
         mvwprintw(win_login->ptrWin, 0, 0, bufferLogin);
     }
     if (activeMenuElement == PASSWD) {
-        mvwprintw(win_menu->ptrWin, 7, 44, arraow);
+        mvwprintw(win_menu->ptrWin, 7, 44, arrow);
         wattron(win_passwd->ptrWin, CLRS_INPUT_ACTIVE);
         wbkgdset(win_passwd->ptrWin, CLRS_INPUT_ACTIVE);
         wclear(win_passwd->ptrWin);
