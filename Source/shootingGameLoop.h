@@ -7,5 +7,4 @@
 #include "menu.h"
 
 
-GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *BoardPlayer, Board *BoardComputer);
-void freeDataAfterShootingLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *BoardPlayer, Board *BoardComputer);
+GameResults shootingGameLoop(CoreGameData *cgdata);

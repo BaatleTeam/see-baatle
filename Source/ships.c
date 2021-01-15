@@ -13,6 +13,18 @@ void initWindowWithParameters(WindowParametres *wp) {
     wp->ptrWin = newwin(wp->Height, wp->Width, wp->Begin_y, wp->Begin_x);
 }
 
+void initDerWindowWithParameters(WINDOW *parent, WindowParametres *wp) {
+    Stopif(wp->ptrWin != NULL, "initWindowWithParameters(): winptr should be NULL");
+    Stopif(wp->Height == 0, "initWindowWithParameters(): height of new window is 0!");
+    Stopif(wp->Height > LINES, "initWindowWithParameters(): height of new window more than LINES!");
+    Stopif(wp->Width == 0, "initWindowWithParameters(): width of new window is 0!");
+    Stopif(wp->Width > COLS, "initWindowWithParameters(): width of new window more than COLS!");
+    Stopif(wp->Begin_x >= COLS, "initWindowWithParameters(): Begin_x of new window more than COLS!");
+    Stopif(wp->Begin_y >= LINES, "initWindowWithParameters(): Begin_y of new window more than LINES!");
+
+    wp->ptrWin = derwin(parent, wp->Height, wp->Width, wp->Begin_y, wp->Begin_x);
+}
+
 void clearWindowParametres(WindowParametres *wp) {
     delwin(wp->ptrWin);
     *wp = (WindowParametres){0};

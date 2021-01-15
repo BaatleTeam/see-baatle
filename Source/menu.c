@@ -1,9 +1,9 @@
 #include "menu.h"
 
-void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard){
-	resize_term(38,89); // Beta
-    clear();
-    refresh();
+bool choosingGDCase(const GameDataCase *GDCases, GameDataCaseChoice *choice) {
+	// resize_term(38,89); // Beta
+    // clear();
+    // refresh();
 
     // Окно заднего фона.
     WINDOW* win_menu = newwin(LINES, COLS, 0, 0);
@@ -70,14 +70,43 @@ void choosingGDCase(const GameDataCase *GDCases, int *caseShips, int *caseBoard)
 		    	break;
     	}
     }
-	*caseShips = active_case;
-	*caseBoard = indexOfCurrSizeOfBoard;
+
+	choice->caseShipsNumber = active_case;
+	choice->caseBoardSize = indexOfCurrSizeOfBoard;
 
 	for (int i = 0; i < GAME_CASES_NUMBER; i++) 
         delwin(WCaseParametres[i].ptrWin);
     delwin(win_menu);
     delwin(win_hello);
     free(WCaseParametres);
+
+	return true; // TODO
+}
+
+CoreGameData* createCoreGameData(const GameDataCase *GDCases, GameDataCaseChoice choice) {
+	CoreGameData* cgdata = malloc(sizeof(CoreGameData));
+
+	initShipsInfo(&GDCases[choice.caseShipsNumber], &cgdata->gdArray[PLAYER_0].ships);
+	initShipsInfo(&GDCases[choice.caseShipsNumber], &cgdata->gdArray[PLAYER_1].ships);
+	
+	initBoard(&cgdata->gdArray[PLAYER_0].board, GDCases[choice.caseShipsNumber].BoardHeight[choice.caseBoardSize], GDCases[choice.caseShipsNumber].BoardWidth[choice.caseBoardSize]);
+	initBoard(&cgdata->gdArray[PLAYER_1].board, GDCases[choice.caseShipsNumber].BoardHeight[choice.caseBoardSize], GDCases[choice.caseShipsNumber].BoardWidth[choice.caseBoardSize]);
+
+	return cgdata;
+}
+
+void clearCoreGameData(CoreGameData **cgdata) {
+	if ((*cgdata) == NULL)
+		return;
+
+	for (int playerEnumValue = 0; playerEnumValue < 2; playerEnumValue++) {
+		free((*cgdata)->gdArray[playerEnumValue].ships.Ships);
+		for (int i = 0; i < (*cgdata)->gdArray[playerEnumValue].board.Height; i++)
+			free((*cgdata)->gdArray[playerEnumValue].board.field[i]);
+		free((*cgdata)->gdArray[playerEnumValue].board.field);
+	}
+	free(*cgdata);
+	*cgdata = NULL;
 }
 
 void initShipsInfo(const GameDataCase *GDCases, ShipsInfo *info){
@@ -121,7 +150,10 @@ void initCaseWindowData(WindowParametres* array){
 	}
 }
 
-void initGameDataCases(GameDataCase *array){
+GameDataCase* initGameDataCases(GameDataCase *array) {
+	if (array != NULL)
+		return array;
+	array = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase));
 	array[0].NumberOfShips[0] = 3;
 	array[0].NumberOfShips[1] = 3;
 	array[0].NumberOfShips[2] = 3;
@@ -166,6 +198,12 @@ void initGameDataCases(GameDataCase *array){
 	array[3].BoardWidth [2] = 15;
 	array[3].BoardHeight[2] = 15;
 
+	return array;
+}
+
+void clearGamaDataCasesArray(GameDataCase **GDCases) {
+	free(*GDCases);
+	*GDCases = NULL;
 }
 
 void DrawCaseWindow(WindowParametres* wp, const GameDataCase* gdc, int number, int color){

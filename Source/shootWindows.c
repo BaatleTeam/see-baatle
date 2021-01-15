@@ -139,12 +139,12 @@ bool checkShotPos(const ShotBoard boardData, Coordinate curPos){
         return FALSE;
 }
 
-ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordinate curPos){
+ShotResult makeShot(const ShipsInfo *shipsComputer, const ShotBoard boardData, Coordinate curPos) {
     ShotResult result = {0};
     // найти индекс подбитого корабля
     int shipIndex = -1;
-    for (int i = 0; i < getShipsNumber(&ShipsComputer); i++){
-        if (isShipHit(&ShipsComputer.Ships[i], curPos.x, curPos.y)) // если попадание
+    for (int i = 0; i < getShipsNumber(shipsComputer); i++){
+        if (isShipHit(&shipsComputer->Ships[i], curPos.x, curPos.y)) // если попадание
             shipIndex = i;
     }
 
@@ -152,9 +152,9 @@ ShotResult makeShot(ShipsInfo ShipsComputer, const ShotBoard boardData, Coordina
     if (shipIndex != -1){
         result.isHit = TRUE;
         markKILLED(boardData, curPos);
-        if (isShipKilled(&ShipsComputer.Ships[shipIndex], boardData)){ // если при этом уничтожен
-            result.shipSize = ShipsComputer.Ships[shipIndex].size;
-            fillBoardNearKilledShip(ShipsComputer.Ships[shipIndex], boardData);
+        if (isShipKilled(&shipsComputer->Ships[shipIndex], boardData)){ // если при этом уничтожен
+            result.shipSize = shipsComputer->Ships[shipIndex].size;
+            fillBoardNearKilledShip(shipsComputer->Ships[shipIndex], boardData);
         }
     }
     else markSHOTED(boardData, curPos);
@@ -256,30 +256,30 @@ void updateStats(PlayerStats *stats_shots, PlayerStats *stats_shooted, ShotResul
 
 // ------------------------------------------------------------
 
-void moveCursor_Shooting(Board board, Coordinate *curPos, int key){
+void moveCursor_Shooting(const Board *board, Coordinate *curPos, int key){
     switch (key) {
         case KEY_LEFT:
             if (curPos->x > 0)
                 (curPos->x)--;
             else if (curPos->x == 0)
-                (curPos->x) = board.Width-1;
+                (curPos->x) = board->Width-1;
             break;
         case KEY_RIGHT:
-            if (curPos->x < board.Width-1)
+            if (curPos->x < board->Width-1)
                 (curPos->x)++;
-            else if (curPos->x == board.Width-1)
+            else if (curPos->x == board->Width-1)
                 (curPos->x) = 0;
             break;
         case KEY_UP:
             if (curPos->y > 0)
                 (curPos->y)--;
             else if (curPos->y == 0)
-                (curPos->y) = board.Height-1;
+                (curPos->y) = board->Height-1;
             break;
         case KEY_DOWN:
-            if (curPos->y < board.Height-1)
+            if (curPos->y < board->Height-1)
                 (curPos->y)++;
-            else if (curPos->y == board.Height-1)
+            else if (curPos->y == board->Height-1)
                 (curPos->y) = 0;
             break;
         default:

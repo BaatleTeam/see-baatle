@@ -1,13 +1,13 @@
 #include "shootingGameLoop.h"
 
-GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *BoardPlayer, Board *BoardComputer) {
+GameResults shootingGameLoop(CoreGameData *cgdata) {
     WindowParametres WBackGround;
     WindowParametres WInfoPlayer;
     WindowParametres WInfoComputer;
     WindowParametres WBoardPlayer;
     WindowParametres WBoardComputer;
     // WindowParametres WHelp;
-    initWindowsShooting(BoardPlayer, &WBackGround, &WInfoPlayer, &WInfoComputer, &WBoardPlayer, &WBoardComputer);
+    initWindowsShooting(&cgdata->gdArray[PLAYER_0].board, &WBackGround, &WInfoPlayer, &WInfoComputer, &WBoardPlayer, &WBoardComputer);
 
 
     wbkgdset(WBackGround.ptrWin, COLOR_PAIR(200));
@@ -16,16 +16,16 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     wrefresh(WBackGround.ptrWin);
 
     PlayerStats statisticsPlayer;
-    initPlayerStats(&statisticsPlayer, ShipsPlayer);
+    initPlayerStats(&statisticsPlayer, &cgdata->gdArray[PLAYER_0].ships);
     PlayerStats statisticsComputer;
-    initPlayerStats(&statisticsComputer, ShipsComputer);
+    initPlayerStats(&statisticsComputer, &cgdata->gdArray[PLAYER_1].ships);
 
     // поле для стрельбы человека по компьютеру                                      
     ShotBoard shotBoardPlayer;
-    initShotBoard(&shotBoardPlayer, BoardPlayer);
+    initShotBoard(&shotBoardPlayer, &cgdata->gdArray[PLAYER_0].board);
     // поле для стрельбы компьютера по человеку
     ShotBoard shotBoardComputer;
-    initShotBoard(&shotBoardComputer, BoardComputer);
+    initShotBoard(&shotBoardComputer, &cgdata->gdArray[PLAYER_1].board);
 
     Coordinate cursorPostion = (Coordinate){0, 0};
     Coordinate computerShot = (Coordinate){-1, -1};
@@ -49,13 +49,13 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
         	case KEY_RIGHT:
         	case KEY_UP:
         	case KEY_DOWN:
-                moveCursor_Shooting(*BoardPlayer, &cursorPostion, key);
+                moveCursor_Shooting(&cgdata->gdArray[PLAYER_0].board, &cursorPostion, key);
                 updateGraphics_Shoting(WBoardComputer, shotBoardPlayer, cursorPostion);
 	            break;
 	        case '\n': ;
                 ShotResult shotResultPlayer = {0};
                 if (checkShotPos(shotBoardPlayer, cursorPostion)){
-                    shotResultPlayer = makeShot(*ShipsComputer, shotBoardPlayer, cursorPostion);
+                    shotResultPlayer = makeShot(&cgdata->gdArray[PLAYER_1].ships, shotBoardPlayer, cursorPostion);
                     updateStats(&statisticsPlayer, &statisticsComputer, shotResultPlayer);
                 }
                 else {
@@ -78,7 +78,7 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
                 do {
                     computerShot = generateShotCoordinate(&shotBoardComputer, computerShot, &statisticsComputer);
                     // fprintf(db_out, "Coord: (%d, %d)\n", computerShot.x, computerShot.y);
-                    shotResultComputer = makeShot(*ShipsPlayer, shotBoardComputer, computerShot);
+                    shotResultComputer = makeShot(&cgdata->gdArray[PLAYER_0].ships, shotBoardComputer, computerShot);
                     updateStats(&statisticsComputer, &statisticsPlayer, shotResultComputer);
 
                     DrawWBoard_Shoting(WBoardPlayer, shotBoardComputer);
@@ -111,17 +111,4 @@ GameResults shootingGameLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, B
     }
 
     return results;
-}
-
-
-void freeDataAfterShootingLoop(ShipsInfo *ShipsPlayer, ShipsInfo *ShipsComputer, Board *BoardPlayer, Board *BoardComputer) {
-    free(ShipsPlayer->Ships);
-    free(ShipsComputer->Ships);
-
-    for (int i = 0; i < BoardPlayer->Height; i++)
-        free(BoardPlayer->field[i]);
-    free(BoardPlayer->field);
-    for (int i = 0; i < BoardComputer->Height; i++)
-        free(BoardComputer->field[i]);
-    free(BoardComputer->field);
 }

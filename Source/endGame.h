@@ -1,6 +1,5 @@
 #pragma once
 #include "includeCurses.h"
-#include <stdlib.h>
 #include "menu.h"
 
 typedef struct WindowString {
@@ -15,5 +14,7 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued);
 
 // --------------  WindowString methods ----------------------------
 WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y);
-void cleanWindowString(WindowString* win);
+WindowString createDerWindowString(WINDOW *parent, WindowParametres wp, const char* text, int begin_x, int begin_y);
+void clearWindowString(WindowString* win);
 void drawWindowString(const WindowString* win, short colorPair);
+void tuneWindowString(WindowParametres *wp, const char *text, int *begin_x, int *begin_y);

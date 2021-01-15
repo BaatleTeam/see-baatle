@@ -1,4 +1,5 @@
 #pragma once 
+#include <stdlib.h>
 #include <curses.h>
 
 /** To where should I write errors? If this is \c NULL, write to \c stderr. */

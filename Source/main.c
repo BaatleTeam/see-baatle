@@ -1,10 +1,12 @@
 #include "header.h"
 #include "menu.h"
 #include "endGame.h"
+#include "mainMenu.h"
+#include "loginMenu.h"
 
 FILE* db_out = NULL;
 
-int main(){	
+int main() {
     // FOR DEBUG 
     db_out = fopen("debug.txt", "w");
     // 
@@ -13,6 +15,11 @@ int main(){
 	cbreak();
     noecho(); // Не отображает символы.
     curs_set(FALSE);
+
+    resize_term(38,89); // Beta
+    clear();
+    refresh();
+    
 	keypad(stdscr, TRUE);
     start_color();
     init_pair (2,   COLOR_BLUE+8,  COLOR_YELLOW+8); // Для окна aarange.
@@ -27,46 +34,57 @@ int main(){
     init_pair (200, COLOR_BLUE+8,  COLOR_WHITE+8 ); // ??
     init_pair (49,  COLOR_BLACK,   COLOR_GREEN+8 ); // Для окна shot board
     init_pair (51,  COLOR_BLACK+8, COLOR_GREEN+8 ); // ??
+    init_pair (101, COLOR_BLACK,  COLOR_BLUE+8); 
 	savetty();
 
     // Создание и инициализация возможных вариантов игры.
+    GameDataCase *GDCases = NULL;
+    CoreGameData *coreGameData = NULL;
     bool gameIsGoing = true;
+    
     while (gameIsGoing) {
-        GameDataCase* GDCases;
-        GDCases = malloc(GAME_CASES_NUMBER * sizeof(GameDataCase)); // TODO
-        initGameDataCases(GDCases);
+        GameNetworkType gameType = mainMenuWindowLoop();
+        if (gameType == GAME_N_TYPE_UNKNOWN) {
+            break;
+        }
 
-        int caseShips; // тип кол-ва кораблйей
-        int caseBoard; // тип размера поля
-        choosingGDCase(GDCases, &caseShips, &caseBoard);
+        if (gameType == SINGLE_ONLINE) {
+            loginMenuWindowLoop();
+        }
+        {
+            // TEST
+            gameIsGoing = false;
+            continue;
+        }
+
+        GDCases = initGameDataCases(GDCases);
+        GameDataCaseChoice choice;
+        gameIsGoing = choosingGDCase(GDCases, &choice);
+        if (!gameIsGoing) {
+            break;
+        }
 
         // Создание и инициализация данных о кораблях игрока и компьютера.
-        ShipsInfo ShipsPlayer;
-        ShipsInfo ShipsComputer;
-        initShipsInfo(&GDCases[caseShips], &ShipsPlayer);
-        initShipsInfo(&GDCases[caseShips], &ShipsComputer);
+        coreGameData = createCoreGameData(GDCases, choice);
+        clearGamaDataCasesArray(&GDCases);
         
-        // Создание и инициализация размеров игорового поля.
-        Board BoardPlayer;
-        Board BoardComputer;
-        initBoard(&BoardPlayer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-        initBoard(&BoardComputer, GDCases[caseShips].BoardHeight[caseBoard], GDCases[caseShips].BoardWidth[caseBoard]);
-        
-        
-        // Закончили выбор режима игры, освобождаем данные, начинаем отрисовку окна расстановки.
-        free(GDCases);
-        arrangingShips_player(&ShipsPlayer, &BoardPlayer);
-        arrangingShips_computer(&ShipsComputer, &BoardComputer);
-
+        // Закончили выбор режима игры, освободили данные, начинаем отрисовку окна расстановки.
+        arrangingShips_ByComputer(&coreGameData->gdArray[PLAYER_1]);
+        gameIsGoing = arrangingShips_ByPlayer(&coreGameData->gdArray[PLAYER_0]);
+        if (!gameIsGoing) {
+            break;
+        }
 
         // Процесс перестрелки игрока и компьютера
-        GameResults gameResults = shootingGameLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
-        freeDataAfterShootingLoop(&ShipsPlayer, &ShipsComputer, &BoardPlayer, &BoardComputer);
+        GameResults gameResults = shootingGameLoop(coreGameData);
+        clearCoreGameData(&coreGameData);
 
         // Выбор игрока продолжать или нет
         endGameWindowLoop(gameResults, &gameIsGoing);
     }
 
+    clearGamaDataCasesArray(&GDCases);
+    clearCoreGameData(&coreGameData);
 
     fclose(db_out);
     resetty();
