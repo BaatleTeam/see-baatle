@@ -18,6 +18,7 @@ static char *btnLoginTitle = {"Login"};
 static char *btnBackTitle = {"Back"};
 
 static void initLoginMenuWindows(WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowString*, WindowString*);
+static void clearLoginMenuWindows(WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowParametres*, WindowString*, WindowString*);
 static void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu, char* serverAddr);
 static void updateConnectionStatus(WindowParametres* win, ServerConnectionStatus isConnected);
 static void updateDynamicMainMenu(WindowParametres *,  WindowParametres *, WindowParametres *, WindowParametres *, WindowString *, WindowString *, ActiveMenuElement);
@@ -42,6 +43,7 @@ void loginMenuWindowLoop() {
     
     char* currentServerAddres = getCurrentServerAddres();
     strncpy(bufferAddres, currentServerAddres, BUFFSIZE);
+    free(currentServerAddres);
     drawStaticBgLoginMenu(&win_bg, &win_menu, currentServerAddres);
 
     ServerConnectionStatus isConnected = CONNECTION_WAIT;
@@ -116,8 +118,11 @@ void loginMenuWindowLoop() {
     while (!isExit && key != KEY_F(2));
 
     noecho();
-    void closeNetwork();
+    closeNetwork();
+    clearLoginMenuWindows(&win_bg, &win_menu, &win_status, &win_addres, &win_login, &win_passwd, &win_btn_login, &win_btn_back);
 }
+
+
 
 static void initLoginMenuWindows(WindowParametres *win_bg, 
                                  WindowParametres *win_menu, 
@@ -143,10 +148,27 @@ static void initLoginMenuWindows(WindowParametres *win_bg,
     win_login->ptrWin = derwin(win_menu->ptrWin, win_login->Height, win_login->Width, win_login->Begin_y, win_login->Begin_x);
 
     *win_btn_login = createDerWindowString(win_menu->ptrWin, (WindowParametres){.Width = 15, .Height=3, .Begin_x = 8, .Begin_y = 9}, btnLoginTitle, -1, -1);
-    *win_btn_back = createDerWindowString(win_menu->ptrWin, (WindowParametres){.Width = 15, .Height=3, .Begin_x = 30, .Begin_y = 9}, btnBackTitle, -1, -1);
-    
+    *win_btn_back = createDerWindowString(win_menu->ptrWin, (WindowParametres){.Width = 15, .Height=3, .Begin_x = 30, .Begin_y = 9}, btnBackTitle, -1, -1);   
 }
 
+void clearLoginMenuWindows(WindowParametres *win_bg, 
+                           WindowParametres *win_menu, 
+                           WindowParametres *win_status, 
+                           WindowParametres *win_addres, 
+                           WindowParametres *win_login, 
+                           WindowParametres *win_passwd,
+                           WindowString *win_btn_login,
+                           WindowString *win_btn_back
+) {
+    clearWindowParametres(win_bg);
+    clearWindowParametres(win_menu);
+    clearWindowParametres(win_status);
+    clearWindowParametres(win_addres);
+    clearWindowParametres(win_login);
+    clearWindowParametres(win_passwd);
+    clearWindowString(win_btn_login);
+    clearWindowString(win_btn_back);
+}
 void drawStaticBgLoginMenu(WindowParametres *win_bg, WindowParametres *win_menu, char* serverAddr) {
     wbkgdset(win_bg->ptrWin, COLOR_PAIR(200));
     wclear(win_bg->ptrWin);

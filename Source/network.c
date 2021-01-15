@@ -20,6 +20,8 @@ void initNetowrkContext() {
         return;
     context = zmq_ctx_new();
     reqSocket = zmq_socket (context, ZMQ_REQ);
+    int val_zero = 0;
+    zmq_setsockopt(reqSocket, ZMQ_LINGER, &val_zero, sizeof(val_zero));
     zmq_connect (reqSocket, serverAddress);
 }
 

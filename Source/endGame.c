@@ -48,8 +48,8 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued) {
     }
     while (finalChoice == CHOICE_ENDGAME_UNKNOWN);
 
-    cleanWindowString(&winEnter);
-    cleanWindowString(&winAnyKey);
+    clearWindowString(&winEnter);
+    clearWindowString(&winAnyKey);
     clearWindowParametres(&win_bg);
     clearWindowParametres(&win_title);
 }
@@ -158,7 +158,7 @@ void tuneWindowString(WindowParametres *wp, const char *text, int *begin_x, int 
     }
 }
 
-void cleanWindowString(WindowString* win) {
+void clearWindowString(WindowString* win) {
     delwin(win->wp.ptrWin); 
     *win = (WindowString){0};
     // text is static, should't be deleted

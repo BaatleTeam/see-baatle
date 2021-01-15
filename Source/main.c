@@ -51,7 +51,11 @@ int main() {
         if (gameType == SINGLE_ONLINE) {
             loginMenuWindowLoop();
         }
-        return 0;
+        {
+            // TEST
+            gameIsGoing = false;
+            continue;
+        }
 
         GDCases = initGameDataCases(GDCases);
         GameDataCaseChoice choice;

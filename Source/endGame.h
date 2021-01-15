@@ -15,6 +15,6 @@ void endGameWindowLoop(GameResults gameResults, bool *isGameWillBeContinued);
 // --------------  WindowString methods ----------------------------
 WindowString createWindowString(WindowParametres wp, const char* text, int begin_x, int begin_y);
 WindowString createDerWindowString(WINDOW *parent, WindowParametres wp, const char* text, int begin_x, int begin_y);
-void cleanWindowString(WindowString* win);
+void clearWindowString(WindowString* win);
 void drawWindowString(const WindowString* win, short colorPair);
 void tuneWindowString(WindowParametres *wp, const char *text, int *begin_x, int *begin_y);
